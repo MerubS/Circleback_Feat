@@ -1,0 +1,120 @@
+{
+  "meetingId": "m1",
+  "judge": "openai:gpt-4.1-mini",
+  "createdAt": "2026-11-02T23:43:16.713Z",
+  "verdicts": [
+    {
+      "actionItemId": "m1-a1",
+      "label": "SUPPORTED",
+      "ownerStatus": "present",
+      "ownerAgreed": true,
+      "evidence": [
+        {
+          "segmentId": "m1-s4",
+          "quote": "Yeah. I'll put the checklist behind a feature flag and ship it Friday",
+          "speaker": "Marcus Chen",
+          "start": 24.5
+        }
+      ],
+      "rationale": "Marcus Chen explicitly commits to putting the checklist behind a feature flag and shipping it by Friday in segment m1-s4.",
+      "guardrailNotes": []
+    },
+    {
+      "actionItemId": "m1-a2",
+      "label": "SUPPORTED",
+      "ownerStatus": "present",
+      "ownerAgreed": true,
+      "evidence": [
+        {
+          "segmentId": "m1-s8",
+          "quote": "I'll redo the empty-state illustrations and have them in Figma by Thursday",
+          "speaker": "Dana Ortiz",
+          "start": 50.4
+        }
+      ],
+      "rationale": "Dana Ortiz explicitly commits to redoing the empty-state illustrations and sharing them in Figma by Thursday in segment m1-s8.",
+      "guardrailNotes": []
+    },
+    {
+      "actionItemId": "m1-a3",
+      "label": "WEAK",
+      "ownerStatus": "present",
+      "ownerAgreed": false,
+      "evidence": [
+        {
+          "segmentId": "m1-s10",
+          "quote": "We should probably talk to some churned customers at some point.",
+          "speaker": "Priya Nair",
+          "start": 64.7
+        },
+        {
+          "segmentId": "m1-s11",
+          "quote": "Interviews would help a lot with the next round of designs.",
+          "speaker": "Dana Ortiz",
+          "start": 74.5
+        },
+        {
+          "segmentId": "m1-s12",
+          "quote": "Let's keep it in mind for next quarter, we don't have the bandwidth right now.",
+          "speaker": "Priya Nair",
+          "start": 81.3
+        }
+      ],
+      "rationale": "The transcript shows the team discussing the idea of talking to churned customers and doing interviews, but Priya explicitly says they don't have the bandwidth now and suggests keeping it in mind for next quarter, so no commitment to schedule interviews was made.",
+      "guardrailNotes": []
+    },
+    {
+      "actionItemId": "m1-a4",
+      "label": "UNSUPPORTED",
+      "ownerStatus": "present",
+      "ownerAgreed": false,
+      "evidence": [],
+      "rationale": "The transcript does not mention migrating onboarding analytics events to the new event schema or Marcus Chen agreeing to do this task.",
+      "guardrailNotes": []
+    },
+    {
+      "actionItemId": "m1-a5",
+      "label": "OWNER_NOT_CONFIRMED",
+      "ownerStatus": "not_present",
+      "ownerAgreed": false,
+      "evidence": [
+        {
+          "segmentId": "m1-s14",
+          "quote": "we'll need a help-center article for the new checklist before it goes to a hundred percent.",
+          "speaker": "Priya Nair",
+          "start": 97.2
+        },
+        {
+          "segmentId": "m1-s16",
+          "quote": "Jordan on the support team normally does. Maybe Jordan could write it. I'll ask him after this call.",
+          "speaker": "Priya Nair",
+          "start": 107.7
+        },
+        {
+          "segmentId": "m1-s17",
+          "quote": "Sounds good.",
+          "speaker": "Marcus Chen",
+          "start": 115.2
+        }
+      ],
+      "rationale": "The need for the help-center article was discussed and Jordan was suggested as the writer, but no one explicitly committed to Jordan writing it during the meeting.",
+      "guardrailNotes": []
+    },
+    {
+      "actionItemId": "m1-a6",
+      "label": "SUPPORTED",
+      "ownerStatus": "present",
+      "ownerAgreed": true,
+      "evidence": [
+        {
+          "segmentId": "m1-s13",
+          "quote": "the tooltips on the settings page overlap on smaller laptops. I'll fix that today, it's a one-line CSS change.",
+          "speaker": "Marcus Chen",
+          "start": 88.1
+        }
+      ],
+      "rationale": "Marcus Chen explicitly commits to fixing the overlapping tooltips on the settings page by stating \"I'll fix that today.\" There is no separate owner agreement segment since Marcus is the assignee and the speaker making the commitment.",
+      "guardrailNotes": []
+    }
+  ]
+}

@@ -1,0 +1,198 @@
+{
+  "id": "m1",
+  "name": "Q4 onboarding revamp sync",
+  "createdAt": "2026-10-27T15:00:00Z",
+  "durationSeconds": 120,
+  "attendees": [
+    {
+      "name": "Priya Nair",
+      "email": "priya@northwind.dev"
+    },
+    {
+      "name": "Marcus Chen",
+      "email": "marcus@northwind.dev"
+    },
+    {
+      "name": "Dana Ortiz",
+      "email": "dana@northwind.dev"
+    }
+  ],
+  "transcript": [
+    {
+      "id": "m1-s1",
+      "speaker": "Priya Nair",
+      "start": 0.0,
+      "end": 11.5,
+      "text": "Okay let's get going. Main thing today is the onboarding revamp for Q4. Activation dropped about four points last month so I want us to land the quick wins first."
+    },
+    {
+      "id": "m1-s2",
+      "speaker": "Marcus Chen",
+      "start": 12.1,
+      "end": 20.2,
+      "text": "Sure. The welcome checklist is basically done on my branch. It just needs the copy finalized and some QA on mobile."
+    },
+    {
+      "id": "m1-s3",
+      "speaker": "Priya Nair",
+      "start": 20.8,
+      "end": 23.9,
+      "text": "Great. Can we get that out this week?"
+    },
+    {
+      "id": "m1-s4",
+      "speaker": "Marcus Chen",
+      "start": 24.5,
+      "end": 33.7,
+      "text": "Yeah. I'll put the checklist behind a feature flag and ship it Friday, then we ramp it to ten percent of new signups first."
+    },
+    {
+      "id": "m1-s5",
+      "speaker": "Priya Nair",
+      "start": 34.3,
+      "end": 36.6,
+      "text": "Perfect, I like the gradual ramp."
+    },
+    {
+      "id": "m1-s6",
+      "speaker": "Dana Ortiz",
+      "start": 37.2,
+      "end": 47.2,
+      "text": "On the design side, the empty states still use the old illustrations from the twenty twenty-two brand. They look really off next to the new checklist."
+    },
+    {
+      "id": "m1-s7",
+      "speaker": "Priya Nair",
+      "start": 47.8,
+      "end": 49.8,
+      "text": "Is that a big lift?"
+    },
+    {
+      "id": "m1-s8",
+      "speaker": "Dana Ortiz",
+      "start": 50.4,
+      "end": 58.1,
+      "text": "Not really. I'll redo the empty-state illustrations and have them in Figma by Thursday so Marcus can drop them in."
+    },
+    {
+      "id": "m1-s9",
+      "speaker": "Marcus Chen",
+      "start": 58.7,
+      "end": 64.1,
+      "text": "That works, as long as they're SVGs I can swap them in an hour."
+    },
+    {
+      "id": "m1-s10",
+      "speaker": "Priya Nair",
+      "start": 64.7,
+      "end": 73.9,
+      "text": "Next thing. We keep guessing about why people drop off after day one. We should probably talk to some churned customers at some point."
+    },
+    {
+      "id": "m1-s11",
+      "speaker": "Dana Ortiz",
+      "start": 74.5,
+      "end": 80.7,
+      "text": "Yeah, that would be useful. Interviews would help a lot with the next round of designs."
+    },
+    {
+      "id": "m1-s12",
+      "speaker": "Priya Nair",
+      "start": 81.3,
+      "end": 87.5,
+      "text": "Agreed. Let's keep it in mind for next quarter, we don't have the bandwidth right now."
+    },
+    {
+      "id": "m1-s13",
+      "speaker": "Marcus Chen",
+      "start": 88.1,
+      "end": 96.6,
+      "text": "One more thing, the tooltips on the settings page overlap on smaller laptops. I'll fix that today, it's a one-line CSS change."
+    },
+    {
+      "id": "m1-s14",
+      "speaker": "Priya Nair",
+      "start": 97.2,
+      "end": 104.5,
+      "text": "Thanks. Last item, we'll need a help-center article for the new checklist before it goes to a hundred percent."
+    },
+    {
+      "id": "m1-s15",
+      "speaker": "Dana Ortiz",
+      "start": 105.1,
+      "end": 107.1,
+      "text": "Who usually writes those?"
+    },
+    {
+      "id": "m1-s16",
+      "speaker": "Priya Nair",
+      "start": 107.7,
+      "end": 114.6,
+      "text": "Jordan on the support team normally does. Maybe Jordan could write it. I'll ask him after this call."
+    },
+    {
+      "id": "m1-s17",
+      "speaker": "Marcus Chen",
+      "start": 115.2,
+      "end": 117.5,
+      "text": "Sounds good. That's all from me."
+    },
+    {
+      "id": "m1-s18",
+      "speaker": "Priya Nair",
+      "start": 118.1,
+      "end": 120.1,
+      "text": "Great, thanks everyone."
+    }
+  ],
+  "actionItems": [
+    {
+      "id": "m1-a1",
+      "title": "Ship the welcome checklist behind a feature flag by Friday",
+      "assignee": {
+        "name": "Marcus Chen",
+        "email": "marcus@northwind.dev"
+      }
+    },
+    {
+      "id": "m1-a2",
+      "title": "Redo empty-state illustrations and share in Figma by Thursday",
+      "assignee": {
+        "name": "Dana Ortiz",
+        "email": "dana@northwind.dev"
+      }
+    },
+    {
+      "id": "m1-a3",
+      "title": "Schedule interviews with five churned customers",
+      "assignee": {
+        "name": "Priya Nair",
+        "email": "priya@northwind.dev"
+      }
+    },
+    {
+      "id": "m1-a4",
+      "title": "Migrate onboarding analytics events to the new event schema",
+      "assignee": {
+        "name": "Marcus Chen",
+        "email": "marcus@northwind.dev"
+      }
+    },
+    {
+      "id": "m1-a5",
+      "title": "Write the help-center article for the new checklist",
+      "assignee": {
+        "name": "Jordan Lee",
+        "email": "jordan@northwind.dev"
+      }
+    },
+    {
+      "id": "m1-a6",
+      "title": "Fix overlapping tooltips on the settings page",
+      "assignee": {
+        "name": "Marcus Chen",
+        "email": "marcus@northwind.dev"
+      }
+    }
+  ]
+}

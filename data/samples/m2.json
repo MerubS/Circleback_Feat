@@ -1,0 +1,190 @@
+{
+  "id": "m2",
+  "name": "Acme Corp renewal call",
+  "createdAt": "2026-10-28T18:30:00Z",
+  "durationSeconds": 98,
+  "attendees": [
+    {
+      "name": "Sam Rivera",
+      "email": "sam@northwind.dev"
+    },
+    {
+      "name": "Lena Brooks",
+      "email": "lena@northwind.dev"
+    },
+    {
+      "name": "Tom Hale",
+      "email": "tom.hale@acme.example"
+    }
+  ],
+  "transcript": [
+    {
+      "id": "m2-s1",
+      "speaker": "Sam Rivera",
+      "start": 0.0,
+      "end": 8.5,
+      "text": "Thanks for making time, Tom. The goal today is to walk through the renewal and the expansion to the new support team."
+    },
+    {
+      "id": "m2-s2",
+      "speaker": "Tom Hale",
+      "start": 9.1,
+      "end": 15.6,
+      "text": "Sure. We're adding about forty seats in January, so pricing is the big question on our side."
+    },
+    {
+      "id": "m2-s3",
+      "speaker": "Sam Rivera",
+      "start": 16.2,
+      "end": 24.3,
+      "text": "Understood. I'll send you a revised quote with three-year pricing by Wednesday so you can compare it with the annual option."
+    },
+    {
+      "id": "m2-s4",
+      "speaker": "Tom Hale",
+      "start": 24.9,
+      "end": 29.9,
+      "text": "Great. Is there any flexibility on price if we sign for three years?"
+    },
+    {
+      "id": "m2-s5",
+      "speaker": "Sam Rivera",
+      "start": 30.5,
+      "end": 37.8,
+      "text": "I can't promise anything on discounts today. I'd need to check with our finance team before we talk numbers."
+    },
+    {
+      "id": "m2-s6",
+      "speaker": "Tom Hale",
+      "start": 38.4,
+      "end": 44.2,
+      "text": "Fair enough. Our IT team will also need SSO before the new team comes on."
+    },
+    {
+      "id": "m2-s7",
+      "speaker": "Sam Rivera",
+      "start": 44.8,
+      "end": 49.4,
+      "text": "We support SAML and OIDC. Do you have a list of requirements?"
+    },
+    {
+      "id": "m2-s8",
+      "speaker": "Tom Hale",
+      "start": 50.0,
+      "end": 53.8,
+      "text": "We do. I'll send our SSO requirements doc over today."
+    },
+    {
+      "id": "m2-s9",
+      "speaker": "Participant 4",
+      "start": 54.4,
+      "end": 60.6,
+      "text": "And we'll need your security questionnaire filled out. I'll send the questionnaire to you this afternoon."
+    },
+    {
+      "id": "m2-s10",
+      "speaker": "Sam Rivera",
+      "start": 61.2,
+      "end": 63.2,
+      "text": "Perfect, send it my way."
+    },
+    {
+      "id": "m2-s11",
+      "speaker": "Tom Hale",
+      "start": 63.8,
+      "end": 70.0,
+      "text": "One issue, the Salesforce sync has been dropping some activities for a couple of our reps."
+    },
+    {
+      "id": "m2-s12",
+      "speaker": "Lena Brooks",
+      "start": 70.6,
+      "end": 74.1,
+      "text": "Yeah, that's been flaky for a few customers lately."
+    },
+    {
+      "id": "m2-s13",
+      "speaker": "Tom Hale",
+      "start": 74.7,
+      "end": 77.8,
+      "text": "Okay, good to know it's not just us."
+    },
+    {
+      "id": "m2-s14",
+      "speaker": "Sam Rivera",
+      "start": 78.4,
+      "end": 84.2,
+      "text": "For the new support team, Lena can run an onboarding training for them in January."
+    },
+    {
+      "id": "m2-s15",
+      "speaker": "Lena Brooks",
+      "start": 84.8,
+      "end": 91.7,
+      "text": "Hmm, let me check my calendar first. January is packed and I'm not sure I have the bandwidth."
+    },
+    {
+      "id": "m2-s16",
+      "speaker": "Sam Rivera",
+      "start": 92.3,
+      "end": 95.8,
+      "text": "Okay, we'll figure it out. Thanks Tom, talk soon."
+    },
+    {
+      "id": "m2-s17",
+      "speaker": "Tom Hale",
+      "start": 96.4,
+      "end": 98.4,
+      "text": "Thanks both."
+    }
+  ],
+  "actionItems": [
+    {
+      "id": "m2-a1",
+      "title": "Send Acme a revised quote with three-year pricing by Wednesday",
+      "assignee": {
+        "name": "Sam Rivera",
+        "email": "sam@northwind.dev"
+      }
+    },
+    {
+      "id": "m2-a2",
+      "title": "Share the SSO requirements document",
+      "assignee": {
+        "name": "Tom Hale",
+        "email": "tom.hale@acme.example"
+      }
+    },
+    {
+      "id": "m2-a3",
+      "title": "Run onboarding training for Acme's new support team in January",
+      "assignee": {
+        "name": "Lena Brooks",
+        "email": "lena@northwind.dev"
+      }
+    },
+    {
+      "id": "m2-a4",
+      "title": "Approve a 20% discount for Acme's three-year renewal",
+      "assignee": {
+        "name": "Sam Rivera",
+        "email": "sam@northwind.dev"
+      }
+    },
+    {
+      "id": "m2-a5",
+      "title": "Send the security questionnaire",
+      "assignee": {
+        "name": "Participant 4"
+      }
+    },
+    {
+      "id": "m2-a6",
+      "title": "Investigate and fix the Salesforce activity sync bug",
+      "assignee": {
+        "name": "Lena Brooks",
+        "email": "lena@northwind.dev"
+      }
+    }
+  ]
+}

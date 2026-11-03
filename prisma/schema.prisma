@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model VerificationRun {
+  id         String       @id @default(cuid())
+  meetingId  String
+  judge      String
+  createdAt  DateTime     @default(now())
+  results    ItemResult[]
+
+  @@index([meetingId, createdAt])
+}
+
+model ItemResult {
+  id            String          @id @default(cuid())
+  runId         String
+  run           VerificationRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  actionItemId  String
+  label         String
+  ownerStatus   String
+  rationale     String
+  evidenceJson  String
+}

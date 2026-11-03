@@ -1,0 +1,19 @@
+{
+  "m1-a1": "SUPPORTED",
+  "m1-a2": "SUPPORTED",
+  "m1-a3": "WEAK",
+  "m1-a4": "UNSUPPORTED",
+  "m1-a5": "OWNER_NOT_CONFIRMED",
+  "m1-a6": "SUPPORTED",
+  "m2-a1": "SUPPORTED",
+  "m2-a2": "SUPPORTED",
+  "m2-a3": "OWNER_NOT_CONFIRMED",
+  "m2-a4": "UNSUPPORTED",
+  "m2-a5": "OWNER_NOT_CONFIRMED",
+  "m2-a6": "WEAK",
+  "m3-a1": "SUPPORTED",
+  "m3-a2": "SUPPORTED",
+  "m3-a3": "WEAK",
+  "m3-a4": "UNSUPPORTED",
+  "m3-a5": "OWNER_NOT_CONFIRMED"
+}

@@ -1,0 +1,155 @@
+{
+  "id": "m3",
+  "name": "Payments standup",
+  "createdAt": "2026-10-29T14:00:00Z",
+  "durationSeconds": 69,
+  "attendees": [
+    {
+      "name": "Aisha Khan",
+      "email": "aisha@northwind.dev"
+    },
+    {
+      "name": "Ben Okafor",
+      "email": "ben@northwind.dev"
+    },
+    {
+      "name": "Carlos Mendes",
+      "email": "carlos@northwind.dev"
+    }
+  ],
+  "transcript": [
+    {
+      "id": "m3-s1",
+      "speaker": "Aisha Khan",
+      "start": 0.0,
+      "end": 3.8,
+      "text": "Morning. Quick standup for payments. Ben, you want to start?"
+    },
+    {
+      "id": "m3-s2",
+      "speaker": "Ben Okafor",
+      "start": 4.4,
+      "end": 12.9,
+      "text": "Yesterday I dug into the failed webhook deliveries. The retry logic gives up after one attempt when the partner returns a timeout."
+    },
+    {
+      "id": "m3-s3",
+      "speaker": "Aisha Khan",
+      "start": 13.5,
+      "end": 17.0,
+      "text": "That explains the missing invoices. Can you take that?"
+    },
+    {
+      "id": "m3-s4",
+      "speaker": "Ben Okafor",
+      "start": 17.6,
+      "end": 24.5,
+      "text": "Yep. I'll fix the webhook retry logic today and add exponential backoff. PR should be up this afternoon."
+    },
+    {
+      "id": "m3-s5",
+      "speaker": "Carlos Mendes",
+      "start": 25.1,
+      "end": 31.6,
+      "text": "Checkout latency spiked again last night. p95 was around two point eight seconds for about twenty minutes."
+    },
+    {
+      "id": "m3-s6",
+      "speaker": "Aisha Khan",
+      "start": 32.2,
+      "end": 34.2,
+      "text": "Did anyone get paged?"
+    },
+    {
+      "id": "m3-s7",
+      "speaker": "Carlos Mendes",
+      "start": 34.8,
+      "end": 42.9,
+      "text": "No, and that's the problem. I'll wire up a pager alert so we get paged whenever p95 goes past two seconds."
+    },
+    {
+      "id": "m3-s8",
+      "speaker": "Aisha Khan",
+      "start": 43.5,
+      "end": 52.0,
+      "text": "Thank you. Also, refunds failed twice this week and nobody knew what to do. We really need a runbook for refund failures."
+    },
+    {
+      "id": "m3-s9",
+      "speaker": "Ben Okafor",
+      "start": 52.6,
+      "end": 56.4,
+      "text": "Yeah agreed, someday. It's been on the wish list forever."
+    },
+    {
+      "id": "m3-s10",
+      "speaker": "Aisha Khan",
+      "start": 57.0,
+      "end": 61.6,
+      "text": "Ben, once your webhook PR is up I'll review it this afternoon."
+    },
+    {
+      "id": "m3-s11",
+      "speaker": "Ben Okafor",
+      "start": 62.2,
+      "end": 64.2,
+      "text": "Great, thanks."
+    },
+    {
+      "id": "m3-s12",
+      "speaker": "Carlos Mendes",
+      "start": 64.8,
+      "end": 66.8,
+      "text": "That's it from me."
+    },
+    {
+      "id": "m3-s13",
+      "speaker": "Aisha Khan",
+      "start": 67.4,
+      "end": 69.4,
+      "text": "Cool, let's go."
+    }
+  ],
+  "actionItems": [
+    {
+      "id": "m3-a1",
+      "title": "Fix webhook retry logic and add exponential backoff",
+      "assignee": {
+        "name": "Ben Okafor",
+        "email": "ben@northwind.dev"
+      }
+    },
+    {
+      "id": "m3-a2",
+      "title": "Set up an alert when checkout p95 latency exceeds 2 seconds",
+      "assignee": {
+        "name": "Carlos Mendes",
+        "email": "carlos@northwind.dev"
+      }
+    },
+    {
+      "id": "m3-a3",
+      "title": "Write a runbook for refund failures",
+      "assignee": {
+        "name": "Aisha Khan",
+        "email": "aisha@northwind.dev"
+      }
+    },
+    {
+      "id": "m3-a4",
+      "title": "Upgrade the Stripe SDK to v15",
+      "assignee": {
+        "name": "Ben Okafor",
+        "email": "ben@northwind.dev"
+      }
+    },
+    {
+      "id": "m3-a5",
+      "title": "Review Ben's webhook retry PR",
+      "assignee": {
+        "name": "Carlos Mendes",
+        "email": "carlos@northwind.dev"
+      }
+    }
+  ]
+}
