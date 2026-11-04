@@ -27,7 +27,7 @@ async function main() {
     console.log(`\n${item.title}  (owner: ${item.assignee?.name ?? "none"})`);
     console.log(`  Task: ${TASK_TEXT[v.task]} · ${OWNER_TEXT[v.owner]}`);
     console.log(`  ${v.rationale}`);
-    for (const e of v.evidence) console.log(`  ${t(e.start)} ${e.speaker}: "${e.quote}"`);
+    for (const e of v.evidence) console.log(`  ${t(e.start)} ${e.speaker}: "${e.quote}"${e.fuzzy ? " (paraphrased)" : ""}`);
     if (v.suggestion) {
       const who = v.suggestion.owners.map((o) => `${o.name}${o.confirmed ? "" : " (didn't confirm)"}`).join(" + ");
       console.log(`  >> ${v.suggestion.action === "reassign" ? "Reassign to" : "Also assign"}: ${who}`);

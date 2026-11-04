@@ -7,9 +7,10 @@ const red = "bg-rose-100 text-rose-800 ring-rose-600/20 dark:bg-rose-900/40 dark
 const violet = "bg-violet-100 text-violet-800 ring-violet-600/20 dark:bg-violet-900/40 dark:text-violet-300";
 const grey = "bg-zinc-100 text-zinc-600 ring-zinc-500/20 dark:bg-zinc-800 dark:text-zinc-400";
 
-export const TASK_STYLE: Record<TaskStatus, string> = { SUPPORTED: green, WEAK: amber, UNSUPPORTED: red, CONTRADICTED: red };
+export const TASK_STYLE: Record<TaskStatus, string> = { SUPPORTED: green, WEAK: amber, UNSUPPORTED: red, CONTRADICTED: red, NOT_CHECKED: grey };
 export const OWNER_STYLE: Record<OwnerStatus, string> = {
   CONFIRMED: green,
+  WEAK: amber,
   NOT_ACKNOWLEDGED: violet,
   DECLINED: violet,
   SOMEONE_ELSE: red,

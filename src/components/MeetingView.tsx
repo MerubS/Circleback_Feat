@@ -66,6 +66,11 @@ export function MeetingView({
       <span className="shrink-0 font-mono text-xs text-blue-700 group-hover:underline dark:text-blue-400">{fmtTime(e.start)}</span>
       <span>
         <span className="font-medium">{who(e.speaker)}:</span> “{e.quote}”
+        {e.fuzzy && (
+          <span title="Close to the transcript line but not word for word" className="ml-2 rounded bg-amber-100 px-1.5 py-0.5 text-xs text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+            paraphrased
+          </span>
+        )}
       </span>
     </button>
   );

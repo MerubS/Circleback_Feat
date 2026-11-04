@@ -57,7 +57,7 @@
   },
   "m2-a3": {
     "task": "SUPPORTED",
-    "owner": "DECLINED",
+    "owner": "WEAK",
     "evidence": [
       "m2-s14",
       "m2-s15"
@@ -123,12 +123,12 @@
   },
   "31605584": {
     "task": "SUPPORTED",
-    "owner": "CONFIRMED",
+    "owner": "WEAK",
     "evidence": [
       "105b",
       "106"
     ],
-    "note": "Debatable: Andrew's reply is just 'Okay.'"
+    "note": "Andrew's reply is just 'Okay.': not a clear yes, so a weak yes."
   },
   "31605585": {
     "task": "SUPPORTED",
@@ -146,12 +146,12 @@
   },
   "31606341": {
     "task": "SUPPORTED",
-    "owner": "CONFIRMED",
+    "owner": "WEAK",
     "evidence": [
       "46",
       "47"
     ],
-    "note": "Transcript splits 'I'll' / 'look into it' across two speakers."
+    "note": "Transcript splits 'I'll' / 'look into it' across two speakers. 'If I can' makes it a weak yes."
   },
   "31606342": {
     "task": "SUPPORTED",

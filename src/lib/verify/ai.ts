@@ -3,7 +3,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import OpenAI from "openai";
 import { z } from "zod";
-import type { AiReading, Meeting } from "@/lib/types";
+import { OWNER_RESPONSES, type AiReading, type Meeting } from "@/lib/types";
 import { isGenericSpeaker } from "./text";
 
 /** Anything that can read a meeting and report facts. The real one calls OpenAI; tests use a fake. */
@@ -16,7 +16,7 @@ export interface Reader {
 
 const QuoteZ = z.object({ segmentId: z.string(), quote: z.string() });
 export const ReadingZ = z.object({
-  speakers: z.array(z.object({ speaker: z.string(), name: z.string(), evidence: QuoteZ, reasoning: z.string() })),
+  speakers: z.array(z.object({ speaker: z.string(), name: z.string(), how: z.enum(["self_intro", "named_by_other"]), evidence: QuoteZ, reasoning: z.string() })),
   commitments: z.array(
     z.object({
       id: z.string(),
@@ -25,7 +25,7 @@ export const ReadingZ = z.object({
       owners: z.array(z.string()),
       statement: QuoteZ,
       response: QuoteZ.nullable(),
-      ownerResponse: z.enum(["agreed", "declined_or_hedged", "no_response", "not_applicable"]),
+      ownerResponse: z.enum(OWNER_RESPONSES),
     }),
   ),
   items: z.array(
@@ -59,8 +59,14 @@ const JSON_SCHEMA = {
         items: {
           type: "object",
           additionalProperties: false,
-          required: ["speaker", "name", "evidence", "reasoning"],
-          properties: { speaker: { type: "string" }, name: { type: "string" }, evidence: quote, reasoning: { type: "string" } },
+          required: ["speaker", "name", "how", "evidence", "reasoning"],
+          properties: {
+            speaker: { type: "string" },
+            name: { type: "string" },
+            how: { type: "string", enum: ["self_intro", "named_by_other"] },
+            evidence: quote,
+            reasoning: { type: "string" },
+          },
         },
       },
       commitments: {
@@ -76,7 +82,7 @@ const JSON_SCHEMA = {
             owners: { type: "array", items: { type: "string" } },
             statement: quote,
             response: { anyOf: [quote, { type: "null" }] },
-            ownerResponse: { type: "string", enum: ["agreed", "declined_or_hedged", "no_response", "not_applicable"] },
+            ownerResponse: { type: "string", enum: [...OWNER_RESPONSES] },
           },
         },
       },
@@ -109,6 +115,8 @@ Do three things.
 
 1. speakers: for each placeholder speaker ("Participant N") ONLY, say who they are if the transcript makes it clear.
    Good evidence: they introduce themselves ("I'm Rose"), or someone hands over to them by name ("take it away, Poppy") and they speak next.
+   how = "self_intro" when the speaker names THEMSELVES, or "named_by_other" when a different speaker names them.
+   Careful: a speaker saying a name is usually talking TO that person ("Steph, your part is the design"), which tells you nothing about the speaker.
    Give the single line that shows it. The quote MUST contain the name. Skip a speaker if you are not sure. Never rename real names.
 
 2. commitments: list every task someone in the meeting took on or was given. Include tasks that are NOT in the action item list.
@@ -118,17 +126,26 @@ Do three things.
    owners = EVERYONE who would do the task. Use the transcript speaker label for anyone who speaks in this meeting; otherwise their name exactly as said in the statement.
      "Raj and I will split it" said by Priya -> owners [Priya's label, Raj's label]. "Sam's got it" -> owners [Sam's label, or "Sam" if Sam never speaks].
    statement = the line that makes the commitment or assignment.
-   response = an owner's reply right after, if any; ownerResponse = agreed, declined_or_hedged ("let me check", "not sure"), no_response, or not_applicable for kind "self".
+   response = an owner's reply right after, if any.
+   ownerResponse = how firmly the owner took it on, in their OWN words:
+     committed = a clear yes ("I'll do it", "yes, I'm on it", "sure, I'll send it today");
+     hedged = a maybe ("I'll try", "let me check", "probably", "if I have time", a bare "mm-hmm" or "okay" that doesn't take the task on);
+     declined = no ("I can't", "not me");
+     no_response = the owner said nothing about it.
+     For kind "self", judge the statement itself: "I'll send it" is committed, "I might look into it" is hedged.
+   Quotes and statements can be in any language; copy them in the original language.
    Not commitments: vague ideas ("we should", "someday", "at some point"), questions, and small talk.
    Transcripts can split one sentence across two speakers by mistake (e.g. "I'll" then "look into it"). Use context.
 
 3. items: for EVERY action item, give one entry.
-   - commitmentId: the matching commitment, or null.
-   - taskSupport: supported (matches a commitment), weak (discussed but nobody took it on), contradicted (transcript says the opposite, e.g. a discount was refused), unsupported (not discussed).
+   - commitmentId: the matching commitment, or null. Link it even if the owner only hedged: how firm the owner was is judged separately, in ownerResponse.
+   - taskSupport: supported (matches a commitment or assignment, even one the owner answered with a maybe), weak (discussed but nobody took it on or was given it), contradicted (transcript says the opposite, e.g. a discount was refused), unsupported (not discussed at all).
+     If you found lines about it, it is not "unsupported": use weak or contradicted.
    - evidence: up to 3 lines that show it.
    - rationale: one or two plain sentences.
 
-Every quote must be copied EXACTLY from the line whose segmentId you give. A short exact phrase is better than a long paraphrase.`;
+Every quote must be copied EXACTLY from the line whose segmentId you give, without the "Speaker:" prefix.
+Use at least two words (or the whole line). A short exact phrase is better than a long paraphrase.`;
 
 function userPrompt(m: Meeting) {
   const generic = [...new Set(m.transcript.map((s) => s.speaker))].filter(isGenericSpeaker);

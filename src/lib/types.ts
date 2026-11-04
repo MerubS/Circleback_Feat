@@ -33,14 +33,25 @@ export type Meeting = {
 
 export type Quote = { segmentId: string; quote: string };
 
-export type SpeakerGuess = { speaker: string; name: string; evidence: Quote; reasoning: string };
+export type SpeakerGuess = {
+  speaker: string;
+  name: string;
+  how: "self_intro" | "named_by_other"; // "I'm Laura" vs "take it away, Poppy"
+  evidence: Quote;
+  reasoning: string;
+};
 
 export type CommitmentKind =
   | "self" // "I'll send the quote"
   | "assigned" // "As the designer, you'll do the mockups"
   | "volunteered_other"; // "Lena can run the training"
 
-export type OwnerResponse = "agreed" | "declined_or_hedged" | "no_response" | "not_applicable";
+/**
+ * The owner's own words. committed = a clear yes ("I'll do it", "yes, on it"); hedged = maybe
+ * ("I'll try", "let me check", "probably"); declined = no. For kind "self" it judges the statement itself.
+ */
+export const OWNER_RESPONSES = ["committed", "hedged", "declined", "no_response", "not_applicable"] as const;
+export type OwnerResponse = (typeof OWNER_RESPONSES)[number];
 
 export type AiCommitment = {
   id: string;
@@ -71,11 +82,12 @@ export type AiReading = {
 
 // ---------- What the referee decides (checked, final) ----------
 
-export const TASK_STATUSES = ["SUPPORTED", "WEAK", "UNSUPPORTED", "CONTRADICTED"] as const;
+export const TASK_STATUSES = ["SUPPORTED", "WEAK", "UNSUPPORTED", "CONTRADICTED", "NOT_CHECKED"] as const;
 export type TaskStatus = (typeof TASK_STATUSES)[number];
 
 export const OWNER_STATUSES = [
   "CONFIRMED",
+  "WEAK",
   "NOT_ACKNOWLEDGED",
   "DECLINED",
   "SOMEONE_ELSE",
@@ -91,12 +103,14 @@ export const TASK_TEXT: Record<TaskStatus, string> = {
   WEAK: "Weak",
   UNSUPPORTED: "Unsupported",
   CONTRADICTED: "Contradicted",
+  NOT_CHECKED: "Not checked",
 };
 
 export const OWNER_TEXT: Record<OwnerStatus, string> = {
   CONFIRMED: "Owner confirmed",
+  WEAK: "Owner's yes was weak",
   NOT_ACKNOWLEDGED: "Owner never acknowledged",
-  DECLINED: "Owner hesitated or declined",
+  DECLINED: "Owner declined",
   SOMEONE_ELSE: "Someone else took it",
   UNIDENTIFIED: "Owner unidentified",
   NOT_IN_MEETING: "Owner not in meeting",
@@ -104,7 +118,8 @@ export const OWNER_TEXT: Record<OwnerStatus, string> = {
   NOT_APPLICABLE: "Owner n/a",
 };
 
-export type Evidence = Quote & { speaker: string; start: number };
+/** A checked quote. `fuzzy` = close to the line but not word for word (paraphrased): never proof on its own. */
+export type Evidence = Quote & { speaker: string; start: number; fuzzy?: true };
 
 export type SpeakerIdentity = {
   speaker: string;

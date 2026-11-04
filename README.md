@@ -9,10 +9,11 @@ Every action item gets **two answers**:
 
 | Is the task backed by the transcript? | Did the named owner take it on? |
 |---|---|
-| **Supported**: someone committed to it or was given it | **Confirmed**: the owner said they'd do it, or said "okay" when given it |
-| **Weak**: discussed, but nobody took it on | **Never acknowledged**: given to them, no reply |
-| **Unsupported**: not in the transcript | **Hesitated or declined**: "let me check my calendar" |
-| **Contradicted**: the transcript says the opposite | **Someone else took it**: a different person committed |
+| **Supported**: someone committed to it or was given it | **Confirmed**: a clear yes from the owner ("I'll do it", "yes, on it") |
+| **Weak**: discussed but nobody took it on, or only a paraphrased quote backs it | **Weak yes**: a maybe ("I'll try", "let me check my calendar") |
+| **Unsupported**: not in the transcript | **Declined**: the owner said no |
+| **Contradicted**: the transcript says the opposite | **Never acknowledged**: given to them, no reply |
+| **Not checked**: the AI skipped this item; verify again | **Someone else took it**: a different person committed |
 | | **Unidentified**: the owner is "Participant 4" and nothing says who that is |
 | | **Not in meeting**: the named person wasn't there |
 
@@ -59,11 +60,17 @@ items, and returns structured JSON:
 
 **3. The referee** (`src/lib/verify/referee.ts`). Plain code, no AI. The AI only reports facts; the referee
 decides:
-- Every quote must appear word for word in the transcript line it cites, or it is thrown out.
-- A speaker name is accepted only if the quote contains the name, and the speaker either said it
-  or talks right after being named.
+- Every quote must appear word for word in the transcript line it cites, in any language (accents,
+  Japanese, and so on). One-word fragments and punctuation-only quotes are thrown out.
+- A close paraphrase (60%+ of its words in the line) is kept and marked "paraphrased", but it can't
+  prove more than Weak. Anything further off is thrown out.
+- A speaker name is accepted only if the quote contains the name, and either the speaker introduces
+  themselves near the start of their line, or someone else names them and they talk right after.
 - "Supported" requires a verified promise. Without one it is downgraded.
-- The owner "confirmed" only if the owner's own line says so, not a reply from someone else.
+- The owner "confirmed" only on a clear yes in the owner's own words; a maybe is "Weak yes", and a
+  reply from someone else doesn't count.
+- Names match loosely: "Dan" matches "Daniel Kim", but "Dan Lee" doesn't, and placeholders must match exactly.
+- An item the AI skipped is "Not checked", never "Unsupported".
 - The owner answer (confirmed, never acknowledged, someone else, and so on) is decided by fixed rules,
   not by the AI.
 - A suggested owner must either speak in the meeting or be named in the quoted line. A "self" promise

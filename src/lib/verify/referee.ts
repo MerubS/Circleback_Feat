@@ -5,13 +5,21 @@ import type {
   ItemVerdict,
   Meeting,
   MissedTask,
+  OwnerResponse,
   OwnerStatus,
   OwnerSuggestion,
   Quote,
   SpeakerIdentity,
   TaskStatus,
 } from "@/lib/types";
-import { isGenericSpeaker, namesMatch, normalize } from "./text";
+import { containsQuote, fuzzyScore, isGenericSpeaker, isSubstantial, namesMatch, normalize, sentenceWordIndex, wordIndex } from "./text";
+
+/** Share of a quote's words that must appear in the line to count as a paraphrase. */
+const FUZZY_MIN = 0.6;
+/** A self-introduction names the speaker within this many words of the start of their line. */
+const SELF_INTRO_MAX_WORD = 6;
+/** A "self" promise counts as a clear yes unless the AI judged it a maybe or a no. */
+const selfFirm = (r: OwnerResponse) => r !== "hedged" && r !== "declined";
 
 /**
  * The referee. The AI only reports facts with quotes. This code checks every
@@ -29,8 +37,12 @@ export function referee(meeting: Meeting, ai: AiReading): {
   const pos = new Map(meeting.transcript.map((s, i) => [s.id, i]));
   const labels = new Set(meeting.transcript.map((s) => s.speaker));
 
-  /** A quote counts only if it appears word for word in the line it cites. */
-  function check(q: Quote | null | undefined, where: string, out: string[]): Evidence | null {
+  /**
+   * A quote counts only if it appears word for word in the line it cites, and is long enough to
+   * prove something (2+ words, or the whole line). With `fuzzy`, a close paraphrase is kept but
+   * marked, so it can never prove more than Weak.
+   */
+  function check(q: Quote | null | undefined, where: string, out: string[], fuzzy = false): Evidence | null {
     if (!q) return null;
     const s = seg.get(q.segmentId);
     if (!s) {
@@ -40,11 +52,27 @@ export function referee(meeting: Meeting, ai: AiReading): {
     // The model sometimes copies the "Speaker:" prefix from the prompt; drop it only if it names this line's speaker.
     let text = q.quote.trim();
     if (text.startsWith(`${s.speaker}:`)) text = text.slice(s.speaker.length + 1).trim();
-    if (!text || !normalize(s.text).includes(normalize(text))) {
-      out.push(`${where}: quote not found in line ${q.segmentId}; ignored.`);
+    else {
+      const other = [...labels].find((l) => text.startsWith(`${l}:`));
+      if (other) {
+        out.push(`${where}: quote is credited to ${other}, but line ${q.segmentId} is spoken by ${s.speaker}; ignored.`);
+        return null;
+      }
+    }
+    const nq = normalize(text);
+    const nl = normalize(s.text);
+    if (!isSubstantial(nq) && !(nq && nq === nl)) {
+      out.push(`${where}: quote in line ${q.segmentId} is too short or only punctuation; ignored.`);
       return null;
     }
-    return { segmentId: s.id, quote: text, speaker: s.speaker, start: s.start };
+    const ev: Evidence = { segmentId: s.id, quote: text, speaker: s.speaker, start: s.start };
+    if (containsQuote(nl, nq)) return ev;
+    if (fuzzy && fuzzyScore(nq, nl) >= FUZZY_MIN) {
+      out.push(`${where}: quote in line ${q.segmentId} is paraphrased, not word for word; counts as weak at most.`);
+      return { ...ev, fuzzy: true };
+    }
+    out.push(`${where}: quote not found in line ${q.segmentId}; ignored.`);
+    return null;
   }
 
   // ---- 1. Who is who ----
@@ -61,17 +89,29 @@ export function referee(meeting: Meeting, ai: AiReading): {
     }
     const ev = check(g.evidence, where, notes);
     if (!ev) continue;
-    const first = normalize(g.name).split(" ")[0];
-    if (!first || !normalize(ev.quote).split(" ").includes(first)) {
+    if (wordIndex(ev.quote, g.name) < 0) {
       notes.push(`${where}: the quote doesn't contain the name; ignored.`);
       continue;
     }
-    // Either they said it themselves, or they speak within two lines of being named.
-    const i = pos.get(ev.segmentId)!;
-    const nearby = meeting.transcript.slice(i + 1, i + 3).some((s) => s.speaker === g.speaker);
-    if (ev.speaker !== g.speaker && !nearby) {
-      notes.push(`${where}: ${g.speaker} doesn't speak right after being named; ignored.`);
-      continue;
+    if (ev.speaker === g.speaker) {
+      // They said the name themselves. Saying a name is usually talking TO someone ("That Steph is
+      // your part"), so it counts only if the AI calls it a self-introduction AND the name comes
+      // early in its sentence ("My name is Elima"). shortcut: position-based, misses "...and that's me, Laura".
+      if (g.how !== "self_intro") {
+        notes.push(`${where}: ${g.speaker} says the name but isn't introducing themselves; ignored.`);
+        continue;
+      }
+      if (sentenceWordIndex(seg.get(ev.segmentId)!.text, g.name) > SELF_INTRO_MAX_WORD) {
+        notes.push(`${where}: ${g.speaker} says the name mid-sentence, likely to someone else; ignored.`);
+        continue;
+      }
+    } else {
+      // Someone else named them: they must speak within the next two lines (a hand-over).
+      const i = pos.get(ev.segmentId)!;
+      if (!meeting.transcript.slice(i + 1, i + 3).some((s) => s.speaker === g.speaker)) {
+        notes.push(`${where}: ${g.speaker} doesn't speak right after being named; ignored.`);
+        continue;
+      }
     }
     guesses.push({ speaker: g.speaker, name: g.name.trim(), source: "ai", evidence: ev });
   }
@@ -90,16 +130,16 @@ export function referee(meeting: Meeting, ai: AiReading): {
   // ---- 2. Commitments ----
   type Owner = { raw: string; labels: string[]; name: string };
   type Checked = AiCommitment & { by: string; stmt: Evidence; resp: Evidence | null; who: Owner[] };
-  /** The quote names this person ("Sam's got it" names Sam). */
-  const names = (quote: string, name: string) => {
-    const first = normalize(name).split(" ")[0];
-    return !!first && normalize(quote).split(" ").some((w) => w.replace(/'s$/, "") === first);
-  };
   const commitments = new Map<string, Checked>();
+  const paraphrased = new Map<string, Evidence>(); // commitments whose statement was close but not exact
   for (const c of ai.commitments) {
     const where = `Commitment "${c.task}"`;
-    const stmt = check(c.statement, where, notes);
+    const stmt = check(c.statement, where, notes, true);
     if (!stmt) continue;
+    if (stmt.fuzzy) {
+      paraphrased.set(c.id, stmt);
+      continue;
+    }
     // A "self" promise must list its own speaker. If it doesn't, the speaker handed the task out
     // (e.g. a manager giving roles), so treat it as an assignment rather than adding them as owner.
     const kind = c.kind === "self" && !c.owners.map((o) => o.trim()).includes(stmt.speaker) ? "assigned" : c.kind;
@@ -107,7 +147,7 @@ export function referee(meeting: Meeting, ai: AiReading): {
     for (const raw of c.owners.map((o) => o.trim())) {
       if (!raw || who.some((w) => w.raw === raw)) continue;
       if (labels.has(raw)) who.push({ raw, labels: [raw], name: nameOf(raw) ?? raw });
-      else if (names(stmt.quote, raw)) {
+      else if (wordIndex(stmt.quote, raw) >= 0) {
         const ls = labelsFor(raw);
         who.push({ raw, labels: ls, name: ls.length ? nameOf(ls[0])! : raw });
       } else notes.push(`${where}: owner "${raw}" doesn't speak and isn't named in the quote; ignored.`);
@@ -126,15 +166,22 @@ export function referee(meeting: Meeting, ai: AiReading): {
     const n: string[] = [];
     const m = ai.items.find((x) => x.actionItemId === item.id);
     if (!m) {
-      return { actionItemId: item.id, task: "UNSUPPORTED", owner: "NOT_APPLICABLE", evidence: [], rationale: "The AI gave no answer for this item.", notes: ["Missing from the AI's answer."] };
+      // Skipped by the AI is not the same as "not in the meeting": nobody looked.
+      return { actionItemId: item.id, task: "NOT_CHECKED", owner: "NOT_APPLICABLE", evidence: [], rationale: "The AI skipped this item, so it wasn't checked. Run Verify again.", notes: ["Missing from the AI's answer."] };
     }
 
     const evidence: Evidence[] = [];
     const add = (e: Evidence | null) => e && !evidence.some((x) => x.segmentId === e.segmentId && x.quote === e.quote) && evidence.push(e);
-    m.evidence.forEach((q) => add(check(q, "Evidence", n)));
+    m.evidence.forEach((q) => add(check(q, "Evidence", n, true)));
 
     let c = m.commitmentId ? commitments.get(m.commitmentId) : undefined;
-    if (m.commitmentId && !c) n.push("Linked commitment didn't pass the quote check; ignored.");
+    if (m.commitmentId && !c) {
+      const p = paraphrased.get(m.commitmentId);
+      if (p) {
+        add(p);
+        n.push("Linked commitment was paraphrased, not quoted word for word; it can't prove the task.");
+      } else n.push("Linked commitment didn't pass the quote check; ignored.");
+    }
     if (c) {
       used.add(c.id);
       add(c.stmt);
@@ -146,6 +193,10 @@ export function referee(meeting: Meeting, ai: AiReading): {
     if (task === "SUPPORTED" && !c) {
       task = evidence.length ? "WEAK" : "UNSUPPORTED";
       n.push("Marked supported without a verified commitment; downgraded.");
+    }
+    if ((task === "SUPPORTED" || task === "CONTRADICTED") && evidence.length && evidence.every((e) => e.fuzzy)) {
+      task = "WEAK";
+      n.push("Only paraphrased quotes, none word for word; weak at most.");
     }
     if (task !== "UNSUPPORTED" && evidence.length === 0) {
       n.push("No verified quote left; treated as unsupported.");
@@ -179,7 +230,9 @@ export function referee(meeting: Meeting, ai: AiReading): {
       const isAssignee = (w: Owner) =>
         !!a && (w.labels.some((l) => ownerLabels.includes(l)) || (!w.labels.length && namesMatch(w.name, a)));
       const saidYes = (w: Owner) =>
-        w.labels.some((l) => (cc.kind === "self" && l === cc.by) || (cc.resp?.speaker === l && cc.ownerResponse === "agreed"));
+        w.labels.some(
+          (l) => (cc.kind === "self" && l === cc.by && selfFirm(cc.ownerResponse)) || (cc.resp?.speaker === l && cc.ownerResponse === "committed"),
+        );
       const others = cc.who.filter((w) => !isAssignee(w));
       assigneeAmongOwners = others.length < cc.who.length;
       if (others.length)
@@ -195,9 +248,13 @@ export function referee(meeting: Meeting, ai: AiReading): {
     else if (identity === "absent") owner = "NOT_IN_MEETING";
     else if (!c || task !== "SUPPORTED") owner = "NOT_APPLICABLE";
     else if (!assigneeAmongOwners) owner = "SOMEONE_ELSE";
-    else if (c.kind === "self" && ownerLabels.includes(c.by)) owner = "CONFIRMED";
-    else if (c.resp && ownerLabels.includes(c.resp.speaker)) {
-      owner = c.ownerResponse === "agreed" ? "CONFIRMED" : c.ownerResponse === "declined_or_hedged" ? "DECLINED" : "NOT_ACKNOWLEDGED";
+    else if (c.kind === "self" && ownerLabels.includes(c.by)) {
+      // Their own promise: confirmed unless it was a maybe ("I might look into it").
+      owner = c.ownerResponse === "hedged" ? "WEAK" : c.ownerResponse === "declined" ? "DECLINED" : "CONFIRMED";
+    } else if (c.resp && ownerLabels.includes(c.resp.speaker)) {
+      // Only a clear yes confirms; "I'll try" or a bare "mm-hmm" is weak.
+      const r = c.ownerResponse;
+      owner = r === "committed" ? "CONFIRMED" : r === "hedged" ? "WEAK" : r === "declined" ? "DECLINED" : "NOT_ACKNOWLEDGED";
     } else {
       if (c.resp) n.push(`The reply was spoken by ${nameOf(c.resp.speaker) ?? c.resp.speaker}, not the owner.`);
       owner = "NOT_ACKNOWLEDGED";
@@ -211,7 +268,9 @@ export function referee(meeting: Meeting, ai: AiReading): {
   const covered = new Set(verdicts.flatMap((v) => v.evidence.map((e) => e.segmentId)));
   const missed: MissedTask[] = [...commitments.values()]
     .filter((c) => !used.has(c.id) && !covered.has(c.stmt.segmentId))
-    .filter((c) => c.kind === "self" || c.ownerResponse === "agreed" || c.kind === "assigned")
+    // A task the owner turned down isn't a missed task.
+    .filter((c) => c.ownerResponse !== "declined")
+    .filter((c) => c.kind === "self" || c.kind === "assigned" || c.ownerResponse === "committed")
     .map((c) => ({
       task: c.task,
       owners: c.who.map((w) => w.name),

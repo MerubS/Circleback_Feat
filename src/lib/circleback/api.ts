@@ -34,16 +34,26 @@ function mapPerson(p: Json): Person {
   return { name: p.name ?? p.displayName ?? p.email ?? "Unknown", email: p.email ?? undefined };
 }
 
-function mapSegment(s: Json, i: number): Segment {
-  // Accept seconds or milliseconds.
-  const toSec = (v: any) => (typeof v === "number" ? (v > 10_000 ? v / 1000 : v) : 0);
+const num = (v: any) => (typeof v === "number" ? v : 0);
+
+function mapSegment(s: Json, i: number, scale: number): Segment {
   return {
     id: String(s.id ?? `seg-${i}`),
     speaker: s.speaker?.name ?? s.speaker ?? s.speakerName ?? "Unknown",
-    start: toSec(s.start ?? s.startTime ?? s.timestamp),
-    end: toSec(s.end ?? s.endTime ?? s.start ?? 0),
+    start: num(s.start ?? s.startTime ?? s.timestamp) / scale,
+    end: num(s.end ?? s.endTime ?? s.start ?? 0) / scale,
     text: s.text ?? s.content ?? "",
   };
+}
+
+/**
+ * Seconds or milliseconds, decided once per meeting (not per line, which mixed units:
+ * a line at 9,000 ms stayed "9,000 s" while a line at 12,000 ms became 12 s).
+ * No meeting runs longer than a day, so anything past 86,400 means milliseconds.
+ */
+export function timeScale(raw: Json[]): number {
+  const max = Math.max(0, ...raw.map((s) => num(s.end ?? s.endTime ?? s.start ?? s.startTime ?? s.timestamp)));
+  return max > 86_400 ? 1000 : 1;
 }
 
 function mapActionItem(a: Json): ActionItem {
@@ -62,7 +72,7 @@ export async function listMeetingsFromApi(): Promise<Meeting[]> {
     id: String(m.id),
     name: m.name ?? m.title ?? "Untitled meeting",
     createdAt: m.createdAt ?? m.date ?? new Date().toISOString(),
-    durationSeconds: m.duration ?? 0,
+    durationSeconds: typeof m.duration === "number" ? Math.round(m.duration / (m.duration > 86_400 ? 1000 : 1)) : 0,
     attendees: list(m.attendees ?? m.participants ?? []).map(mapPerson),
     transcript: [],
     actionItems: [],
@@ -76,12 +86,15 @@ export async function getMeetingFromApi(id: string): Promise<Meeting> {
     get(ENDPOINTS.getTranscript(id)),
     get(ENDPOINTS.listActionItems(id)),
   ]);
-  const transcript = list(t?.segments ?? t).map(mapSegment);
+  const rawSegments = list(t?.segments ?? t);
+  const scale = timeScale(rawSegments);
+  const transcript = rawSegments.map((s, i) => mapSegment(s, i, scale));
   return {
     id: String(m.id ?? id),
     name: m.name ?? m.title ?? "Untitled meeting",
     createdAt: m.createdAt ?? m.date ?? new Date().toISOString(),
-    durationSeconds: m.duration ?? Math.round(transcript.at(-1)?.end ?? 0),
+    // shortcut: assumes the duration uses the same unit as the transcript; confirm against Circleback's API docs.
+    durationSeconds: Math.round(typeof m.duration === "number" ? m.duration / scale : (transcript.at(-1)?.end ?? 0)),
     attendees: list(m.attendees ?? m.participants ?? []).map(mapPerson),
     transcript,
     actionItems: list(a).map(mapActionItem),
