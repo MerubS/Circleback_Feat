@@ -16,6 +16,11 @@ Every action item gets **two answers**:
 | | **Unidentified**: the owner is "Participant 4" and nothing says who that is |
 | | **Not in meeting**: the named person wasn't there |
 
+When the meeting points to a different owner, it **suggests the fix** with the quote attached: reassign
+("Priya: I'll take it" when Circleback named Raj), add a co-owner ("Raj and I will split it"), or
+reassign to someone volunteered by a colleague ("Sam's got it", marked as not yet confirmed by Sam).
+That's a correction you could write straight back to Circleback by changing the assignee.
+
 It also lists **promises the notetaker may have missed**: commitments with no matching action item.
 
 Built with Circleback's stack: TypeScript, Next.js, React, Tailwind, Prisma, and Postgres or SQLite. Uses OpenAI.
@@ -61,6 +66,9 @@ decides:
 - The owner "confirmed" only if the owner's own line says so, not a reply from someone else.
 - The owner answer (confirmed, never acknowledged, someone else, and so on) is decided by fixed rules,
   not by the AI.
+- A suggested owner must either speak in the meeting or be named in the quoted line. A "self" promise
+  that doesn't list its own speaker is treated as a hand-out, so a manager giving out roles isn't
+  suggested as co-owner.
 
 A made-up quote can't produce a "Supported" or "Confirmed". Everything the referee rejects is listed
 on the meeting page.

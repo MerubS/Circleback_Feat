@@ -6,6 +6,7 @@ import type {
   Meeting,
   MissedTask,
   OwnerStatus,
+  OwnerSuggestion,
   Quote,
   SpeakerIdentity,
   TaskStatus,
@@ -36,7 +37,9 @@ export function referee(meeting: Meeting, ai: AiReading): {
       out.push(`${where}: cited line ${q.segmentId} doesn't exist; ignored.`);
       return null;
     }
-    const text = q.quote.trim();
+    // The model sometimes copies the "Speaker:" prefix from the prompt; drop it only if it names this line's speaker.
+    let text = q.quote.trim();
+    if (text.startsWith(`${s.speaker}:`)) text = text.slice(s.speaker.length + 1).trim();
     if (!text || !normalize(s.text).includes(normalize(text))) {
       out.push(`${where}: quote not found in line ${q.segmentId}; ignored.`);
       return null;
@@ -85,18 +88,36 @@ export function referee(meeting: Meeting, ai: AiReading): {
   const labelsFor = (person: string) => speakers.filter((s) => namesMatch(s.name, person)).map((s) => s.speaker);
 
   // ---- 2. Commitments ----
-  type Checked = AiCommitment & { by: string; stmt: Evidence; resp: Evidence | null };
+  type Owner = { raw: string; labels: string[]; name: string };
+  type Checked = AiCommitment & { by: string; stmt: Evidence; resp: Evidence | null; who: Owner[] };
+  /** The quote names this person ("Sam's got it" names Sam). */
+  const names = (quote: string, name: string) => {
+    const first = normalize(name).split(" ")[0];
+    return !!first && normalize(quote).split(" ").some((w) => w.replace(/'s$/, "") === first);
+  };
   const commitments = new Map<string, Checked>();
   for (const c of ai.commitments) {
     const where = `Commitment "${c.task}"`;
     const stmt = check(c.statement, where, notes);
     if (!stmt) continue;
-    if (!labels.has(c.ownerSpeaker)) {
-      notes.push(`${where}: owner "${c.ownerSpeaker}" isn't a speaker in this transcript; ignored.`);
+    // A "self" promise must list its own speaker. If it doesn't, the speaker handed the task out
+    // (e.g. a manager giving roles), so treat it as an assignment rather than adding them as owner.
+    const kind = c.kind === "self" && !c.owners.map((o) => o.trim()).includes(stmt.speaker) ? "assigned" : c.kind;
+    const who: Owner[] = [];
+    for (const raw of c.owners.map((o) => o.trim())) {
+      if (!raw || who.some((w) => w.raw === raw)) continue;
+      if (labels.has(raw)) who.push({ raw, labels: [raw], name: nameOf(raw) ?? raw });
+      else if (names(stmt.quote, raw)) {
+        const ls = labelsFor(raw);
+        who.push({ raw, labels: ls, name: ls.length ? nameOf(ls[0])! : raw });
+      } else notes.push(`${where}: owner "${raw}" doesn't speak and isn't named in the quote; ignored.`);
+    }
+    if (!who.length) {
+      notes.push(`${where}: no owner could be verified; ignored.`);
       continue;
     }
-    const resp = c.kind === "self" ? null : check(c.response, `${where} (reply)`, notes);
-    commitments.set(c.id, { ...c, by: stmt.speaker, stmt, resp });
+    const resp = kind === "self" ? null : check(c.response, `${where} (reply)`, notes);
+    commitments.set(c.id, { ...c, kind, by: stmt.speaker, stmt, resp, who });
   }
 
   // ---- 3. One verdict per action item ----
@@ -150,12 +171,31 @@ export function referee(meeting: Meeting, ai: AiReading): {
       if (!ownerLabels.length) identity = unresolved.length ? "unidentified" : invited ? "known" : "absent";
     }
 
+    // Who the meeting says should own it, compared with Circleback's assignee.
+    let suggestion: OwnerSuggestion | undefined;
+    let assigneeAmongOwners = false;
+    if (c && task === "SUPPORTED" && identity !== "unidentified") {
+      const cc = c;
+      const isAssignee = (w: Owner) =>
+        !!a && (w.labels.some((l) => ownerLabels.includes(l)) || (!w.labels.length && namesMatch(w.name, a)));
+      const saidYes = (w: Owner) =>
+        w.labels.some((l) => (cc.kind === "self" && l === cc.by) || (cc.resp?.speaker === l && cc.ownerResponse === "agreed"));
+      const others = cc.who.filter((w) => !isAssignee(w));
+      assigneeAmongOwners = others.length < cc.who.length;
+      if (others.length)
+        suggestion = {
+          action: assigneeAmongOwners ? "add_owners" : "reassign",
+          owners: others.map((w) => ({ name: w.name, speaker: w.labels[0], confirmed: saidYes(w) })),
+          evidence: [cc.stmt, ...(cc.resp ? [cc.resp] : [])],
+        };
+    }
+
     if (!a) owner = "NO_OWNER";
     else if (identity === "unidentified") owner = "UNIDENTIFIED";
     else if (identity === "absent") owner = "NOT_IN_MEETING";
     else if (!c || task !== "SUPPORTED") owner = "NOT_APPLICABLE";
-    else if (c.kind === "self") owner = ownerLabels.includes(c.by) ? "CONFIRMED" : "SOMEONE_ELSE";
-    else if (!ownerLabels.includes(c.ownerSpeaker)) owner = "SOMEONE_ELSE";
+    else if (!assigneeAmongOwners) owner = "SOMEONE_ELSE";
+    else if (c.kind === "self" && ownerLabels.includes(c.by)) owner = "CONFIRMED";
     else if (c.resp && ownerLabels.includes(c.resp.speaker)) {
       owner = c.ownerResponse === "agreed" ? "CONFIRMED" : c.ownerResponse === "declined_or_hedged" ? "DECLINED" : "NOT_ACKNOWLEDGED";
     } else {
@@ -164,7 +204,7 @@ export function referee(meeting: Meeting, ai: AiReading): {
     }
 
     evidence.sort((x, y) => x.start - y.start);
-    return { actionItemId: item.id, task, owner, evidence, rationale: m.rationale, notes: n };
+    return { actionItemId: item.id, task, owner, evidence, rationale: m.rationale, notes: n, ...(suggestion && { suggestion }) };
   });
 
   // ---- 4. Commitments with no action item ----
@@ -174,8 +214,7 @@ export function referee(meeting: Meeting, ai: AiReading): {
     .filter((c) => c.kind === "self" || c.ownerResponse === "agreed" || c.kind === "assigned")
     .map((c) => ({
       task: c.task,
-      ownerSpeaker: c.ownerSpeaker,
-      ownerName: nameOf(c.ownerSpeaker),
+      owners: c.who.map((w) => w.name),
       evidence: [c.stmt, ...(c.resp ? [c.resp] : [])],
     }));
 

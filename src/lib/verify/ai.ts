@@ -22,7 +22,7 @@ export const ReadingZ = z.object({
       id: z.string(),
       task: z.string(),
       kind: z.enum(["self", "assigned", "volunteered_other"]),
-      ownerSpeaker: z.string(),
+      owners: z.array(z.string()),
       statement: QuoteZ,
       response: QuoteZ.nullable(),
       ownerResponse: z.enum(["agreed", "declined_or_hedged", "no_response", "not_applicable"]),
@@ -68,12 +68,12 @@ const JSON_SCHEMA = {
         items: {
           type: "object",
           additionalProperties: false,
-          required: ["id", "task", "kind", "ownerSpeaker", "statement", "response", "ownerResponse"],
+          required: ["id", "task", "kind", "owners", "statement", "response", "ownerResponse"],
           properties: {
             id: { type: "string" },
             task: { type: "string" },
             kind: { type: "string", enum: ["self", "assigned", "volunteered_other"] },
-            ownerSpeaker: { type: "string" },
+            owners: { type: "array", items: { type: "string" } },
             statement: quote,
             response: { anyOf: [quote, { type: "null" }] },
             ownerResponse: { type: "string", enum: ["agreed", "declined_or_hedged", "no_response", "not_applicable"] },
@@ -114,10 +114,11 @@ Do three things.
 2. commitments: list every task someone in the meeting took on or was given. Include tasks that are NOT in the action item list.
    - kind "self": the speaker commits themselves ("I'll send the deck").
    - kind "assigned": someone gives the task to a specific person ("as the designer you'll do the mockups", "can you take this, Sam?").
-   - kind "volunteered_other": someone suggests a colleague without asking them ("Lena can run the training").
-   ownerSpeaker = the transcript speaker label of the person who would do the task.
+   - kind "volunteered_other": someone commits a colleague without asking them ("Lena can run the training", "Sam's got it").
+   owners = EVERYONE who would do the task. Use the transcript speaker label for anyone who speaks in this meeting; otherwise their name exactly as said in the statement.
+     "Raj and I will split it" said by Priya -> owners [Priya's label, Raj's label]. "Sam's got it" -> owners [Sam's label, or "Sam" if Sam never speaks].
    statement = the line that makes the commitment or assignment.
-   response = the owner's reply right after, if any; ownerResponse = agreed, declined_or_hedged ("let me check", "not sure"), no_response, or not_applicable for kind "self".
+   response = an owner's reply right after, if any; ownerResponse = agreed, declined_or_hedged ("let me check", "not sure"), no_response, or not_applicable for kind "self".
    Not commitments: vague ideas ("we should", "someday", "at some point"), questions, and small talk.
    Transcripts can split one sentence across two speakers by mistake (e.g. "I'll" then "look into it"). Use context.
 

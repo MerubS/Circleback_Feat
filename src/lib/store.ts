@@ -23,7 +23,8 @@ const fileStore: Store = {
   async latest(id) {
     try {
       const r = JSON.parse(await readFile(file(id), "utf8"));
-      return Array.isArray(r.verdicts) && r.verdicts.every((v: any) => v.task) ? r : null; // skip old-format runs
+      const current = Array.isArray(r.verdicts) && r.verdicts.every((v: any) => v.task) && r.missed?.every((m: any) => Array.isArray(m.owners));
+      return current ? r : null; // skip old-format runs
     } catch {
       return null;
     }

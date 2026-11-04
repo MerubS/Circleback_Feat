@@ -41,7 +41,7 @@ async function main() {
       const title = m.actionItems.find((a) => a.id === v.actionItemId)?.title ?? "";
       rows.push({ meeting: m.name, id: v.actionItemId, title, want, task: v.task, owner: v.owner, cited: v.evidence.map((e) => e.segmentId) });
     }
-    for (const x of r.missed) missed.push(`- ${m.name}: "${x.task}" (${x.ownerName ?? x.ownerSpeaker}), line ${x.evidence[0].segmentId}`);
+    for (const x of r.missed) missed.push(`- ${m.name}: "${x.task}" (${x.owners.join(" + ")}), line ${x.evidence[0].segmentId}`);
   }
 
   const n = rows.length;

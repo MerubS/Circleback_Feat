@@ -22,12 +22,14 @@ const meeting: Meeting = {
     { id: "s5", speaker: "Ana Diaz", start: 18, end: 22, text: "We should redo the pricing page someday. Over to you, Mei." },
     { id: "s6", speaker: "Participant 3", start: 23, end: 27, text: "Thanks. I'll send the survey results by Friday." },
     { id: "s7", speaker: "Ana Diaz", start: 28, end: 31, text: "No discount this quarter, sorry." },
+    { id: "s8", speaker: "Ana Diaz", start: 32, end: 35, text: "Raj and I will split the onboarding docs." },
+    { id: "s9", speaker: "Ana Diaz", start: 36, end: 38, text: "Sam's got the release notes." },
   ],
   actionItems: [],
 };
 
 const item = (id: string, title: string, owner?: string) => ({ id, title, assignee: owner ? { name: owner } : null });
-const commit = (c: Partial<AiCommitment> & Pick<AiCommitment, "id" | "ownerSpeaker" | "statement">): AiCommitment => ({
+const commit = (c: Partial<AiCommitment> & Pick<AiCommitment, "id" | "owners" | "statement">): AiCommitment => ({
   task: "task",
   kind: "self",
   response: null,
@@ -44,7 +46,7 @@ const match = (m: Partial<AiItemMatch> & Pick<AiItemMatch, "actionItemId">): AiI
 const run = (items: Meeting["actionItems"], reading: Partial<AiReading>) =>
   referee({ ...meeting, actionItems: items }, { speakers: [], commitments: [], items: [], ...reading });
 
-const fix = commit({ id: "c1", ownerSpeaker: "Raj Patel", statement: { segmentId: "s2", quote: "I'll fix the Safari export bug" } });
+const fix = commit({ id: "c1", owners: ["Raj Patel"], statement: { segmentId: "s2", quote: "I'll fix the Safari export bug" } });
 
 test("owner commits themselves: supported, owner confirmed", () => {
   const r = run([item("a", "Fix Safari export", "Raj Patel")], {
@@ -62,16 +64,78 @@ test("someone else committed: owner is 'someone else'", () => {
     items: [match({ actionItemId: "a", commitmentId: "c1", taskSupport: "supported" })],
   });
   assert.equal(r.verdicts[0].owner, "SOMEONE_ELSE");
+  assert.deepEqual(r.verdicts[0].suggestion?.action, "reassign");
+  assert.deepEqual(r.verdicts[0].suggestion?.owners, [{ name: "Raj Patel", speaker: "Raj Patel", confirmed: true }]);
+  assert.equal(r.verdicts[0].suggestion?.evidence[0].segmentId, "s2");
+});
+
+test("shared task: assignee is one of two owners, the other is suggested as co-owner", () => {
+  const split = commit({ id: "c4", owners: ["Ana Diaz", "Raj Patel"], statement: { segmentId: "s8", quote: "Raj and I will split the onboarding docs" } });
+  const r = run([item("a", "Write onboarding docs", "Raj Patel")], {
+    commitments: [split],
+    items: [match({ actionItemId: "a", commitmentId: "c4", taskSupport: "supported" })],
+  });
+  assert.equal(r.verdicts[0].owner, "NOT_ACKNOWLEDGED"); // Raj was named but never said yes
+  assert.equal(r.verdicts[0].suggestion?.action, "add_owners");
+  assert.deepEqual(r.verdicts[0].suggestion?.owners, [{ name: "Ana Diaz", speaker: "Ana Diaz", confirmed: true }]);
+});
+
+test("someone agrees for another person: reassign to them, marked unconfirmed", () => {
+  const proxy = commit({ id: "c5", kind: "volunteered_other", owners: ["Sam"], statement: { segmentId: "s9", quote: "Sam's got the release notes" }, ownerResponse: "no_response" });
+  const r = run([item("a", "Write release notes", "Raj Patel")], {
+    commitments: [proxy],
+    items: [match({ actionItemId: "a", commitmentId: "c5", taskSupport: "supported" })],
+  });
+  assert.equal(r.verdicts[0].owner, "SOMEONE_ELSE");
+  assert.deepEqual(r.verdicts[0].suggestion, {
+    action: "reassign",
+    owners: [{ name: "Sam", speaker: undefined, confirmed: false }],
+    evidence: [{ segmentId: "s9", quote: "Sam's got the release notes", speaker: "Ana Diaz", start: 36 }],
+  });
+});
+
+test("a 'self' promise that doesn't list its speaker is a hand-out: the speaker isn't suggested as owner", () => {
+  const handout = commit({ id: "c7", owners: ["Raj Patel"], statement: { segmentId: "s3", quote: "Raj, can you also update the changelog?" } });
+  const r = run([item("a", "Update changelog", "Raj Patel")], {
+    commitments: [handout],
+    items: [match({ actionItemId: "a", commitmentId: "c7", taskSupport: "supported" })],
+  });
+  assert.equal(r.verdicts[0].owner, "NOT_ACKNOWLEDGED");
+  assert.equal(r.verdicts[0].suggestion, undefined);
+});
+
+test("an owner who doesn't speak and isn't named in the quote is rejected", () => {
+  const made = commit({ id: "c6", kind: "volunteered_other", owners: ["Lena"], statement: { segmentId: "s9", quote: "Sam's got the release notes" } });
+  const r = run([item("a", "Write release notes", "Raj Patel")], {
+    commitments: [made],
+    items: [match({ actionItemId: "a", commitmentId: "c6", taskSupport: "supported" })],
+  });
+  assert.equal(r.verdicts[0].suggestion, undefined);
+  assert.match(r.notes.join(" "), /"Lena" doesn't speak and isn't named/);
 });
 
 test("made-up quote is thrown out and the item becomes unsupported", () => {
   const r = run([item("a", "Ship it Friday", "Raj Patel")], {
-    commitments: [commit({ id: "c1", ownerSpeaker: "Raj Patel", statement: { segmentId: "s2", quote: "I promise to ship it Friday" } })],
+    commitments: [commit({ id: "c1", owners: ["Raj Patel"], statement: { segmentId: "s2", quote: "I promise to ship it Friday" } })],
     items: [match({ actionItemId: "a", commitmentId: "c1", taskSupport: "supported", evidence: [{ segmentId: "s2", quote: "ship it Friday" }] })],
   });
   assert.equal(r.verdicts[0].task, "UNSUPPORTED");
   assert.equal(r.verdicts[0].evidence.length, 0);
   assert.match(r.notes.join(" "), /quote not found/);
+});
+
+test("a quote with the line's own 'Speaker:' prefix still counts; another speaker's prefix doesn't", () => {
+  const ok = run([item("a", "Fix Safari export", "Raj Patel")], {
+    commitments: [commit({ id: "c1", owners: ["Raj Patel"], statement: { segmentId: "s2", quote: "Raj Patel: I'll fix the Safari export bug" } })],
+    items: [match({ actionItemId: "a", commitmentId: "c1", taskSupport: "supported" })],
+  });
+  assert.equal(ok.verdicts[0].owner, "CONFIRMED");
+  assert.equal(ok.verdicts[0].evidence[0].quote, "I'll fix the Safari export bug");
+  const bad = run([item("a", "Fix Safari export", "Raj Patel")], {
+    commitments: [commit({ id: "c1", owners: ["Raj Patel"], statement: { segmentId: "s2", quote: "Ana Diaz: I'll fix the Safari export bug" } })],
+    items: [match({ actionItemId: "a", commitmentId: "c1", taskSupport: "supported" })],
+  });
+  assert.equal(bad.verdicts[0].task, "UNSUPPORTED");
 });
 
 test("'supported' with no verified commitment is downgraded to weak", () => {
@@ -87,7 +151,7 @@ test("assigned, owner hesitates: owner declined", () => {
       commit({
         id: "c2",
         kind: "assigned",
-        ownerSpeaker: "Raj Patel",
+        owners: ["Raj Patel"],
         statement: { segmentId: "s3", quote: "can you also update the changelog?" },
         response: { segmentId: "s4", quote: "not sure I have time" },
         ownerResponse: "declined_or_hedged",
@@ -105,7 +169,7 @@ test("assigned, the 'reply' came from someone else: never acknowledged", () => {
       commit({
         id: "c2",
         kind: "assigned",
-        ownerSpeaker: "Raj Patel",
+        owners: ["Raj Patel"],
         statement: { segmentId: "s3", quote: "update the changelog" },
         response: { segmentId: "s5", quote: "Over to you" },
         ownerResponse: "agreed",
@@ -117,7 +181,7 @@ test("assigned, the 'reply' came from someone else: never acknowledged", () => {
 });
 
 test("placeholder owner stays unidentified without a verified name", () => {
-  const survey = commit({ id: "c3", ownerSpeaker: "Participant 3", statement: { segmentId: "s6", quote: "I'll send the survey results" } });
+  const survey = commit({ id: "c3", owners: ["Participant 3"], statement: { segmentId: "s6", quote: "I'll send the survey results" } });
   const r = run([item("a", "Send survey results", "Participant 3")], {
     commitments: [survey],
     items: [match({ actionItemId: "a", commitmentId: "c3", taskSupport: "supported" })],
@@ -126,7 +190,7 @@ test("placeholder owner stays unidentified without a verified name", () => {
 });
 
 test("AI names a placeholder speaker from a hand-over line, and the owner is confirmed", () => {
-  const survey = commit({ id: "c3", ownerSpeaker: "Participant 3", statement: { segmentId: "s6", quote: "I'll send the survey results" } });
+  const survey = commit({ id: "c3", owners: ["Participant 3"], statement: { segmentId: "s6", quote: "I'll send the survey results" } });
   const r = run([item("a", "Send survey results", "Mei")], {
     speakers: [{ speaker: "Participant 3", name: "Mei", evidence: { segmentId: "s5", quote: "Over to you, Mei." }, reasoning: "" }],
     commitments: [survey],
@@ -169,7 +233,7 @@ test("contradicted needs a real quote", () => {
 
 test("a commitment with no action item is reported as possibly missed", () => {
   const r = run([item("a", "Fix Safari export", "Raj Patel")], {
-    commitments: [fix, commit({ id: "c3", ownerSpeaker: "Participant 3", statement: { segmentId: "s6", quote: "I'll send the survey results by Friday" } })],
+    commitments: [fix, commit({ id: "c3", owners: ["Participant 3"], statement: { segmentId: "s6", quote: "I'll send the survey results by Friday" } })],
     items: [match({ actionItemId: "a", commitmentId: "c1", taskSupport: "supported" })],
   });
   assert.equal(r.missed.length, 1);

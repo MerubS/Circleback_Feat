@@ -12,7 +12,7 @@ export const OWNER_STYLE: Record<OwnerStatus, string> = {
   CONFIRMED: green,
   NOT_ACKNOWLEDGED: violet,
   DECLINED: violet,
-  SOMEONE_ELSE: violet,
+  SOMEONE_ELSE: red,
   UNIDENTIFIED: violet,
   NOT_IN_MEETING: violet,
   NO_OWNER: grey,
@@ -29,8 +29,8 @@ export function OwnerBadge({ owner }: { owner: OwnerStatus }) {
 }
 
 /** Fine as-is: real task and the owner took it on (or nobody was named). */
-export function isClean(task: TaskStatus, owner: OwnerStatus) {
-  return task === "SUPPORTED" && (owner === "CONFIRMED" || owner === "NO_OWNER");
+export function isClean(task: TaskStatus, owner: OwnerStatus, hasSuggestion = false) {
+  return task === "SUPPORTED" && (owner === "CONFIRMED" || owner === "NO_OWNER") && !hasSuggestion;
 }
 
 export function fmtTime(sec: number) {

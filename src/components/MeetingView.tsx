@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { Evidence, Meeting, VerificationReport } from "@/lib/types";
+import type { Evidence, Meeting, SuggestedOwner, VerificationReport } from "@/lib/types";
 import { OwnerBadge, TaskBadge, fmtTime, isClean } from "./LabelBadge";
 
 type Filter = "ALL" | "FLAGGED" | "OK";
@@ -31,6 +31,7 @@ export function MeetingView({
   );
   const names = useMemo(() => Object.fromEntries((report?.speakers ?? []).filter((s) => s.source === "ai").map((s) => [s.speaker, s.name])), [report]);
   const who = (label: string) => (names[label] ? `${names[label]} (${label})` : label);
+  const ownerName = (o: SuggestedOwner) => (o.speaker && o.speaker !== o.name ? `${o.name} (${o.speaker})` : o.name);
 
   useEffect(() => {
     const id = window.location.hash.slice(1);
@@ -69,11 +70,11 @@ export function MeetingView({
     </button>
   );
 
-  const flaggedCount = report ? report.verdicts.filter((v) => !isClean(v.task, v.owner)).length : 0;
+  const flaggedCount = report ? report.verdicts.filter((v) => !isClean(v.task, v.owner, !!v.suggestion)).length : 0;
   const items = meeting.actionItems.filter((a) => {
     const v = verdicts.get(a.id);
     if (filter === "ALL" || !v) return true;
-    return filter === "OK" ? isClean(v.task, v.owner) : !isClean(v.task, v.owner);
+    return filter === "OK" ? isClean(v.task, v.owner, !!v.suggestion) : !isClean(v.task, v.owner, !!v.suggestion);
   });
   const aiNamed = (report?.speakers ?? []).filter((s) => s.source === "ai");
   const pill = (f: Filter, label: string) => (
@@ -140,10 +141,37 @@ export function MeetingView({
                         <TaskBadge task={v.task} />
                         <OwnerBadge owner={v.owner} />
                       </div>
+                      {v.suggestion && (
+                        <div className="mt-3 rounded-lg border border-rose-300 bg-rose-50 p-3 text-sm dark:border-rose-800 dark:bg-rose-950/40">
+                          <p className="font-semibold text-rose-900 dark:text-rose-200">
+                            Owner fix: {v.suggestion.action === "reassign" ? "reassign" : "add co-owner"}
+                          </p>
+                          <p className="mt-1 text-rose-900 dark:text-rose-200">
+                            {a.assignee?.name ? who(a.assignee.name) : "No owner"} →{" "}
+                            <b>
+                              {[...(v.suggestion.action === "add_owners" && a.assignee?.name ? [who(a.assignee.name)] : []), ...v.suggestion.owners.map(ownerName)].join(" + ")}
+                            </b>
+                          </p>
+                          <ul className="mt-1 space-y-0.5 text-xs text-rose-800 dark:text-rose-300">
+                            {v.suggestion.owners.map((o) => (
+                              <li key={o.name}>
+                                {ownerName(o)}: {o.confirmed ? "said yes themselves" : "named by someone else, hasn't confirmed"}
+                              </li>
+                            ))}
+                          </ul>
+                          <ul className="mt-2 space-y-2">
+                            {v.suggestion.evidence.map((e, i) => (
+                              <li key={i}>
+                                <Quote e={e} />
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                       <p className="mt-2 text-sm text-zinc-700 dark:text-zinc-300">{v.rationale}</p>
                       {v.evidence.length > 0 && (
                         <ul className="mt-3 space-y-2">
-                          {v.evidence.map((e, i) => (
+                          {v.evidence.filter((e) => !v.suggestion?.evidence.some((s) => s.segmentId === e.segmentId && s.quote === e.quote)).map((e, i) => (
                             <li key={i}>
                               <Quote e={e} />
                             </li>
@@ -173,7 +201,7 @@ export function MeetingView({
               {report.missed.map((m, i) => (
                 <article key={i} className="rounded-xl border border-amber-300 bg-amber-50/60 p-4 dark:border-amber-800 dark:bg-amber-950/30">
                   <h3 className="font-medium">{m.task}</h3>
-                  <p className="mb-2 text-xs text-zinc-500">Would be owned by {m.ownerName ? `${m.ownerName} (${m.ownerSpeaker})` : m.ownerSpeaker}</p>
+                  <p className="mb-2 text-xs text-zinc-500">Would be owned by {m.owners.join(" + ")}</p>
                   <ul className="space-y-2">
                     {m.evidence.map((e, j) => (
                       <li key={j}>

@@ -28,11 +28,15 @@ async function main() {
     console.log(`  Task: ${TASK_TEXT[v.task]} · ${OWNER_TEXT[v.owner]}`);
     console.log(`  ${v.rationale}`);
     for (const e of v.evidence) console.log(`  ${t(e.start)} ${e.speaker}: "${e.quote}"`);
+    if (v.suggestion) {
+      const who = v.suggestion.owners.map((o) => `${o.name}${o.confirmed ? "" : " (didn't confirm)"}`).join(" + ");
+      console.log(`  >> ${v.suggestion.action === "reassign" ? "Reassign to" : "Also assign"}: ${who}`);
+    }
     for (const n of v.notes) console.log(`  [referee] ${n}`);
   }
   if (r.missed.length) {
     console.log("\nPossibly missed by the notetaker:");
-    for (const m of r.missed) console.log(`  - ${m.task} (${m.ownerName ?? m.ownerSpeaker}) at ${t(m.evidence[0].start)}: "${m.evidence[0].quote}"`);
+    for (const m of r.missed) console.log(`  - ${m.task} (${m.owners.join(" + ")}) at ${t(m.evidence[0].start)}: "${m.evidence[0].quote}"`);
   }
 }
 main().catch((e) => {

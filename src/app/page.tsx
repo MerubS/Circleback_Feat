@@ -24,7 +24,7 @@ export default async function Home() {
       <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {meetings.map((m, i) => {
           const r = reports[i];
-          const ok = r ? r.verdicts.filter((v) => isClean(v.task, v.owner)).length : 0;
+          const ok = r ? r.verdicts.filter((v) => isClean(v.task, v.owner, !!v.suggestion)).length : 0;
           const flagged = r ? r.verdicts.length - ok : 0;
           return (
             <li key={m.id}>
@@ -44,6 +44,9 @@ export default async function Home() {
                     <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs">
                       <span className="text-emerald-700 dark:text-emerald-400">{ok} look fine</span>
                       {flagged > 0 && <span className="text-rose-700 dark:text-rose-400">{flagged} need a look</span>}
+                      {r.verdicts.some((v) => v.suggestion) && (
+                        <span className="font-medium text-rose-700 dark:text-rose-400">{r.verdicts.filter((v) => v.suggestion).length} owner fix(es)</span>
+                      )}
                       {r.missed.length > 0 && <span className="text-amber-700 dark:text-amber-400">{r.missed.length} possibly missed</span>}
                     </div>
                   )}

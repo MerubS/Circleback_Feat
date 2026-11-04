@@ -46,9 +46,10 @@ export type AiCommitment = {
   id: string;
   task: string;
   kind: CommitmentKind;
-  ownerSpeaker: string; // transcript speaker label of the person who would do it
+  /** Everyone who would do it: a transcript speaker label, or the name as said for someone who never speaks. */
+  owners: string[];
   statement: Quote; // the line that makes the commitment or assignment
-  response: Quote | null; // the owner's reply, if any
+  response: Quote | null; // an owner's reply, if any
   ownerResponse: OwnerResponse;
 };
 
@@ -112,6 +113,19 @@ export type SpeakerIdentity = {
   evidence?: Evidence;
 };
 
+export type SuggestedOwner = {
+  name: string; // best display name
+  speaker?: string; // transcript label, when they speak in the meeting
+  confirmed: boolean; // they said yes themselves (not just named by someone else)
+};
+
+/** A correction you could write back to Circleback: change or add assignees. */
+export type OwnerSuggestion = {
+  action: "reassign" | "add_owners";
+  owners: SuggestedOwner[];
+  evidence: Evidence[];
+};
+
 export type ItemVerdict = {
   actionItemId: string;
   task: TaskStatus;
@@ -119,12 +133,12 @@ export type ItemVerdict = {
   evidence: Evidence[];
   rationale: string;
   notes: string[]; // what the referee changed or rejected, and why
+  suggestion?: OwnerSuggestion;
 };
 
 export type MissedTask = {
   task: string;
-  ownerSpeaker: string;
-  ownerName: string | null;
+  owners: string[]; // display names
   evidence: Evidence[];
 };
 
