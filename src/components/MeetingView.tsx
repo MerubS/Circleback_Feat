@@ -2,45 +2,45 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LABELS, LABEL_TEXT, type Label, type Meeting, type VerificationReport } from "@/lib/types";
-import { LabelBadge, fmtTime } from "./LabelBadge";
+import type { Evidence, Meeting, VerificationReport } from "@/lib/types";
+import { OwnerBadge, TaskBadge, fmtTime, isClean } from "./LabelBadge";
 
-const OWNER_TEXT: Record<string, string> = {
-  present: "on the call",
-  not_present: "not on the call",
-  unidentified: "unidentified speaker",
-  unassigned: "no owner",
-};
+type Filter = "ALL" | "FLAGGED" | "OK";
 
 export function MeetingView({
   meeting,
   report,
   links,
-  hasOpenAI,
+  hasKey,
 }: {
   meeting: Meeting;
   report: VerificationReport | null;
   links: Record<string, string>;
-  hasOpenAI: boolean;
+  hasKey: boolean;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [active, setActive] = useState<string | null>(null);
-  const [filter, setFilter] = useState<Label | "ALL">("ALL");
+  const [filter, setFilter] = useState<Filter>("ALL");
 
   const verdicts = useMemo(() => new Map(report?.verdicts.map((v) => [v.actionItemId, v])), [report]);
-  const cited = useMemo(() => new Set(report?.verdicts.flatMap((v) => v.evidence.map((e) => e.segmentId))), [report]);
+  const cited = useMemo(
+    () => new Set([...(report?.verdicts ?? []).flatMap((v) => v.evidence), ...(report?.missed ?? []).flatMap((m) => m.evidence)].map((e) => e.segmentId)),
+    [report],
+  );
+  const names = useMemo(() => Object.fromEntries((report?.speakers ?? []).filter((s) => s.source === "ai").map((s) => [s.speaker, s.name])), [report]);
+  const who = (label: string) => (names[label] ? `${names[label]} (${label})` : label);
 
   useEffect(() => {
     const id = window.location.hash.slice(1);
     if (id) setActive(id);
   }, []);
 
-  async function run(judge?: string) {
+  async function run() {
     setBusy(true);
     setError(null);
-    const res = await fetch(`/api/meetings/${meeting.id}/verify${judge ? `?judge=${judge}` : ""}`, { method: "POST" });
+    const res = await fetch(`/api/meetings/${meeting.id}/verify`, { method: "POST" });
     setBusy(false);
     if (!res.ok) return setError((await res.json()).error ?? "Verification failed");
     router.refresh();
@@ -50,13 +50,42 @@ export function MeetingView({
     const href = links[segmentId];
     if (href && !href.startsWith("/")) return void window.open(href, "_blank");
     setActive(segmentId);
-    document.getElementById(segmentId)?.scrollIntoView({ behavior: "smooth", block: "center" });
+    const el = document.getElementById(segmentId);
+    const list = el?.parentElement;
+    if (el && list) {
+      if (list.scrollHeight > list.clientHeight) list.scrollTo({ top: el.offsetTop - list.clientHeight / 3, behavior: "smooth" });
+      else el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
     history.replaceState(null, "", `#${segmentId}`);
   }
 
-  const counts = Object.fromEntries(LABELS.map((l) => [l, 0])) as Record<Label, number>;
-  report?.verdicts.forEach((v) => counts[v.label]++);
-  const items = meeting.actionItems.filter((a) => filter === "ALL" || verdicts.get(a.id)?.label === filter);
+  const Quote = ({ e }: { e: Evidence }) => (
+    <button
+      onClick={() => jump(e.segmentId)}
+      className="group flex w-full gap-3 rounded-lg bg-zinc-50 p-2.5 text-left text-sm hover:bg-zinc-100 dark:bg-zinc-800/60 dark:hover:bg-zinc-800"
+    >
+      <span className="shrink-0 font-mono text-xs text-blue-700 group-hover:underline dark:text-blue-400">{fmtTime(e.start)}</span>
+      <span>
+        <span className="font-medium">{who(e.speaker)}:</span> “{e.quote}”
+      </span>
+    </button>
+  );
+
+  const flaggedCount = report ? report.verdicts.filter((v) => !isClean(v.task, v.owner)).length : 0;
+  const items = meeting.actionItems.filter((a) => {
+    const v = verdicts.get(a.id);
+    if (filter === "ALL" || !v) return true;
+    return filter === "OK" ? isClean(v.task, v.owner) : !isClean(v.task, v.owner);
+  });
+  const aiNamed = (report?.speakers ?? []).filter((s) => s.source === "ai");
+  const pill = (f: Filter, label: string) => (
+    <button
+      onClick={() => setFilter(f)}
+      className={`rounded-full px-3 py-1 ${filter === f ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900" : "bg-zinc-200/60 dark:bg-zinc-800"}`}
+    >
+      {label}
+    </button>
+  );
 
   return (
     <div className="space-y-5">
@@ -64,25 +93,18 @@ export function MeetingView({
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">{meeting.name}</h1>
           <p className="text-sm text-zinc-500">
-            {meeting.attendees.map((a) => a.name).join(", ")} · {fmtTime(meeting.durationSeconds)}
+            {meeting.attendees.map((a) => who(a.name)).join(", ")} · {fmtTime(meeting.durationSeconds)}
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="text-right">
           <button
-            onClick={() => run("heuristic")}
+            onClick={run}
             disabled={busy}
-            className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-medium hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800"
-          >
-            Quick check (offline)
-          </button>
-          <button
-            onClick={() => run("openai")}
-            disabled={busy || !hasOpenAI}
-            title={hasOpenAI ? "" : "Add OPENAI_API_KEY to .env"}
             className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-40 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200"
           >
-            {busy ? "Verifying…" : "Verify with AI"}
+            {busy ? "Reading the meeting…" : report ? "Verify again" : "Verify with AI"}
           </button>
+          {!hasKey && <p className="mt-1 text-xs text-zinc-500">Needs OPENAI_API_KEY in .env</p>}
         </div>
       </div>
 
@@ -90,109 +112,124 @@ export function MeetingView({
 
       {report && (
         <div className="flex flex-wrap items-center gap-2 text-sm">
-          <button
-            onClick={() => setFilter("ALL")}
-            className={`rounded-full px-3 py-1 ${filter === "ALL" ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900" : "bg-zinc-200/60 dark:bg-zinc-800"}`}
-          >
-            All {report.verdicts.length}
-          </button>
-          {LABELS.map((l) => (
-            <button
-              key={l}
-              onClick={() => setFilter(l)}
-              className={`rounded-full px-3 py-1 ${filter === l ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900" : "bg-zinc-200/60 dark:bg-zinc-800"}`}
-            >
-              {LABEL_TEXT[l]} {counts[l]}
-            </button>
-          ))}
+          {pill("ALL", `All ${report.verdicts.length}`)}
+          {pill("FLAGGED", `Need a look ${flaggedCount}`)}
+          {pill("OK", `Look fine ${report.verdicts.length - flaggedCount}`)}
           <span className="ml-auto text-xs text-zinc-500">
-            Judge: {report.judge} · {new Date(report.createdAt).toLocaleString()}
+            {report.model} · {new Date(report.createdAt).toLocaleString()}
           </span>
         </div>
       )}
 
       <div className="grid gap-5 lg:grid-cols-[1fr_minmax(0,26rem)]">
-        <section className="space-y-3">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Action items</h2>
-          {!report && (
-            <p className="rounded-xl border border-dashed border-zinc-300 p-4 text-sm text-zinc-500 dark:border-zinc-700">
-              Not verified yet. Run a check to label each item.
-            </p>
-          )}
-          {items.map((a) => {
-            const v = verdicts.get(a.id);
-            return (
-              <article
-                key={a.id}
-                className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h3 className="font-medium">{a.title}</h3>
-                    <p className="text-xs text-zinc-500">
-                      Owner: {a.assignee?.name ?? "none"}
-                      {v && ` · ${OWNER_TEXT[v.ownerStatus]}${v.ownerStatus === "present" ? (v.ownerAgreed ? ", agreed" : ", did not agree") : ""}`}
-                    </p>
-                  </div>
-                  {v && <LabelBadge label={v.label} />}
-                </div>
-                {v && (
-                  <>
-                    <p className="mt-2 text-sm text-zinc-700 dark:text-zinc-300">{v.rationale}</p>
-                    {v.evidence.length > 0 && (
-                      <ul className="mt-3 space-y-2">
-                        {v.evidence.map((e, i) => (
-                          <li key={i}>
-                            <button
-                              onClick={() => jump(e.segmentId)}
-                              className="group flex w-full gap-3 rounded-lg bg-zinc-50 p-2.5 text-left text-sm hover:bg-zinc-100 dark:bg-zinc-800/60 dark:hover:bg-zinc-800"
-                            >
-                              <span className="shrink-0 font-mono text-xs text-blue-700 group-hover:underline dark:text-blue-400">
-                                {fmtTime(e.start)}
-                              </span>
-                              <span>
-                                <span className="font-medium">{e.speaker}:</span> “{e.quote}”
-                              </span>
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                    {v.guardrailNotes.length > 0 && (
-                      <details className="mt-2 text-xs text-zinc-500">
-                        <summary className="cursor-pointer">Guardrail notes ({v.guardrailNotes.length})</summary>
-                        <ul className="ml-4 mt-1 list-disc">
-                          {v.guardrailNotes.map((n, i) => (
-                            <li key={i}>{n}</li>
+        <div className="space-y-6">
+          <section className="space-y-3">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Action items</h2>
+            {!report && (
+              <p className="rounded-xl border border-dashed border-zinc-300 p-4 text-sm text-zinc-500 dark:border-zinc-700">
+                Not verified yet. The AI will read the whole meeting once and check every item.
+              </p>
+            )}
+            {items.map((a) => {
+              const v = verdicts.get(a.id);
+              return (
+                <article key={a.id} className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                  <h3 className="font-medium">{a.title}</h3>
+                  <p className="text-xs text-zinc-500">Owner in notes: {a.assignee?.name ? who(a.assignee.name) : "none"}</p>
+                  {v && (
+                    <>
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        <TaskBadge task={v.task} />
+                        <OwnerBadge owner={v.owner} />
+                      </div>
+                      <p className="mt-2 text-sm text-zinc-700 dark:text-zinc-300">{v.rationale}</p>
+                      {v.evidence.length > 0 && (
+                        <ul className="mt-3 space-y-2">
+                          {v.evidence.map((e, i) => (
+                            <li key={i}>
+                              <Quote e={e} />
+                            </li>
                           ))}
                         </ul>
-                      </details>
-                    )}
-                  </>
-                )}
-              </article>
-            );
-          })}
-        </section>
+                      )}
+                      {v.notes.length > 0 && (
+                        <details className="mt-2 text-xs text-zinc-500">
+                          <summary className="cursor-pointer">Referee notes ({v.notes.length})</summary>
+                          <ul className="ml-4 mt-1 list-disc">
+                            {v.notes.map((n, i) => (
+                              <li key={i}>{n}</li>
+                            ))}
+                          </ul>
+                        </details>
+                      )}
+                    </>
+                  )}
+                </article>
+              );
+            })}
+          </section>
+
+          {report && report.missed.length > 0 && (
+            <section className="space-y-3">
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Possibly missed by the notetaker</h2>
+              {report.missed.map((m, i) => (
+                <article key={i} className="rounded-xl border border-amber-300 bg-amber-50/60 p-4 dark:border-amber-800 dark:bg-amber-950/30">
+                  <h3 className="font-medium">{m.task}</h3>
+                  <p className="mb-2 text-xs text-zinc-500">Would be owned by {m.ownerName ? `${m.ownerName} (${m.ownerSpeaker})` : m.ownerSpeaker}</p>
+                  <ul className="space-y-2">
+                    {m.evidence.map((e, j) => (
+                      <li key={j}>
+                        <Quote e={e} />
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
+            </section>
+          )}
+
+          {aiNamed.length > 0 && (
+            <section className="space-y-2">
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Speakers the AI identified</h2>
+              <ul className="grid gap-2 sm:grid-cols-2">
+                {aiNamed.map((s) => (
+                  <li key={s.speaker} className="rounded-xl border border-zinc-200 bg-white p-3 text-sm dark:border-zinc-800 dark:bg-zinc-900">
+                    <div className="mb-2">
+                      <b>{s.speaker}</b> is <b>{s.name}</b>
+                    </div>
+                    {s.evidence && <Quote e={s.evidence} />}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {report && report.notes.length > 0 && (
+            <details className="text-xs text-zinc-500">
+              <summary className="cursor-pointer">Referee rejected {report.notes.length} AI claim(s)</summary>
+              <ul className="ml-4 mt-1 list-disc">
+                {report.notes.map((n, i) => (
+                  <li key={i}>{n}</li>
+                ))}
+              </ul>
+            </details>
+          )}
+        </div>
 
         <section className="lg:sticky lg:top-4 lg:self-start">
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500">Transcript</h2>
-          <ol className="max-h-[75vh] space-y-1 overflow-y-auto rounded-xl border border-zinc-200 bg-white p-2 dark:border-zinc-800 dark:bg-zinc-900">
+          <ol className="relative max-h-[75vh] space-y-1 overflow-y-auto rounded-xl border border-zinc-200 bg-white p-2 dark:border-zinc-800 dark:bg-zinc-900">
             {meeting.transcript.map((s) => (
               <li
                 key={s.id}
                 id={s.id}
                 className={`scroll-mt-24 rounded-lg p-2 text-sm transition-colors ${
-                  active === s.id
-                    ? "bg-yellow-100 ring-1 ring-yellow-400 dark:bg-yellow-900/40"
-                    : cited.has(s.id)
-                      ? "bg-zinc-50 dark:bg-zinc-800/50"
-                      : ""
+                  active === s.id ? "bg-yellow-100 ring-1 ring-yellow-400 dark:bg-yellow-900/40" : cited.has(s.id) ? "bg-zinc-50 dark:bg-zinc-800/50" : ""
                 }`}
               >
                 <div className="flex gap-2 text-xs text-zinc-500">
                   <span className="font-mono">{fmtTime(s.start)}</span>
-                  <span className="font-medium text-zinc-700 dark:text-zinc-300">{s.speaker}</span>
+                  <span className="font-medium text-zinc-700 dark:text-zinc-300">{who(s.speaker)}</span>
                 </div>
                 <p className="mt-0.5">{s.text}</p>
               </li>

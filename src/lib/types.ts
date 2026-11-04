@@ -1,8 +1,10 @@
+// ---------- Meeting data (what Circleback gives us) ----------
+
 export type Person = { name: string; email?: string };
 
 export type Segment = {
   id: string;
-  speaker: string;
+  speaker: string; // a real name, or "Participant N" when Circleback couldn't tell
   start: number; // seconds from meeting start
   end: number;
   text: string;
@@ -24,57 +26,114 @@ export type Meeting = {
   transcript: Segment[];
   actionItems: ActionItem[];
   url?: string;
+  source?: string;
 };
 
-export const LABELS = ["SUPPORTED", "WEAK", "UNSUPPORTED", "OWNER_NOT_CONFIRMED"] as const;
-export type Label = (typeof LABELS)[number];
+// ---------- What the AI reports (raw, unchecked) ----------
 
-export const LABEL_TEXT: Record<Label, string> = {
+export type Quote = { segmentId: string; quote: string };
+
+export type SpeakerGuess = { speaker: string; name: string; evidence: Quote; reasoning: string };
+
+export type CommitmentKind =
+  | "self" // "I'll send the quote"
+  | "assigned" // "As the designer, you'll do the mockups"
+  | "volunteered_other"; // "Lena can run the training"
+
+export type OwnerResponse = "agreed" | "declined_or_hedged" | "no_response" | "not_applicable";
+
+export type AiCommitment = {
+  id: string;
+  task: string;
+  kind: CommitmentKind;
+  ownerSpeaker: string; // transcript speaker label of the person who would do it
+  statement: Quote; // the line that makes the commitment or assignment
+  response: Quote | null; // the owner's reply, if any
+  ownerResponse: OwnerResponse;
+};
+
+export type TaskSupport = "supported" | "weak" | "unsupported" | "contradicted";
+
+export type AiItemMatch = {
+  actionItemId: string;
+  commitmentId: string | null;
+  taskSupport: TaskSupport;
+  evidence: Quote[];
+  rationale: string;
+};
+
+export type AiReading = {
+  speakers: SpeakerGuess[];
+  commitments: AiCommitment[];
+  items: AiItemMatch[];
+};
+
+// ---------- What the referee decides (checked, final) ----------
+
+export const TASK_STATUSES = ["SUPPORTED", "WEAK", "UNSUPPORTED", "CONTRADICTED"] as const;
+export type TaskStatus = (typeof TASK_STATUSES)[number];
+
+export const OWNER_STATUSES = [
+  "CONFIRMED",
+  "NOT_ACKNOWLEDGED",
+  "DECLINED",
+  "SOMEONE_ELSE",
+  "UNIDENTIFIED",
+  "NOT_IN_MEETING",
+  "NO_OWNER",
+  "NOT_APPLICABLE",
+] as const;
+export type OwnerStatus = (typeof OWNER_STATUSES)[number];
+
+export const TASK_TEXT: Record<TaskStatus, string> = {
   SUPPORTED: "Supported",
   WEAK: "Weak",
   UNSUPPORTED: "Unsupported",
-  OWNER_NOT_CONFIRMED: "Owner not confirmed",
+  CONTRADICTED: "Contradicted",
 };
 
-/** What we know about the assignee before reading the transcript. */
-export type OwnerStatus =
-  | "present" // named attendee or speaker
-  | "not_present" // named, but not on the invite and never spoke
-  | "unidentified" // generic label such as "Participant 4"
-  | "unassigned";
-
-/** Facts a judge extracts. Judges never pick the final label; decide.ts does. */
-export type TopicFinding =
-  | "explicit_commitment" // someone clearly agreed to do this
-  | "discussed_no_commitment" // talked about, nobody took it
-  | "contradicted" // transcript says the opposite
-  | "not_discussed";
-
-export type RawEvidence = { segmentId: string; quote: string };
-
-export type Judgment = {
-  topic: TopicFinding;
-  commitmentSegmentId: string | null; // where someone commits
-  ownerAgreementSegmentId: string | null; // where the assignee says yes
-  evidence: RawEvidence[];
-  rationale: string;
+export const OWNER_TEXT: Record<OwnerStatus, string> = {
+  CONFIRMED: "Owner confirmed",
+  NOT_ACKNOWLEDGED: "Owner never acknowledged",
+  DECLINED: "Owner hesitated or declined",
+  SOMEONE_ELSE: "Someone else took it",
+  UNIDENTIFIED: "Owner unidentified",
+  NOT_IN_MEETING: "Owner not in meeting",
+  NO_OWNER: "No owner",
+  NOT_APPLICABLE: "Owner n/a",
 };
 
-export type Evidence = RawEvidence & { speaker: string; start: number };
+export type Evidence = Quote & { speaker: string; start: number };
+
+export type SpeakerIdentity = {
+  speaker: string;
+  name: string;
+  source: "circleback" | "ai";
+  evidence?: Evidence;
+};
 
 export type ItemVerdict = {
   actionItemId: string;
-  label: Label;
-  ownerStatus: OwnerStatus;
-  ownerAgreed: boolean;
+  task: TaskStatus;
+  owner: OwnerStatus;
   evidence: Evidence[];
   rationale: string;
-  guardrailNotes: string[];
+  notes: string[]; // what the referee changed or rejected, and why
+};
+
+export type MissedTask = {
+  task: string;
+  ownerSpeaker: string;
+  ownerName: string | null;
+  evidence: Evidence[];
 };
 
 export type VerificationReport = {
   meetingId: string;
-  judge: string;
+  model: string;
   createdAt: string;
+  speakers: SpeakerIdentity[];
   verdicts: ItemVerdict[];
+  missed: MissedTask[];
+  notes: string[];
 };

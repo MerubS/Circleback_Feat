@@ -1,82 +1,95 @@
 /**
- * Scores a judge against hand-labelled ground truth.
- *   npm run eval                    # heuristic judge (no key needed)
- *   npm run eval -- --judge openai  # needs OPENAI_API_KEY
+ * Scores the AI verifier against the hand labels in data/ground-truth.json.
+ *   npm run eval                       # uses OPENAI_API_KEY and OPENAI_MODEL from .env
+ *   npm run eval -- --model gpt-4.1    # try another model
+ *   npm run eval -- --fresh            # ignore cached AI answers
+ * AI answers are cached in .data/ai-cache, so reruns cost nothing unless the prompt or model changes.
  */
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { listMeetings } from "@/lib/circleback/source";
-import { LABELS, LABEL_TEXT, type Label } from "@/lib/types";
-import { defaultJudge, verifyMeeting } from "@/lib/verify";
+import { OWNER_TEXT, TASK_TEXT, type OwnerStatus, type TaskStatus } from "@/lib/types";
+import { createOpenAIReader, verifyMeeting } from "@/lib/verify";
+
+type Gold = { task: TaskStatus; owner: OwnerStatus; evidence: string[] };
+
+const arg = (name: string) => {
+  const i = process.argv.indexOf(name);
+  return i > -1 ? process.argv[i + 1] : undefined;
+};
 
 async function main() {
-  const arg = process.argv.indexOf("--judge");
-  const judge = defaultJudge(arg > -1 ? process.argv[arg + 1] : "heuristic");
-  const truth: Record<string, Label> = JSON.parse(
-    await readFile(path.join(process.cwd(), "data", "ground-truth.json"), "utf8"),
-  );
+  const reader = createOpenAIReader({ model: arg("--model"), cache: !process.argv.includes("--fresh") });
+  const raw = JSON.parse(await readFile(path.join(process.cwd(), "data", "ground-truth.json"), "utf8"));
+  const gold: Record<string, Gold> = Object.fromEntries(Object.entries(raw).filter(([k]) => !k.startsWith("_"))) as any;
 
-  const rows: { id: string; title: string; want: Label; got: Label; notes: string[] }[] = [];
+  type Row = { meeting: string; id: string; title: string; want: Gold; task: TaskStatus; owner: OwnerStatus; cited: string[] };
+  const rows: Row[] = [];
+  const missed: string[] = [];
+  let meetings = 0;
   const t0 = Date.now();
+
   for (const m of await listMeetings()) {
-    const r = await verifyMeeting(m, judge);
+    if (!m.actionItems.some((a) => gold[a.id])) continue;
+    meetings++;
+    process.stdout.write(`Reading ${m.name}... `);
+    const r = await verifyMeeting(m, reader);
+    console.log("done");
     for (const v of r.verdicts) {
-      const want = truth[v.actionItemId];
+      const want = gold[v.actionItemId];
       if (!want) continue;
       const title = m.actionItems.find((a) => a.id === v.actionItemId)?.title ?? "";
-      rows.push({ id: v.actionItemId, title, want, got: v.label, notes: v.guardrailNotes });
+      rows.push({ meeting: m.name, id: v.actionItemId, title, want, task: v.task, owner: v.owner, cited: v.evidence.map((e) => e.segmentId) });
     }
+    for (const x of r.missed) missed.push(`- ${m.name}: "${x.task}" (${x.ownerName ?? x.ownerSpeaker}), line ${x.evidence[0].segmentId}`);
   }
-  const secs = ((Date.now() - t0) / 1000).toFixed(1);
 
-  const correct = rows.filter((r) => r.want === r.got).length;
-  const per = LABELS.map((l) => {
-    const tp = rows.filter((r) => r.got === l && r.want === l).length;
-    const fp = rows.filter((r) => r.got === l && r.want !== l).length;
-    const fn = rows.filter((r) => r.got !== l && r.want === l).length;
-    const p = tp + fp ? tp / (tp + fp) : 0;
-    const rc = tp + fn ? tp / (tp + fn) : 0;
-    return { l, n: tp + fn, p, rc, f1: p + rc ? (2 * p * rc) / (p + rc) : 0 };
-  });
-  // The number that matters most: invented items that were caught.
-  const invented = rows.filter((r) => r.want === "UNSUPPORTED");
-  const caught = invented.filter((r) => r.got === "UNSUPPORTED").length;
-  const falseAlarms = rows.filter((r) => r.want === "SUPPORTED" && r.got === "UNSUPPORTED").length;
-  const dropped = rows.reduce((s, r) => s + r.notes.filter((n) => n.startsWith("Dropped")).length, 0);
+  const n = rows.length;
+  const pct = (a: number, b: number) => `${a}/${b} (${b ? Math.round((100 * a) / b) : 0}%)`;
+  const taskOk = rows.filter((r) => r.task === r.want.task).length;
+  const ownerOk = rows.filter((r) => r.owner === r.want.owner).length;
+  const bothOk = rows.filter((r) => r.task === r.want.task && r.owner === r.want.owner).length;
+  // Evidence: if the item has gold lines, at least one cited line must be among them.
+  const withGold = rows.filter((r) => r.want.evidence.length);
+  const evOk = withGold.filter((r) => r.cited.some((c) => r.want.evidence.includes(c))).length;
+  const real = rows.filter((r) => !/^m\d-/.test(r.id));
+  const realBoth = real.filter((r) => r.task === r.want.task && r.owner === r.want.owner).length;
 
-  const pct = (x: number) => `${Math.round(x * 100)}%`;
-  const lines = [
-    `# Eval: ${judge.name}`,
+  const out = [
+    `# Eval: ${reader.model}`,
     ``,
-    `- Items: ${rows.length} across ${new Set(rows.map((r) => r.id.split("-")[0])).size} meetings, ${secs}s`,
-    `- Accuracy: **${correct}/${rows.length} (${pct(correct / rows.length)})**`,
-    `- Invented items caught: **${caught}/${invented.length}**`,
-    `- Real items wrongly flagged Unsupported: **${falseAlarms}**`,
-    `- Fabricated quotes blocked by guardrail: ${dropped}`,
+    `${n} action items across ${meetings} meetings, ${((Date.now() - t0) / 1000).toFixed(1)}s`,
     ``,
-    `| Label | Items | Precision | Recall | F1 |`,
-    `|---|---|---|---|---|`,
-    ...per.map((x) => `| ${LABEL_TEXT[x.l]} | ${x.n} | ${pct(x.p)} | ${pct(x.rc)} | ${pct(x.f1)} |`),
-    ``,
-    `## Confusion matrix (rows = truth, columns = predicted)`,
-    ``,
-    `| | ${LABELS.map((l) => LABEL_TEXT[l]).join(" | ")} |`,
-    `|---|${LABELS.map(() => "---").join("|")}|`,
-    ...LABELS.map(
-      (w) => `| ${LABEL_TEXT[w]} | ${LABELS.map((g) => rows.filter((r) => r.want === w && r.got === g).length).join(" | ")} |`,
-    ),
+    `| Check | Score |`,
+    `|---|---|`,
+    `| Task answer right | ${pct(taskOk, n)} |`,
+    `| Owner answer right | ${pct(ownerOk, n)} |`,
+    `| Both right | ${pct(bothOk, n)} |`,
+    `| Cited the right transcript line | ${pct(evOk, withGold.length)} |`,
+    `| Both right, real Circleback meetings only | ${pct(realBoth, real.length)} |`,
     ``,
     `## Misses`,
     ``,
-    ...(rows.filter((r) => r.want !== r.got).map((r) => `- ${r.id} "${r.title}": expected ${LABEL_TEXT[r.want]}, got ${LABEL_TEXT[r.got]}`) || []),
+    ...rows
+      .filter((r) => r.task !== r.want.task || r.owner !== r.want.owner || (r.want.evidence.length && !r.cited.some((c) => r.want.evidence.includes(c))))
+      .map((r) => {
+        const parts = [];
+        if (r.task !== r.want.task) parts.push(`task ${TASK_TEXT[r.task]} (expected ${TASK_TEXT[r.want.task]})`);
+        if (r.owner !== r.want.owner) parts.push(`owner ${OWNER_TEXT[r.owner]} (expected ${OWNER_TEXT[r.want.owner]})`);
+        if (r.want.evidence.length && !r.cited.some((c) => r.want.evidence.includes(c)))
+          parts.push(`cited [${r.cited.join(", ") || "nothing"}] (expected one of ${r.want.evidence.join(", ")})`);
+        return `- ${r.id} "${r.title}": ${parts.join("; ")}`;
+      }),
+    ``,
+    `## Possibly missed by the notetaker (not scored)`,
+    ``,
+    ...(missed.length ? missed : ["- None"]),
   ];
-  if (correct === rows.length) lines.push("- None");
-  const out = lines.join("\n");
-  console.log(out);
-  await writeFile(path.join(process.cwd(), "eval-report.md"), out + "\n");
+  console.log("\n" + out.join("\n"));
+  await writeFile(path.join(process.cwd(), "eval-report.md"), out.join("\n") + "\n");
 }
 
 main().catch((e) => {
-  console.error(e);
+  console.error(e.message ?? e);
   process.exit(1);
 });

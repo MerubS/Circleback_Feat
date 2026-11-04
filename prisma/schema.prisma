@@ -7,23 +7,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/// One verification run of one meeting. The full report (speakers, verdicts,
+/// possibly-missed tasks, referee notes) is stored as JSON.
 model VerificationRun {
-  id         String       @id @default(cuid())
+  id         String   @id @default(cuid())
   meetingId  String
-  judge      String
-  createdAt  DateTime     @default(now())
-  results    ItemResult[]
+  model      String
+  createdAt  DateTime @default(now())
+  reportJson String
 
   @@index([meetingId, createdAt])
-}
-
-model ItemResult {
-  id            String          @id @default(cuid())
-  runId         String
-  run           VerificationRun @relation(fields: [runId], references: [id], onDelete: Cascade)
-  actionItemId  String
-  label         String
-  ownerStatus   String
-  rationale     String
-  evidenceJson  String
 }

@@ -16,7 +16,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Link href="/" className="font-semibold tracking-tight">
               Action Item Verifier
             </Link>
-            <span className="hidden text-xs text-zinc-500 sm:block">Every action item, checked against what was actually said</span>
+            <nav className="flex items-center gap-4 text-sm">
+              <span className="hidden text-xs text-zinc-500 md:block">Every action item, checked against what was actually said</span>
+              <Link href="/import" className="font-medium text-zinc-700 hover:text-zinc-950 dark:text-zinc-300 dark:hover:text-white">
+                Import
+              </Link>
+            </nav>
           </div>
         </header>
         <main className="mx-auto max-w-6xl px-4 py-6">{children}</main>

@@ -1,114 +1,143 @@
 # Action Item Verifier
 
-AI notetakers sometimes write action items that nobody agreed to. Circleback's own guide,
+AI notetakers sometimes write action items nobody agreed to, or name the wrong owner. Circleback's own guide,
 [How Circleback writes meeting notes and how to check them](https://circleback.ai/blog/how-circleback-writes-meeting-notes),
-asks users to check each one by hand: confirm the owner is a real person, then find the
-matching moment in the transcript. This project does those checks automatically.
+asks users to check each one by hand: confirm the owner is a real person, then find the matching moment
+in the transcript. This project does that check automatically.
 
-Each action item gets one label:
+Every action item gets **two answers**:
 
-| Label | Meaning |
+| Is the task backed by the transcript? | Did the named owner take it on? |
 |---|---|
-| **Supported** | The owner clearly agreed. Shows the exact quote and a link to that moment. |
-| **Weak** | It was discussed, but nobody committed. |
-| **Unsupported** | Nothing in the transcript backs it, or the transcript says the opposite. |
-| **Owner not confirmed** | Someone else committed, the owner said no, the owner wasn't on the call, or the speaker is unnamed, such as "Participant 4". |
+| **Supported**: someone committed to it or was given it | **Confirmed**: the owner said they'd do it, or said "okay" when given it |
+| **Weak**: discussed, but nobody took it on | **Never acknowledged**: given to them, no reply |
+| **Unsupported**: not in the transcript | **Hesitated or declined**: "let me check my calendar" |
+| **Contradicted**: the transcript says the opposite | **Someone else took it**: a different person committed |
+| | **Unidentified**: the owner is "Participant 4" and nothing says who that is |
+| | **Not in meeting**: the named person wasn't there |
 
-Built with Circleback's stack: TypeScript, Next.js, React, Tailwind, Prisma, and Postgres or SQLite.
+It also lists **promises the notetaker may have missed**: commitments with no matching action item.
+
+Built with Circleback's stack: TypeScript, Next.js, React, Tailwind, Prisma, and Postgres or SQLite. Uses OpenAI.
 
 ## Quick start
 
 ```bash
 npm install
-cp .env.example .env        # add OPENAI_API_KEY to use the AI judge
+cp .env.example .env        # then paste your OPENAI_API_KEY into .env
 npm run dev                 # http://localhost:3000
 ```
 
-You don't need any keys to try it. The app ships with 3 sample meetings and an offline judge.
+Open a meeting and click **Verify with AI**. Each meeting costs a few cents. Answers are cached in
+`.data/ai-cache`, so verifying the same meeting again is free.
 
 ```bash
-npm test                          # unit tests for the guardrails and labels
-npm run eval                      # score the offline judge against hand labels
-npm run eval -- --judge openai    # score the AI judge (needs OPENAI_API_KEY)
-npm run verify -- m2              # verify one meeting in the terminal
+npm test                          # tests for the referee rules (uses a fake AI, no key needed)
+npm run eval                      # score the AI against the hand labels
+npm run eval -- --model gpt-4.1   # compare another model
+npm run verify -- cb-es2002a      # verify one meeting in the terminal
 ```
 
 ## How it works
 
-```
-Circleback API ──► Meeting (transcript segments + action items)
-                     │
-                     ├─ owner.ts     Is the assignee on the invite, a speaker, or "Participant N"?
-                     ├─ retrieve.ts  BM25 search over transcript lines, so long meetings stay small
-                     ├─ judge        LLM (or offline heuristic) reports facts with exact quotes
-                     └─ decide.ts    Code checks every quote and picks the label
-```
+![Architecture](docs/architecture.svg)
 
-The key design choice is that **the model never picks the label**. It only reports facts:
-was the task discussed, which line holds a commitment, and which line has the owner agreeing,
-each with a quote copied from the transcript. Then `decide.ts` applies plain rules:
+**1. Speaker names.** Circleback's names are used whenever it has them. Only speakers still called
+"Participant N" are sent to the AI to identify, and the AI must quote the line that shows who they are.
 
-1. Any quote that isn't found word for word in the segment it cites is dropped.
-2. A claimed commitment with no segment cited is downgraded.
-3. The owner only "agreed" if the agreeing line was spoken by the owner.
-4. With no verified evidence left, the item is Unsupported.
+**2. One AI read per meeting** (`src/lib/verify/ai.ts`). The AI gets the whole transcript and the action
+items, and returns structured JSON:
+- who each placeholder speaker is, with a quote
+- every promise and assignment: who, what, the exact line, and the owner's reply
+- for each action item: which promise it matches and whether the task is supported, weak,
+  contradicted, or unsupported
 
-A model that makes up a quote can't produce a Supported label. That's the same problem
-this tool checks for in meeting notes, so the verifier holds itself to the same rule.
+**3. The referee** (`src/lib/verify/referee.ts`). Plain code, no AI. The AI only reports facts; the referee
+decides:
+- Every quote must appear word for word in the transcript line it cites, or it is thrown out.
+- A speaker name is accepted only if the quote contains the name, and the speaker either said it
+  or talks right after being named.
+- "Supported" requires a verified promise. Without one it is downgraded.
+- The owner "confirmed" only if the owner's own line says so, not a reply from someone else.
+- The owner answer (confirmed, never acknowledged, someone else, and so on) is decided by fixed rules,
+  not by the AI.
+
+A made-up quote can't produce a "Supported" or "Confirmed". Everything the referee rejects is listed
+on the meeting page.
+
+## Real Circleback meetings
+
+`data/samples/cb-es2002a.json` and `cb-es2008a.json` are real Circleback output. The audio is from the
+[AMI Meeting Corpus](https://groups.inf.ed.ac.uk/ami/corpus/) (CC BY 4.0), uploaded to Circleback, which
+produced the transcript and action items. The other three sample meetings were written by hand with
+planted mistakes.
+
+Things these meetings show:
+- Uploaded recordings have no calendar invite, so **Circleback labels every speaker "Participant N"**,
+  even when its notes name people (Andrew, Greg, David, Rose). The names are never linked to the transcript.
+- **Real meetings mostly assign tasks rather than volunteer them.** The project manager gives out work by
+  role ("as the industrial designer you're gonna…"), and most owners never reply.
+- **The transcript can split one sentence across two speakers** ("I'll" / "look into it"), which makes a
+  real commitment hard to check.
 
 ## Evaluation
 
-`data/ground-truth.json` holds hand labels for the 17 sample action items. The samples include
-planted mistakes: invented tasks, a discount the rep refused to promise, a task volunteered
-for someone who said "let me check my calendar", an unnamed "Participant 4" owner, and an
-owner who wasn't on the call.
+`data/ground-truth.json` holds hand labels for 23 action items (17 written, 6 real): the task answer,
+the owner answer, and which transcript lines show it. `npm run eval` reports:
 
-Offline heuristic baseline (`npm run eval`):
+- task answer right
+- owner answer right
+- both right
+- **cited the right transcript line**: checks the evidence, not just the label
+- both right on real Circleback meetings only
 
-- Accuracy 15/17 (88%)
-- Invented items caught 2/3
-- Real items wrongly flagged as Unsupported: 0
+Run it with your key and put the numbers here. The real-meeting labels were written by one person; some
+calls are debatable (is Andrew's "Okay." agreement?). A second person labelling independently would make
+them stronger.
 
-The heuristic misses the two cases that need understanding rather than keyword matches:
-someone volunteering a colleague ("Lena can run training") and a contradiction
-("I can't promise anything on discounts"). Those are what the LLM judge is for.
-Run `npm run eval -- --judge openai` and put your real numbers here.
+## Importing your own Circleback meetings
 
-## Connecting real Circleback data
+No API key needed:
 
-1. Create an API key in Circleback under **Settings → API keys**. Full API access may need a paid plan.
+1. Open the meeting in Circleback while signed in.
+2. Open DevTools → Console, paste `tools/circleback-export.js`, and press Enter. A JSON file downloads.
+3. In the app, click **Import** and upload that file.
+
+The script reads the same endpoints the Circleback web app uses to show you your meeting. They aren't a
+documented public API, so they may change.
+
+## Connecting through the Circleback API
+
+1. Create an API key in Circleback under **Settings → API keys**.
 2. In `.env`, set `MEETING_SOURCE="api"` and `CIRCLEBACK_API_KEY=...`.
-3. Open `src/lib/circleback/api.ts`. The endpoint paths and field names there are
-   **best guesses**, because the field-level API reference wasn't public when this was written.
-   Check them against https://circleback.ai/docs/api and fix `ENDPOINTS` and the `map*`
-   functions. Nothing else needs to change.
+3. Check the endpoint paths and field names in `src/lib/circleback/api.ts` against
+   https://circleback.ai/docs/api. They are best guesses kept in one place.
 
 ## Saving results
 
-By default, results are saved as JSON in `.data/`. To use Prisma instead:
+Results are saved as JSON in `.data/runs` by default. To use Prisma instead, run `npm run db:setup`
+and set `STORAGE="prisma"` in `.env`. For Postgres, change `provider` in `prisma/schema.prisma`.
 
-```bash
-npm run db:setup          # prisma generate + db push (SQLite)
-# then set STORAGE="prisma" in .env
-```
+## Limits
 
-For Postgres, change `provider` in `prisma/schema.prisma` to `"postgresql"` and point
-`DATABASE_URL` at your database.
+- Meetings longer than about 100k tokens of transcript aren't split yet.
+- Answers depend on the model. Use `npm run eval -- --model ...` to compare.
+- No offline mode: verifying needs an OpenAI key.
 
 ## Project layout
 
 ```
-src/lib/verify/        owner.ts, retrieve.ts, decide.ts, judges/{openai,heuristic}.ts
-src/lib/circleback/    api.ts (Circleback adapter), source.ts (sample vs API)
-src/app/               Next.js pages + POST /api/meetings/[id]/verify
-data/samples/          3 sample meetings
-data/ground-truth.json hand labels for the eval
+src/lib/verify/        ai.ts (OpenAI reader + cache), referee.ts (checks + decisions), text.ts
+src/lib/circleback/    api.ts (API adapter), source.ts (files vs API), validate.ts (import schema)
+src/app/               Next.js pages, /import, POST /api/meetings/[id]/verify, POST /api/import
+tools/                 circleback-export.js (browser console export)
+data/samples/          3 written meetings + 2 real Circleback meetings
+data/imported/         meetings you import
 scripts/               eval.ts, verify.ts
-tests/                 node:test unit tests
+tests/                 referee tests with a fake AI
 ```
 
-## Ideas for next steps
+## Credits
 
-- Run it automatically with a Circleback webhook when a meeting ends, then post flagged items to Slack.
-- Add a "Fix" button that rewrites or reassigns a flagged item through the API.
-- Grow the eval set with real, anonymised meetings and track precision for each label.
+Meeting audio for `cb-es2002a` and `cb-es2008a` is from the AMI Meeting Corpus, released under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Transcripts and action items were generated by Circleback.

@@ -17,7 +17,7 @@ export default async function MeetingPage({ params }: { params: { id: string } }
       <Link href="/" className="text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200">
         ← All meetings
       </Link>
-      <MeetingView meeting={meeting} report={report} links={links} hasOpenAI={!!process.env.OPENAI_API_KEY} />
+      <MeetingView meeting={meeting} report={report} links={links} hasKey={!!process.env.OPENAI_API_KEY} />
     </div>
   );
 }

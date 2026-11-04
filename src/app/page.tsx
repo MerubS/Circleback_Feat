@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { listMeetings, source } from "@/lib/circleback/source";
 import { store } from "@/lib/store";
-import { LABELS, type Label } from "@/lib/types";
-import { LabelBadge } from "@/components/LabelBadge";
+import { isClean } from "@/components/LabelBadge";
 
 export const dynamic = "force-dynamic";
 
@@ -15,21 +14,18 @@ export default async function Home() {
       <section className="space-y-2">
         <h1 className="text-2xl font-semibold tracking-tight">Meetings</h1>
         <p className="max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">
-          Each action item gets one of four labels: <b>Supported</b> with the quote and timestamp, <b>Weak</b> when it was
-          discussed but nobody committed, <b>Unsupported</b> when nothing in the transcript backs it, and{" "}
-          <b>Owner not confirmed</b> when the named person never agreed or wasn&apos;t on the call.
+          The AI reads each meeting once, lists every promise and assignment, and checks each action item against them. Every
+          item gets two answers: <b>is the task backed by the transcript</b>, and <b>did the named owner take it on</b>. Code then
+          checks that every quote really appears in the transcript.
         </p>
-        <p className="text-xs text-zinc-500">
-          Source: {source() === "sample" ? "sample meetings" : "Circleback API"}
-        </p>
+        <p className="text-xs text-zinc-500">Source: {source() === "sample" ? "meeting files in data/" : "Circleback API"}</p>
       </section>
 
       <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {meetings.map((m, i) => {
           const r = reports[i];
-          const counts = Object.fromEntries(LABELS.map((l) => [l, 0])) as Record<Label, number>;
-          r?.verdicts.forEach((v) => counts[v.label]++);
-          const flagged = r ? r.verdicts.filter((v) => v.label !== "SUPPORTED").length : 0;
+          const ok = r ? r.verdicts.filter((v) => isClean(v.task, v.owner)).length : 0;
+          const flagged = r ? r.verdicts.length - ok : 0;
           return (
             <li key={m.id}>
               <Link
@@ -38,25 +34,20 @@ export default async function Home() {
               >
                 <div className="font-medium">{m.name}</div>
                 <div className="mt-0.5 text-xs text-zinc-500">
-                  {new Date(m.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                  {" · "}
-                  {m.attendees.length} attendees{m.actionItems.length ? ` · ${m.actionItems.length} action items` : ""}
+                  {new Date(m.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} ·{" "}
+                  {m.actionItems.length} action items
                 </div>
-                <div className="mt-3 flex flex-wrap gap-1.5">
-                  {r ? (
-                    LABELS.filter((l) => counts[l]).map((l) => (
-                      <span key={l} className="flex items-center gap-1 text-xs">
-                        <LabelBadge label={l} />
-                        <span className="text-zinc-500">×{counts[l]}</span>
-                      </span>
-                    ))
-                  ) : (
+                <div className="mt-3 text-sm">
+                  {!r ? (
                     <span className="text-xs text-zinc-500">Not verified yet</span>
+                  ) : (
+                    <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs">
+                      <span className="text-emerald-700 dark:text-emerald-400">{ok} look fine</span>
+                      {flagged > 0 && <span className="text-rose-700 dark:text-rose-400">{flagged} need a look</span>}
+                      {r.missed.length > 0 && <span className="text-amber-700 dark:text-amber-400">{r.missed.length} possibly missed</span>}
+                    </div>
                   )}
                 </div>
-                {r && flagged > 0 && (
-                  <div className="mt-2 text-xs text-rose-700 dark:text-rose-400">{flagged} item(s) need a look</div>
-                )}
               </Link>
             </li>
           );

@@ -1,19 +1,171 @@
 {
-  "m1-a1": "SUPPORTED",
-  "m1-a2": "SUPPORTED",
-  "m1-a3": "WEAK",
-  "m1-a4": "UNSUPPORTED",
-  "m1-a5": "OWNER_NOT_CONFIRMED",
-  "m1-a6": "SUPPORTED",
-  "m2-a1": "SUPPORTED",
-  "m2-a2": "SUPPORTED",
-  "m2-a3": "OWNER_NOT_CONFIRMED",
-  "m2-a4": "UNSUPPORTED",
-  "m2-a5": "OWNER_NOT_CONFIRMED",
-  "m2-a6": "WEAK",
-  "m3-a1": "SUPPORTED",
-  "m3-a2": "SUPPORTED",
-  "m3-a3": "WEAK",
-  "m3-a4": "UNSUPPORTED",
-  "m3-a5": "OWNER_NOT_CONFIRMED"
+  "_about": "Hand labels. task = is the action item backed by the transcript; owner = did the named owner take it on; evidence = transcript line ids that show it (any one counts as a hit). Real-meeting labels were written by one person; see README.",
+  "m1-a1": {
+    "task": "SUPPORTED",
+    "owner": "CONFIRMED",
+    "evidence": [
+      "m1-s4"
+    ]
+  },
+  "m1-a2": {
+    "task": "SUPPORTED",
+    "owner": "CONFIRMED",
+    "evidence": [
+      "m1-s8"
+    ]
+  },
+  "m1-a3": {
+    "task": "WEAK",
+    "owner": "NOT_APPLICABLE",
+    "evidence": [
+      "m1-s10"
+    ]
+  },
+  "m1-a4": {
+    "task": "UNSUPPORTED",
+    "owner": "NOT_APPLICABLE",
+    "evidence": []
+  },
+  "m1-a5": {
+    "task": "WEAK",
+    "owner": "NOT_IN_MEETING",
+    "evidence": [
+      "m1-s16"
+    ],
+    "note": "Priya only suggests Jordan; Jordan isn't in the meeting."
+  },
+  "m1-a6": {
+    "task": "SUPPORTED",
+    "owner": "CONFIRMED",
+    "evidence": [
+      "m1-s13"
+    ]
+  },
+  "m2-a1": {
+    "task": "SUPPORTED",
+    "owner": "CONFIRMED",
+    "evidence": [
+      "m2-s3"
+    ]
+  },
+  "m2-a2": {
+    "task": "SUPPORTED",
+    "owner": "CONFIRMED",
+    "evidence": [
+      "m2-s8"
+    ]
+  },
+  "m2-a3": {
+    "task": "SUPPORTED",
+    "owner": "DECLINED",
+    "evidence": [
+      "m2-s14",
+      "m2-s15"
+    ],
+    "note": "Sam volunteers Lena; Lena says she's not sure she has the bandwidth."
+  },
+  "m2-a4": {
+    "task": "CONTRADICTED",
+    "owner": "NOT_APPLICABLE",
+    "evidence": [
+      "m2-s5"
+    ]
+  },
+  "m2-a5": {
+    "task": "SUPPORTED",
+    "owner": "UNIDENTIFIED",
+    "evidence": [
+      "m2-s9"
+    ]
+  },
+  "m2-a6": {
+    "task": "WEAK",
+    "owner": "NOT_APPLICABLE",
+    "evidence": [
+      "m2-s11",
+      "m2-s12"
+    ]
+  },
+  "m3-a1": {
+    "task": "SUPPORTED",
+    "owner": "CONFIRMED",
+    "evidence": [
+      "m3-s4"
+    ]
+  },
+  "m3-a2": {
+    "task": "SUPPORTED",
+    "owner": "CONFIRMED",
+    "evidence": [
+      "m3-s7"
+    ]
+  },
+  "m3-a3": {
+    "task": "WEAK",
+    "owner": "NOT_APPLICABLE",
+    "evidence": [
+      "m3-s8",
+      "m3-s9"
+    ]
+  },
+  "m3-a4": {
+    "task": "UNSUPPORTED",
+    "owner": "NOT_APPLICABLE",
+    "evidence": []
+  },
+  "m3-a5": {
+    "task": "SUPPORTED",
+    "owner": "SOMEONE_ELSE",
+    "evidence": [
+      "m3-s10"
+    ],
+    "note": "Aisha says she'll review it, not Carlos."
+  },
+  "31605584": {
+    "task": "SUPPORTED",
+    "owner": "CONFIRMED",
+    "evidence": [
+      "105b",
+      "106"
+    ],
+    "note": "Debatable: Andrew's reply is just 'Okay.'"
+  },
+  "31605585": {
+    "task": "SUPPORTED",
+    "owner": "NOT_ACKNOWLEDGED",
+    "evidence": [
+      "105"
+    ]
+  },
+  "31605586": {
+    "task": "SUPPORTED",
+    "owner": "NOT_ACKNOWLEDGED",
+    "evidence": [
+      "105"
+    ]
+  },
+  "31606341": {
+    "task": "SUPPORTED",
+    "owner": "CONFIRMED",
+    "evidence": [
+      "46",
+      "47"
+    ],
+    "note": "Transcript splits 'I'll' / 'look into it' across two speakers."
+  },
+  "31606342": {
+    "task": "SUPPORTED",
+    "owner": "CONFIRMED",
+    "evidence": [
+      "58"
+    ]
+  },
+  "31606343": {
+    "task": "SUPPORTED",
+    "owner": "CONFIRMED",
+    "evidence": [
+      "60",
+      "62"
+    ]
+  }
 }
