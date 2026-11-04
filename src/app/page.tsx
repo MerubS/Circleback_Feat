@@ -2,12 +2,15 @@ import Link from "next/link";
 import { listMeetings, source } from "@/lib/circleback/source";
 import { store } from "@/lib/store";
 import { isClean } from "@/components/LabelBadge";
+import { loadDecisions } from "@/lib/decisions";
+import { openFlags } from "@/lib/fixes";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const meetings = await listMeetings();
   const reports = await Promise.all(meetings.map((m) => store.latest(m.id)));
+  const decisions = await Promise.all(meetings.map((m) => loadDecisions(m.id)));
 
   return (
     <div className="space-y-6">
@@ -24,7 +27,7 @@ export default async function Home() {
       <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {meetings.map((m, i) => {
           const r = reports[i];
-          const ok = r ? r.verdicts.filter((v) => isClean(v.task, v.owner, !!v.suggestion || !!v.checks?.length)).length : 0;
+          const ok = r ? r.verdicts.filter((v) => isClean(v.task, v.owner, openFlags(v, decisions[i]).length > 0)).length : 0;
           const flagged = r ? r.verdicts.length - ok : 0;
           return (
             <li key={m.id}>
@@ -44,8 +47,8 @@ export default async function Home() {
                     <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs">
                       <span className="text-emerald-700 dark:text-emerald-400">{ok} look fine</span>
                       {flagged > 0 && <span className="text-rose-700 dark:text-rose-400">{flagged} need a look</span>}
-                      {r.verdicts.some((v) => v.suggestion) && (
-                        <span className="font-medium text-rose-700 dark:text-rose-400">{r.verdicts.filter((v) => v.suggestion).length} owner fix(es)</span>
+                      {r.verdicts.some((v) => v.suggestion && openFlags(v, decisions[i]).includes("owner")) && (
+                        <span className="font-medium text-rose-700 dark:text-rose-400">{r.verdicts.filter((v) => openFlags(v, decisions[i]).includes("owner")).length} owner fix(es)</span>
                       )}
                       {r.missed.length > 0 && <span className="text-amber-700 dark:text-amber-400">{r.missed.length} possibly missed</span>}
                     </div>

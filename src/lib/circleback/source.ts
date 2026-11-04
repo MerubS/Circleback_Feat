@@ -21,7 +21,7 @@ export async function listMeetings(): Promise<Meeting[]> {
 }
 
 export async function getMeeting(id: string): Promise<Meeting | null> {
-  if (source() === "api") return getMeetingFromApi(id);
+  if (source() === "api") return getMeetingFromApi(id.startsWith("cb-") ? id.slice(3) : id);
   if (!/^[\w-]+$/.test(id)) return null;
   for (const dir of DIRS) {
     try {

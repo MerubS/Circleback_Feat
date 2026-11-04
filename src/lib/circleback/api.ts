@@ -1,104 +1,134 @@
 import type { ActionItem, Meeting, Person, Segment } from "@/lib/types";
 
 /**
- * Circleback API adapter.
- *
- * IMPORTANT: Circleback's public docs (https://circleback.ai/docs/api) list
- * "List meetings", "Get meeting transcript", "List action items" and
- * "Search meetings", but the field-level reference was not available when this
- * was written. The paths and field names below are best guesses kept in ONE
- * place: check them against the docs with your API key and adjust ENDPOINTS
- * and the map* functions. Everything else in the app only sees our Meeting type.
+ * Circleback REST API (https://circleback.ai/docs/api). Base https://circleback.ai/api,
+ * bearer key "cb_...". Paths and fields below are from the published reference.
+ * Rate limits: Free 3/s and 20/min, paid 20/s and 300/min; 429 carries Retry-After.
  */
+const BASE = () => process.env.CIRCLEBACK_API_BASE || "https://circleback.ai/api";
+
 export const ENDPOINTS = {
   listMeetings: "/meetings",
-  getMeeting: (id: string) => `/meetings/${id}`,
-  getTranscript: (id: string) => `/meetings/${id}/transcript`,
-  listActionItems: (id: string) => `/action-items?meetingId=${encodeURIComponent(id)}`,
+  getMeeting: (id: string) => `/meeting/${encodeURIComponent(id)}`,
+  getTranscript: (id: string) => `/meeting/${encodeURIComponent(id)}/transcript`,
+  updateActionItem: (id: number) => `/action-item/${id}`,
 };
 
 type Json = Record<string, any>;
 
-async function get(path: string): Promise<any> {
-  const base = process.env.CIRCLEBACK_API_BASE ?? "https://app.circleback.ai/api/v1";
+export class CirclebackError extends Error {
+  constructor(
+    message: string,
+    readonly status: number,
+  ) {
+    super(message);
+  }
+}
+
+async function call(path: string, init: RequestInit = {}): Promise<any> {
   const key = process.env.CIRCLEBACK_API_KEY;
-  if (!key) throw new Error("CIRCLEBACK_API_KEY is not set.");
-  const res = await fetch(base + path, { headers: { Authorization: `Bearer ${key}` }, cache: "no-store" });
-  if (!res.ok) throw new Error(`Circleback ${path} -> ${res.status} ${await res.text()}`);
+  if (!key) throw new CirclebackError("CIRCLEBACK_API_KEY is not set.", 0);
+  const res = await fetch(BASE() + path, {
+    ...init,
+    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json", ...init.headers },
+    cache: "no-store",
+  });
+  if (res.status === 429) throw new CirclebackError(`Circleback rate limit; retry in ${res.headers.get("retry-after") ?? "a few"} seconds.`, 429);
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new CirclebackError(`Circleback ${init.method ?? "GET"} ${path} -> ${res.status}: ${body.error ?? res.statusText}`, res.status);
+  }
   return res.json();
 }
 
-const list = (x: any): Json[] => (Array.isArray(x) ? x : x?.data ?? x?.items ?? x?.results ?? []);
-
-function mapPerson(p: Json): Person {
-  return { name: p.name ?? p.displayName ?? p.email ?? "Unknown", email: p.email ?? undefined };
-}
-
+const list = (x: any): Json[] => (Array.isArray(x) ? x : x?.data ?? x?.items ?? []);
 const num = (v: any) => (typeof v === "number" ? v : 0);
 
-function mapSegment(s: Json, i: number, scale: number): Segment {
-  return {
-    id: String(s.id ?? `seg-${i}`),
-    speaker: s.speaker?.name ?? s.speaker ?? s.speakerName ?? "Unknown",
-    start: num(s.start ?? s.startTime ?? s.timestamp) / scale,
-    end: num(s.end ?? s.endTime ?? s.start ?? 0) / scale,
-    text: s.text ?? s.content ?? "",
-  };
+/** Circleback's link to a meeting (the API's `url` is the Zoom/Meet link, not this). */
+export const meetingLink = (circlebackId: string) => `https://circleback.ai/meetings/${circlebackId}`;
+
+/** Our meeting id for a Circleback meeting, and back. */
+export const localId = (circlebackId: string) => `cb-${circlebackId}`;
+export const circlebackIdOf = (m: Meeting) => m.circlebackId ?? (m.id.startsWith("cb-") ? m.id.slice(3) : null);
+
+export function mapPerson(p: Json): Person {
+  const name = p.name ?? ([p.firstName, p.lastName].filter(Boolean).join(" ") || null);
+  return { name: name ?? p.email ?? "Unknown", ...(p.email && { email: p.email }), ...(typeof p.profileId === "number" && { profileId: p.profileId }) };
 }
 
 /**
  * Seconds or milliseconds, decided once per meeting (not per line, which mixed units:
  * a line at 9,000 ms stayed "9,000 s" while a line at 12,000 ms became 12 s).
- * No meeting runs longer than a day, so anything past 86,400 means milliseconds.
+ * The docs say seconds; this guards against a change. No meeting runs past a day.
  */
 export function timeScale(raw: Json[]): number {
   const max = Math.max(0, ...raw.map((s) => num(s.end ?? s.endTime ?? s.start ?? s.startTime ?? s.timestamp)));
   return max > 86_400 ? 1000 : 1;
 }
 
-function mapActionItem(a: Json): ActionItem {
-  const who = a.assignee ?? a.owner ?? null;
+/** Circleback segments are { speaker, text, timestamp (start, seconds) }; a line ends where the next starts. */
+export function mapTranscript(raw: Json[]): Segment[] {
+  const scale = timeScale(raw);
+  return raw
+    .filter((s) => typeof s.text === "string" && s.text.trim())
+    .map((s, i, all) => {
+      const start = num(s.timestamp ?? s.start) / scale;
+      const next = all[i + 1];
+      return {
+        id: String(s.id ?? `t${i + 1}`),
+        speaker: (typeof s.speaker === "string" ? s.speaker : s.speaker?.name) || "Unknown",
+        start,
+        end: next ? num(next.timestamp ?? next.start) / scale : start,
+        text: s.text.trim(),
+      };
+    });
+}
+
+export function mapActionItem(a: Json): ActionItem {
   return {
     id: String(a.id),
-    title: a.title ?? a.name ?? a.text ?? "",
-    description: a.description ?? undefined,
-    assignee: who ? (typeof who === "string" ? { name: who } : mapPerson(who)) : null,
-    dueDate: a.dueDate ?? a.due_date ?? a.due ?? null,
+    title: a.title ?? "",
+    ...(a.description && { description: a.description }),
+    assignee: a.assignee ? mapPerson(a.assignee) : null,
+    dueDate: a.dueDate ?? null,
+  };
+}
+
+/** One Circleback meeting (from the API or a webhook) in our format. */
+export function mapMeeting(m: Json, transcript: Json[]): Meeting {
+  const id = String(m.id);
+  const segments = mapTranscript(transcript);
+  return {
+    id: localId(id),
+    circlebackId: id,
+    name: m.name ?? "Untitled meeting",
+    createdAt: m.createdAt ?? new Date().toISOString(),
+    durationSeconds: Math.round(typeof m.duration === "number" ? m.duration : (segments.at(-1)?.end ?? 0)),
+    attendees: list(m.attendees).map(mapPerson),
+    transcript: segments,
+    actionItems: list(m.actionItems).map(mapActionItem),
+    url: meetingLink(id),
   };
 }
 
 export async function listMeetingsFromApi(): Promise<Meeting[]> {
-  const raw = list(await get(ENDPOINTS.listMeetings)).slice(0, 25);
-  return raw.map((m) => ({
-    id: String(m.id),
-    name: m.name ?? m.title ?? "Untitled meeting",
-    createdAt: m.createdAt ?? m.date ?? new Date().toISOString(),
-    durationSeconds: typeof m.duration === "number" ? Math.round(m.duration / (m.duration > 86_400 ? 1000 : 1)) : 0,
-    attendees: list(m.attendees ?? m.participants ?? []).map(mapPerson),
-    transcript: [],
-    actionItems: [],
-    url: m.url,
-  }));
+  return list(await call(ENDPOINTS.listMeetings))
+    .slice(0, 25)
+    .map((m) => ({ ...mapMeeting(m, []), actionItems: [] }));
 }
 
-export async function getMeetingFromApi(id: string): Promise<Meeting> {
-  const [m, t, a] = await Promise.all([
-    get(ENDPOINTS.getMeeting(id)),
-    get(ENDPOINTS.getTranscript(id)),
-    get(ENDPOINTS.listActionItems(id)),
-  ]);
-  const rawSegments = list(t?.segments ?? t);
-  const scale = timeScale(rawSegments);
-  const transcript = rawSegments.map((s, i) => mapSegment(s, i, scale));
-  return {
-    id: String(m.id ?? id),
-    name: m.name ?? m.title ?? "Untitled meeting",
-    createdAt: m.createdAt ?? m.date ?? new Date().toISOString(),
-    // shortcut: assumes the duration uses the same unit as the transcript; confirm against Circleback's API docs.
-    durationSeconds: Math.round(typeof m.duration === "number" ? m.duration / scale : (transcript.at(-1)?.end ?? 0)),
-    attendees: list(m.attendees ?? m.participants ?? []).map(mapPerson),
-    transcript,
-    actionItems: list(a).map(mapActionItem),
-    url: m.url,
-  };
+export async function getMeetingFromApi(circlebackId: string): Promise<Meeting> {
+  const [m, t] = await Promise.all([call(ENDPOINTS.getMeeting(circlebackId)), call(ENDPOINTS.getTranscript(circlebackId))]);
+  return mapMeeting(m, list(t));
+}
+
+/** Attendees with their Circleback profile IDs (needed to set an assignee). */
+export async function getAttendees(circlebackId: string): Promise<Person[]> {
+  return list((await call(ENDPOINTS.getMeeting(circlebackId))).attendees).map(mapPerson);
+}
+
+export type ActionItemUpdate = { title?: string; description?: string; status?: "PENDING" | "DONE"; assigneeProfileId?: number | null };
+
+export async function updateActionItem(actionItemId: number, body: ActionItemUpdate): Promise<Json> {
+  return call(ENDPOINTS.updateActionItem(actionItemId), { method: "PUT", body: JSON.stringify(body) });
 }

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const Person = z.object({ name: z.string().min(1), email: z.string().optional() });
+const Person = z.object({ name: z.string().min(1), email: z.string().optional(), profileId: z.number().int().positive().optional() });
 
 export const MeetingSchema = z.object({
   id: z.string().regex(/^[\w-]+$/, "id may only contain letters, numbers, - and _"),
@@ -8,6 +8,7 @@ export const MeetingSchema = z.object({
   createdAt: z.string(),
   durationSeconds: z.number().nonnegative(),
   url: z.string().url().optional(),
+  circlebackId: z.string().optional(),
   attendees: z.array(Person),
   transcript: z
     .array(z.object({ id: z.string(), speaker: z.string(), start: z.number(), end: z.number(), text: z.string() }))

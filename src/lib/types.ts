@@ -1,6 +1,6 @@
 // ---------- Meeting data (what Circleback gives us) ----------
 
-export type Person = { name: string; email?: string };
+export type Person = { name: string; email?: string; profileId?: number }; // profileId: Circleback's, for setting assignees
 
 export type Segment = {
   id: string;
@@ -28,6 +28,7 @@ export type Meeting = {
   actionItems: ActionItem[];
   url?: string;
   source?: string;
+  circlebackId?: string; // Circleback's own meeting id, for API calls
 };
 
 // ---------- What the AI reports (raw, unchecked) ----------

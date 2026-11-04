@@ -129,12 +129,34 @@ No API key needed:
 The script reads the same endpoints the Circleback web app uses to show you your meeting. They aren't a
 documented public API, so they may change.
 
-## Connecting through the Circleback API
+## Running automatically after every meeting
 
-1. Create an API key in Circleback under **Settings → API keys**.
-2. In `.env`, set `MEETING_SOURCE="api"` and `CIRCLEBACK_API_KEY=...`.
-3. Check the endpoint paths and field names in `src/lib/circleback/api.ts` against
-   https://circleback.ai/docs/api. They are best guesses kept in one place.
+1. In Circleback, add a **webhook** automation (trigger: meeting completed) pointing at
+   `https://<your-host>/api/webhooks/circleback`. Copy its signing secret (`whsec_...`) into
+   `CIRCLEBACK_WEBHOOK_SECRET` in `.env`.
+2. Create an API key (`cb_...`) in Circleback settings and set `CIRCLEBACK_API_KEY`. It's used to read a
+   transcript the webhook didn't include yet, and to write fixes back.
+
+Each delivery is checked against its `x-signature` (HMAC-SHA256 of the raw body), saved to
+`data/imported/`, and verified. Circleback retries failed deliveries, so a meeting that was already
+verified is skipped. Only an AI failure returns an error, so Circleback tries again later.
+
+To read meetings from the API instead of files, set `MEETING_SOURCE="api"`.
+
+## Fixing items in one click
+
+Every flag has **Accept**, **Reassign…** and **Dismiss**. With `CIRCLEBACK_API_KEY` set, Accept and
+Reassign update the item through Circleback's `PUT /action-item/{id}`:
+
+| Flag | Accept writes |
+|---|---|
+| Owner fix (reassign) | the suggested person as assignee, matched to the meeting's attendee by email, then name |
+| Owner fix (co-owner) | a dated "Shared with ..." note in the description; Circleback holds one assignee |
+| Already done | status DONE |
+| Due date, conditional, taken back | a dated note with the quote in the description; the API has no due-date or canceled field |
+
+Nothing is ever deleted. Without an API key, or for items that didn't come from Circleback, the
+decision is saved in the app only and says so. Decisions are stored in `.data/decisions/`.
 
 ## Saving results
 
@@ -146,6 +168,10 @@ and set `STORAGE="prisma"` in `.env`. For Postgres, change `provider` in `prisma
 - Meetings longer than about 100k tokens of transcript aren't split yet.
 - Answers depend on the model. Use `npm run eval -- --model ...` to compare.
 - No offline mode: verifying needs an OpenAI key.
+- The app has no login. Anyone who can reach it can accept fixes, which write to Circleback with your
+  key. Requests from other sites are refused, but put it behind auth before exposing it publicly.
+- Reading through Circleback's MCP server isn't used: it needs an interactive OAuth sign-in, and the
+  webhook already carries the transcript.
 
 ## Project layout
 

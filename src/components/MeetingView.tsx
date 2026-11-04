@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CHECK_TEXT, type Evidence, type Meeting, type SuggestedOwner, type VerificationReport } from "@/lib/types";
+import { type Decision, decisionKey, openFlags } from "@/lib/fixes";
+import { FlagActions } from "./FlagActions";
 import { OwnerBadge, TaskBadge, fmtTime, isClean } from "./LabelBadge";
 
 type Filter = "ALL" | "FLAGGED" | "OK";
@@ -12,11 +14,13 @@ export function MeetingView({
   report,
   links,
   hasKey,
+  decisions,
 }: {
   meeting: Meeting;
   report: VerificationReport | null;
   links: Record<string, string>;
   hasKey: boolean;
+  decisions: Record<string, Decision>;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -75,11 +79,11 @@ export function MeetingView({
     </button>
   );
 
-  const flaggedCount = report ? report.verdicts.filter((v) => !isClean(v.task, v.owner, !!v.suggestion || !!v.checks?.length)).length : 0;
+  const flaggedCount = report ? report.verdicts.filter((v) => !isClean(v.task, v.owner, openFlags(v, decisions).length > 0)).length : 0;
   const items = meeting.actionItems.filter((a) => {
     const v = verdicts.get(a.id);
     if (filter === "ALL" || !v) return true;
-    return filter === "OK" ? isClean(v.task, v.owner, !!v.suggestion || !!v.checks?.length) : !isClean(v.task, v.owner, !!v.suggestion || !!v.checks?.length);
+    return filter === "OK" ? isClean(v.task, v.owner, openFlags(v, decisions).length > 0) : !isClean(v.task, v.owner, openFlags(v, decisions).length > 0);
   });
   const aiNamed = (report?.speakers ?? []).filter((s) => s.source === "ai");
   const pill = (f: Filter, label: string) => (
@@ -177,6 +181,14 @@ export function MeetingView({
                               </li>
                             ))}
                           </ul>
+                          <FlagActions
+                            meetingId={meeting.id}
+                            itemId={a.id}
+                            flag="owner"
+                            acceptLabel={v.suggestion.action === "reassign" ? `Assign to ${v.suggestion.owners[0].name}` : "Note co-owner"}
+                            attendees={meeting.attendees}
+                            decision={decisions[decisionKey(a.id, "owner")]}
+                          />
                         </div>
                       )}
                       {v.checks?.map((c) => (
@@ -190,6 +202,14 @@ export function MeetingView({
                               </li>
                             ))}
                           </ul>
+                          <FlagActions
+                            meetingId={meeting.id}
+                            itemId={a.id}
+                            flag={c.kind}
+                            acceptLabel={c.kind === "already_done" ? "Mark done" : "Add note to item"}
+                            attendees={meeting.attendees}
+                            decision={decisions[decisionKey(a.id, c.kind)]}
+                          />
                         </div>
                       ))}
                       <p className="mt-2 text-sm text-zinc-700 dark:text-zinc-300">{v.rationale}</p>
