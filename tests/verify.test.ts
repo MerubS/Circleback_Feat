@@ -15,7 +15,7 @@ const meeting: Meeting = {
   name: "Test",
   createdAt: "2026-11-01T00:00:00Z",
   durationSeconds: 60,
-  attendees: [{ name: "Ana Diaz" }, { name: "Raj Patel" }, { name: "Participant 3" }],
+  attendees: [{ name: "Ana Diaz" }, { name: "Raj Patel", email: "raj@example.com" }, { name: "Participant 3" }],
   transcript: [
     { id: "s1", speaker: "Ana Diaz", start: 0, end: 4, text: "The export button is broken on Safari." },
     { id: "s2", speaker: "Raj Patel", start: 5, end: 9, text: "I'll fix the Safari export bug tomorrow." },
@@ -30,6 +30,9 @@ const meeting: Meeting = {
     { id: "s11", speaker: "José Núñez", start: 43, end: 46, text: "Sí, yo me encargo de la migración." },
     { id: "s12", speaker: "Participant 3", start: 47, end: 55, text: "Okay team, the agenda is long today, so to keep moving, Steph, your part is the user friendliness." },
     { id: "s13", speaker: "Daniel Kim", start: 56, end: 59, text: "I'll write the migration guide this week." },
+    { id: "s14", speaker: "Ana Diaz", start: 60, end: 65, text: "I'll send the contract to legal by next Wednesday, if Raj approves the budget." },
+    { id: "s15", speaker: "Raj Patel", start: 66, end: 69, text: "Actually, let's skip the contract for now." },
+    { id: "s16", speaker: "Raj Patel", start: 70, end: 74, text: "The changelog is already updated, I did it this morning." },
   ],
   actionItems: [],
 };
@@ -40,6 +43,10 @@ const commit = (c: Partial<AiCommitment> & Pick<AiCommitment, "id" | "owners" | 
   kind: "self",
   response: null,
   ownerResponse: "not_applicable",
+  due: null,
+  condition: null,
+  reversal: null,
+  alreadyDone: null,
   ...c,
 });
 const match = (m: Partial<AiItemMatch> & Pick<AiItemMatch, "actionItemId">): AiItemMatch => ({
@@ -47,6 +54,8 @@ const match = (m: Partial<AiItemMatch> & Pick<AiItemMatch, "actionItemId">): AiI
   taskSupport: "unsupported",
   evidence: [],
   rationale: "",
+  itemDue: null,
+  dueMatch: "not_comparable",
   ...m,
 });
 const run = (items: Meeting["actionItems"], reading: Partial<AiReading>) =>
@@ -71,7 +80,7 @@ test("someone else committed: owner is 'someone else'", () => {
   });
   assert.equal(r.verdicts[0].owner, "SOMEONE_ELSE");
   assert.deepEqual(r.verdicts[0].suggestion?.action, "reassign");
-  assert.deepEqual(r.verdicts[0].suggestion?.owners, [{ name: "Raj Patel", speaker: "Raj Patel", confirmed: true }]);
+  assert.deepEqual(r.verdicts[0].suggestion?.owners, [{ name: "Raj Patel", speaker: "Raj Patel", confirmed: true, attendee: { name: "Raj Patel", email: "raj@example.com" } }]);
   assert.equal(r.verdicts[0].suggestion?.evidence[0].segmentId, "s2");
 });
 
@@ -83,7 +92,7 @@ test("shared task: assignee is one of two owners, the other is suggested as co-o
   });
   assert.equal(r.verdicts[0].owner, "NOT_ACKNOWLEDGED"); // Raj was named but never said yes
   assert.equal(r.verdicts[0].suggestion?.action, "add_owners");
-  assert.deepEqual(r.verdicts[0].suggestion?.owners, [{ name: "Ana Diaz", speaker: "Ana Diaz", confirmed: true }]);
+  assert.deepEqual(r.verdicts[0].suggestion?.owners, [{ name: "Ana Diaz", speaker: "Ana Diaz", confirmed: true, attendee: { name: "Ana Diaz" } }]);
 });
 
 test("someone agrees for another person: reassign to them, marked unconfirmed", () => {
@@ -364,4 +373,57 @@ test("name matching: loose on first names, strict on different people and placeh
 test("Circleback API times: milliseconds are detected once per meeting", () => {
   assert.equal(timeScale([{ start: 9000, end: 12000 }, { start: 5_400_000, end: 5_401_000 }]), 1000);
   assert.equal(timeScale([{ start: 9, end: 12 }, { start: 5400, end: 5401 }]), 1);
+});
+
+const contract = (extra: Partial<AiCommitment> = {}) =>
+  commit({ id: "k", owners: ["Ana Diaz"], statement: { segmentId: "s14", quote: "I'll send the contract to legal" }, ...extra });
+const contractItem = (extra: Partial<AiItemMatch> = {}) => match({ actionItemId: "a", commitmentId: "k", taskSupport: "supported", ...extra });
+const checksOf = (c: AiCommitment, m: AiItemMatch) => run([item("a", "Send contract to legal by Friday", "Ana Diaz")], { commitments: [c], items: [m] }).verdicts[0];
+
+test("due date: item says Friday, meeting said next Wednesday", () => {
+  const v = checksOf(
+    contract({ due: { when: "next Wednesday", quote: { segmentId: "s14", quote: "by next Wednesday" } } }),
+    contractItem({ itemDue: "Friday", dueMatch: "different" }),
+  );
+  assert.equal(v.task, "SUPPORTED");
+  assert.equal(v.owner, "CONFIRMED");
+  assert.deepEqual(v.checks?.map((c) => [c.kind, c.detail]), [["due_date", "The item says Friday; the meeting said next Wednesday."]]);
+  // Same date, or a made-up due quote: no flag.
+  assert.equal(checksOf(contract({ due: { when: "Friday", quote: { segmentId: "s14", quote: "by next Wednesday" } } }), contractItem({ dueMatch: "same" })).checks, undefined);
+  assert.equal(checksOf(contract({ due: { when: "Monday", quote: { segmentId: "s14", quote: "by Monday noon" } } }), contractItem({ dueMatch: "different" })).checks, undefined);
+});
+
+test("conditional promise is flagged with the condition", () => {
+  const v = checksOf(
+    contract({ condition: { what: "if Raj approves the budget", quote: { segmentId: "s14", quote: "if Raj approves the budget" } } }),
+    contractItem(),
+  );
+  assert.deepEqual(v.checks?.map((c) => [c.kind, c.detail]), [["conditional", "Depends on: \"if Raj approves the budget\". The item doesn't say so."]]);
+});
+
+test("taken back later in the call: contradicted; a 'take-back' before the promise is ignored", () => {
+  const v = checksOf(contract({ reversal: { segmentId: "s15", quote: "let's skip the contract for now" } }), contractItem());
+  assert.equal(v.task, "CONTRADICTED");
+  assert.equal(v.checks?.[0].kind, "cancelled_later");
+  const early = run([item("a", "Send contract to legal", "Ana Diaz")], {
+    commitments: [contract({ reversal: { segmentId: "s1", quote: "The export button is broken" } })],
+    items: [contractItem()],
+  });
+  assert.equal(early.verdicts[0].task, "SUPPORTED");
+  assert.match(early.notes.join(" "), /isn't after the promise/);
+});
+
+test("already done: flagged on the item and never listed as possibly missed", () => {
+  const done = { alreadyDone: { segmentId: "s16", quote: "The changelog is already updated" } };
+  const c = commit({ id: "cl", kind: "assigned", owners: ["Raj Patel"], statement: { segmentId: "s3", quote: "can you also update the changelog?" }, ...done });
+  const r = run([item("a", "Update changelog", "Raj Patel")], { commitments: [c], items: [match({ actionItemId: "a", commitmentId: "cl", taskSupport: "supported" })] });
+  assert.equal(r.verdicts[0].checks?.[0].kind, "already_done");
+  assert.equal(run([], { commitments: [c] }).missed.length, 0);
+});
+
+test("a promise spoken by one of its owners is theirs, even if the AI called it 'assigned'", () => {
+  const c = commit({ id: "r", kind: "assigned", owners: ["Ana Diaz"], statement: { segmentId: "s14", quote: "I'll send the contract to legal" }, ownerResponse: "committed" });
+  const v = run([item("a", "Send contract", "Raj Patel")], { commitments: [c], items: [match({ actionItemId: "a", commitmentId: "r", taskSupport: "supported" })] }).verdicts[0];
+  assert.equal(v.owner, "SOMEONE_ELSE");
+  assert.equal(v.suggestion?.owners[0].confirmed, true);
 });

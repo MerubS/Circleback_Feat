@@ -24,7 +24,7 @@ export default async function Home() {
       <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {meetings.map((m, i) => {
           const r = reports[i];
-          const ok = r ? r.verdicts.filter((v) => isClean(v.task, v.owner, !!v.suggestion)).length : 0;
+          const ok = r ? r.verdicts.filter((v) => isClean(v.task, v.owner, !!v.suggestion || !!v.checks?.length)).length : 0;
           const flagged = r ? r.verdicts.length - ok : 0;
           return (
             <li key={m.id}>

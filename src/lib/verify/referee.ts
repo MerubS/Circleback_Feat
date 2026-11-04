@@ -2,6 +2,7 @@ import type {
   AiCommitment,
   AiReading,
   Evidence,
+  ItemCheck,
   ItemVerdict,
   Meeting,
   MissedTask,
@@ -129,7 +130,16 @@ export function referee(meeting: Meeting, ai: AiReading): {
 
   // ---- 2. Commitments ----
   type Owner = { raw: string; labels: string[]; name: string };
-  type Checked = AiCommitment & { by: string; stmt: Evidence; resp: Evidence | null; who: Owner[] };
+  type Checked = AiCommitment & {
+    by: string;
+    stmt: Evidence;
+    resp: Evidence | null;
+    who: Owner[];
+    dueEv: Evidence | null;
+    condEv: Evidence | null;
+    revEv: Evidence | null;
+    doneEv: Evidence | null;
+  };
   const commitments = new Map<string, Checked>();
   const paraphrased = new Map<string, Evidence>(); // commitments whose statement was close but not exact
   for (const c of ai.commitments) {
@@ -140,9 +150,11 @@ export function referee(meeting: Meeting, ai: AiReading): {
       paraphrased.set(c.id, stmt);
       continue;
     }
-    // A "self" promise must list its own speaker. If it doesn't, the speaker handed the task out
-    // (e.g. a manager giving roles), so treat it as an assignment rather than adding them as owner.
-    const kind = c.kind === "self" && !c.owners.map((o) => o.trim()).includes(stmt.speaker) ? "assigned" : c.kind;
+    // Decided from who spoke, not the AI's label: if the speaker is one of the owners, it's their own
+    // promise ("Ben, once your PR is up I'll review it" is Aisha's, even though she's talking to Ben).
+    // A "self" promise that doesn't list its speaker is a hand-out (a manager giving roles).
+    const speakerOwns = c.owners.map((o) => o.trim()).includes(stmt.speaker);
+    const kind = speakerOwns ? "self" : c.kind === "self" ? "assigned" : c.kind;
     const who: Owner[] = [];
     for (const raw of c.owners.map((o) => o.trim())) {
       if (!raw || who.some((w) => w.raw === raw)) continue;
@@ -157,7 +169,17 @@ export function referee(meeting: Meeting, ai: AiReading): {
       continue;
     }
     const resp = kind === "self" ? null : check(c.response, `${where} (reply)`, notes);
-    commitments.set(c.id, { ...c, kind, by: stmt.speaker, stmt, resp, who });
+    const dueEv = c.due ? check(c.due.quote, `${where} (due date)`, notes) : null;
+    const condEv = c.condition ? check(c.condition.quote, `${where} (condition)`, notes) : null;
+    const doneEv = c.alreadyDone ? check(c.alreadyDone, `${where} (already done)`, notes) : null;
+    let revEv = c.reversal ? check(c.reversal, `${where} (taken back)`, notes) : null;
+    // "Taken back" must come after the promise: an earlier line can't undo it.
+    // shortcut: a promise and its retraction inside one transcript line aren't caught.
+    if (revEv && pos.get(revEv.segmentId)! <= pos.get(stmt.segmentId)!) {
+      notes.push(`${where}: the "taken back" line isn't after the promise; ignored.`);
+      revEv = null;
+    }
+    commitments.set(c.id, { ...c, kind, by: stmt.speaker, stmt, resp, who, dueEv, condEv, revEv, doneEv });
   }
 
   // ---- 3. One verdict per action item ----
@@ -207,6 +229,27 @@ export function referee(meeting: Meeting, ai: AiReading): {
       c = undefined;
     }
 
+    // What else the meeting said about this promise. Every flag rests on a verified quote.
+    const checks: ItemCheck[] = [];
+    if (c) {
+      if (c.revEv) {
+        checks.push({ kind: "cancelled_later", detail: "Later in the call it was dropped or taken back.", evidence: [c.revEv] });
+        if (task === "SUPPORTED" || task === "WEAK") {
+          task = "CONTRADICTED";
+          n.push("Taken back later in the call; the item shouldn't stand.");
+        }
+      }
+      if (c.doneEv) checks.push({ kind: "already_done", detail: "Someone said it's already done, so it may not need an action item.", evidence: [c.doneEv] });
+      if (c.condEv && c.condition)
+        checks.push({ kind: "conditional", detail: `Depends on: "${c.condition.what}". The item doesn't say so.`, evidence: [c.condEv] });
+      if (m.dueMatch === "different" && c.dueEv && c.due)
+        checks.push({
+          kind: "due_date",
+          detail: `The item says ${m.itemDue ?? "a different deadline"}; the meeting said ${c.due.when}.`,
+          evidence: [c.dueEv],
+        });
+    }
+
     // Owner
     let owner: OwnerStatus;
     const a = item.assignee?.name?.trim();
@@ -238,7 +281,11 @@ export function referee(meeting: Meeting, ai: AiReading): {
       if (others.length)
         suggestion = {
           action: assigneeAmongOwners ? "add_owners" : "reassign",
-          owners: others.map((w) => ({ name: w.name, speaker: w.labels[0], confirmed: saidYes(w) })),
+          owners: others.map((w) => {
+            // The attendee record is what you'd set as Circleback's assignee.
+            const attendee = meeting.attendees.find((p) => namesMatch(p.name, w.name));
+            return { name: w.name, speaker: w.labels[0], confirmed: saidYes(w), ...(attendee && { attendee }) };
+          }),
           evidence: [cc.stmt, ...(cc.resp ? [cc.resp] : [])],
         };
     }
@@ -261,15 +308,24 @@ export function referee(meeting: Meeting, ai: AiReading): {
     }
 
     evidence.sort((x, y) => x.start - y.start);
-    return { actionItemId: item.id, task, owner, evidence, rationale: m.rationale, notes: n, ...(suggestion && { suggestion }) };
+    return {
+      actionItemId: item.id,
+      task,
+      owner,
+      evidence,
+      rationale: m.rationale,
+      notes: n,
+      ...(suggestion && { suggestion }),
+      ...(checks.length ? { checks } : {}),
+    };
   });
 
   // ---- 4. Commitments with no action item ----
   const covered = new Set(verdicts.flatMap((v) => v.evidence.map((e) => e.segmentId)));
   const missed: MissedTask[] = [...commitments.values()]
     .filter((c) => !used.has(c.id) && !covered.has(c.stmt.segmentId))
-    // A task the owner turned down isn't a missed task.
-    .filter((c) => c.ownerResponse !== "declined")
+    // A task the owner turned down, took back, or already finished isn't a missed task.
+    .filter((c) => c.ownerResponse !== "declined" && !c.revEv && !c.doneEv)
     .filter((c) => c.kind === "self" || c.kind === "assigned" || c.ownerResponse === "committed")
     .map((c) => ({
       task: c.task,

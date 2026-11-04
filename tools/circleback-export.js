@@ -50,6 +50,7 @@
       title: a.title,
       description: a.description || undefined,
       assignee: a.assignee ? { name: name(a.assignee.profile) || "Unknown", email: a.assignee.profile?.email || undefined } : null,
+      dueDate: a.dueDate ?? null,
     })),
   };
   const blob = new Blob([JSON.stringify(out, null, 2)], { type: "application/json" });

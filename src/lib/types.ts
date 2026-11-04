@@ -15,6 +15,7 @@ export type ActionItem = {
   title: string;
   description?: string;
   assignee?: Person | null;
+  dueDate?: string | null; // Circleback's due date field, if set
 };
 
 export type Meeting = {
@@ -62,6 +63,10 @@ export type AiCommitment = {
   statement: Quote; // the line that makes the commitment or assignment
   response: Quote | null; // an owner's reply, if any
   ownerResponse: OwnerResponse;
+  due: { when: string; quote: Quote } | null; // deadline said in the meeting ("by Friday")
+  condition: { what: string; quote: Quote } | null; // "if legal signs off"
+  reversal: Quote | null; // a LATER line that cancels or takes it back ("actually, skip that")
+  alreadyDone: Quote | null; // a line saying it's already done ("I sent it this morning")
 };
 
 export type TaskSupport = "supported" | "weak" | "unsupported" | "contradicted";
@@ -72,6 +77,10 @@ export type AiItemMatch = {
   taskSupport: TaskSupport;
   evidence: Quote[];
   rationale: string;
+  /** Deadline in the action item (title, description or due date), as written; null if none. */
+  itemDue: string | null;
+  /** Does it agree with the deadline said in the meeting? */
+  dueMatch: "same" | "different" | "not_comparable";
 };
 
 export type AiReading = {
@@ -132,6 +141,7 @@ export type SuggestedOwner = {
   name: string; // best display name
   speaker?: string; // transcript label, when they speak in the meeting
   confirmed: boolean; // they said yes themselves (not just named by someone else)
+  attendee?: Person; // the meeting attendee this maps to: what you'd set as Circleback's assignee
 };
 
 /** A correction you could write back to Circleback: change or add assignees. */
@@ -139,6 +149,20 @@ export type OwnerSuggestion = {
   action: "reassign" | "add_owners";
   owners: SuggestedOwner[];
   evidence: Evidence[];
+};
+
+/** Problems with an item that is otherwise real. Each one is backed by a verified quote. */
+export type ItemCheck = {
+  kind: "due_date" | "conditional" | "cancelled_later" | "already_done";
+  detail: string;
+  evidence: Evidence[];
+};
+
+export const CHECK_TEXT: Record<ItemCheck["kind"], string> = {
+  due_date: "Due date differs",
+  conditional: "Conditional promise",
+  cancelled_later: "Taken back later in the call",
+  already_done: "Already done",
 };
 
 export type ItemVerdict = {
@@ -149,6 +173,7 @@ export type ItemVerdict = {
   rationale: string;
   notes: string[]; // what the referee changed or rejected, and why
   suggestion?: OwnerSuggestion;
+  checks?: ItemCheck[];
 };
 
 export type MissedTask = {

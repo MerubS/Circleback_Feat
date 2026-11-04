@@ -26,6 +26,10 @@ export const ReadingZ = z.object({
       statement: QuoteZ,
       response: QuoteZ.nullable(),
       ownerResponse: z.enum(OWNER_RESPONSES),
+      due: z.object({ when: z.string(), quote: QuoteZ }).nullable(),
+      condition: z.object({ what: z.string(), quote: QuoteZ }).nullable(),
+      reversal: QuoteZ.nullable(),
+      alreadyDone: QuoteZ.nullable(),
     }),
   ),
   items: z.array(
@@ -35,6 +39,8 @@ export const ReadingZ = z.object({
       taskSupport: z.enum(["supported", "weak", "unsupported", "contradicted"]),
       evidence: z.array(QuoteZ),
       rationale: z.string(),
+      itemDue: z.string().nullable(),
+      dueMatch: z.enum(["same", "different", "not_comparable"]),
     }),
   ),
 });
@@ -45,6 +51,13 @@ const quote = {
   required: ["segmentId", "quote"],
   properties: { segmentId: { type: "string" }, quote: { type: "string" } },
 };
+const nullable = (s: object) => ({ anyOf: [s, { type: "null" }] });
+const labelled = (field: string) => ({
+  type: "object",
+  additionalProperties: false,
+  required: [field, "quote"],
+  properties: { [field]: { type: "string" }, quote },
+});
 
 const JSON_SCHEMA = {
   name: "meeting_reading",
@@ -74,15 +87,19 @@ const JSON_SCHEMA = {
         items: {
           type: "object",
           additionalProperties: false,
-          required: ["id", "task", "kind", "owners", "statement", "response", "ownerResponse"],
+          required: ["id", "task", "kind", "owners", "statement", "response", "ownerResponse", "due", "condition", "reversal", "alreadyDone"],
           properties: {
             id: { type: "string" },
             task: { type: "string" },
             kind: { type: "string", enum: ["self", "assigned", "volunteered_other"] },
             owners: { type: "array", items: { type: "string" } },
             statement: quote,
-            response: { anyOf: [quote, { type: "null" }] },
+            response: nullable(quote),
             ownerResponse: { type: "string", enum: [...OWNER_RESPONSES] },
+            due: nullable(labelled("when")),
+            condition: nullable(labelled("what")),
+            reversal: nullable(quote),
+            alreadyDone: nullable(quote),
           },
         },
       },
@@ -91,13 +108,15 @@ const JSON_SCHEMA = {
         items: {
           type: "object",
           additionalProperties: false,
-          required: ["actionItemId", "commitmentId", "taskSupport", "evidence", "rationale"],
+          required: ["actionItemId", "commitmentId", "taskSupport", "evidence", "rationale", "itemDue", "dueMatch"],
           properties: {
             actionItemId: { type: "string" },
             commitmentId: { type: ["string", "null"] },
             taskSupport: { type: "string", enum: ["supported", "weak", "unsupported", "contradicted"] },
             evidence: { type: "array", items: quote },
             rationale: { type: "string" },
+            itemDue: { type: ["string", "null"] },
+            dueMatch: { type: "string", enum: ["same", "different", "not_comparable"] },
           },
         },
       },
@@ -133,6 +152,11 @@ Do three things.
      declined = no ("I can't", "not me");
      no_response = the owner said nothing about it.
      For kind "self", judge the statement itself: "I'll send it" is committed, "I might look into it" is hedged.
+     A condition is not a hedge: "once your PR is up I'll review it" is committed, with the condition recorded in condition.
+   due = the deadline said for it in the meeting ("by Friday", "end of the month") and the line that says it; null if none was said.
+   condition = what the promise depends on, if anything ("if legal signs off", "once the budget is approved"), and the line; else null.
+   reversal = a LATER line that cancels, drops or takes it back ("actually, let's skip that", "never mind, Raj will do it"); else null.
+   alreadyDone = a line saying it is already done ("I sent it this morning", "that's already fixed"); else null.
    Quotes and statements can be in any language; copy them in the original language.
    Not commitments: vague ideas ("we should", "someday", "at some point"), questions, and small talk.
    Transcripts can split one sentence across two speakers by mistake (e.g. "I'll" then "look into it"). Use context.
@@ -143,6 +167,8 @@ Do three things.
      If you found lines about it, it is not "unsupported": use weak or contradicted.
    - evidence: up to 3 lines that show it.
    - rationale: one or two plain sentences.
+   - itemDue: the deadline the ACTION ITEM gives (in its title, description or due=), as written; null if it has none.
+   - dueMatch: compare itemDue with the matching commitment's due. same, different (e.g. item says Friday, meeting said next Wednesday), or not_comparable (either one is missing).
 
 Every quote must be copied EXACTLY from the line whose segmentId you give, without the "Speaker:" prefix.
 Use at least two words (or the whole line). A short exact phrase is better than a long paraphrase.`;
@@ -154,7 +180,7 @@ Attendees: ${m.attendees.map((a) => a.name).join(", ") || "unknown"}
 Placeholder speakers to identify if possible: ${generic.join(", ") || "none"}
 
 Action items:
-${m.actionItems.map((a) => `- id=${a.id} | owner=${a.assignee?.name ?? "none"} | ${a.title}${a.description ? ` (${a.description})` : ""}`).join("\n") || "(none)"}
+${m.actionItems.map((a) => `- id=${a.id} | owner=${a.assignee?.name ?? "none"}${a.dueDate ? ` | due=${a.dueDate}` : ""} | ${a.title}${a.description ? ` (${a.description})` : ""}`).join("\n") || "(none)"}
 
 Transcript:
 ${m.transcript.map((s) => `[${s.id}] ${s.speaker}: ${s.text}`).join("\n")}`;

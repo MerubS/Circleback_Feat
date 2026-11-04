@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { Evidence, Meeting, SuggestedOwner, VerificationReport } from "@/lib/types";
+import { CHECK_TEXT, type Evidence, type Meeting, type SuggestedOwner, type VerificationReport } from "@/lib/types";
 import { OwnerBadge, TaskBadge, fmtTime, isClean } from "./LabelBadge";
 
 type Filter = "ALL" | "FLAGGED" | "OK";
@@ -75,11 +75,11 @@ export function MeetingView({
     </button>
   );
 
-  const flaggedCount = report ? report.verdicts.filter((v) => !isClean(v.task, v.owner, !!v.suggestion)).length : 0;
+  const flaggedCount = report ? report.verdicts.filter((v) => !isClean(v.task, v.owner, !!v.suggestion || !!v.checks?.length)).length : 0;
   const items = meeting.actionItems.filter((a) => {
     const v = verdicts.get(a.id);
     if (filter === "ALL" || !v) return true;
-    return filter === "OK" ? isClean(v.task, v.owner, !!v.suggestion) : !isClean(v.task, v.owner, !!v.suggestion);
+    return filter === "OK" ? isClean(v.task, v.owner, !!v.suggestion || !!v.checks?.length) : !isClean(v.task, v.owner, !!v.suggestion || !!v.checks?.length);
   });
   const aiNamed = (report?.speakers ?? []).filter((s) => s.source === "ai");
   const pill = (f: Filter, label: string) => (
@@ -161,6 +161,12 @@ export function MeetingView({
                             {v.suggestion.owners.map((o) => (
                               <li key={o.name}>
                                 {ownerName(o)}: {o.confirmed ? "said yes themselves" : "named by someone else, hasn't confirmed"}
+                                {o.attendee && (
+                                  <span className="text-rose-700/80 dark:text-rose-300/80">
+                                    {" "}
+                                    · set assignee to {o.attendee.email ? `${o.attendee.name} <${o.attendee.email}>` : `attendee "${o.attendee.name}"`}
+                                  </span>
+                                )}
                               </li>
                             ))}
                           </ul>
@@ -173,6 +179,19 @@ export function MeetingView({
                           </ul>
                         </div>
                       )}
+                      {v.checks?.map((c) => (
+                        <div key={c.kind} className="mt-3 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm dark:border-amber-800 dark:bg-amber-950/40">
+                          <p className="font-semibold text-amber-900 dark:text-amber-200">{CHECK_TEXT[c.kind]}</p>
+                          <p className="mt-1 text-amber-900 dark:text-amber-200">{c.detail}</p>
+                          <ul className="mt-2 space-y-2">
+                            {c.evidence.map((e, i) => (
+                              <li key={i}>
+                                <Quote e={e} />
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
                       <p className="mt-2 text-sm text-zinc-700 dark:text-zinc-300">{v.rationale}</p>
                       {v.evidence.length > 0 && (
                         <ul className="mt-3 space-y-2">

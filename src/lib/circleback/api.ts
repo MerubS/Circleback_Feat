@@ -63,6 +63,7 @@ function mapActionItem(a: Json): ActionItem {
     title: a.title ?? a.name ?? a.text ?? "",
     description: a.description ?? undefined,
     assignee: who ? (typeof who === "string" ? { name: who } : mapPerson(who)) : null,
+    dueDate: a.dueDate ?? a.due_date ?? a.due ?? null,
   };
 }
 

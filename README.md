@@ -20,7 +20,15 @@ Every action item gets **two answers**:
 When the meeting points to a different owner, it **suggests the fix** with the quote attached: reassign
 ("Priya: I'll take it" when Circleback named Raj), add a co-owner ("Raj and I will split it"), or
 reassign to someone volunteered by a colleague ("Sam's got it", marked as not yet confirmed by Sam).
-That's a correction you could write straight back to Circleback by changing the assignee.
+Each suggested owner is matched to a meeting attendee (name and email), which is what you'd set as
+Circleback's assignee.
+
+It also flags items that are real but wrong in a detail, each with the line that shows it:
+- **Due date differs**: the item says Friday, the meeting said next Wednesday.
+- **Conditional promise**: "if legal signs off", which the item leaves out.
+- **Taken back later in the call**: "actually, let's skip that" after the promise. The task becomes
+  Contradicted. The take-back line must come after the promise.
+- **Already done**: "I sent it this morning", so it may not need an action item.
 
 It also lists **promises the notetaker may have missed**: commitments with no matching action item.
 

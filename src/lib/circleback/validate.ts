@@ -14,6 +14,12 @@ export const MeetingSchema = z.object({
     .min(1)
     .refine((t) => new Set(t.map((s) => s.id)).size === t.length, "transcript segment ids must be unique"),
   actionItems: z.array(
-    z.object({ id: z.string(), title: z.string().min(1), description: z.string().optional(), assignee: Person.nullable().optional() }),
+    z.object({
+      id: z.string(),
+      title: z.string().min(1),
+      description: z.string().optional(),
+      assignee: Person.nullable().optional(),
+      dueDate: z.string().nullable().optional(),
+    }),
   ),
 });

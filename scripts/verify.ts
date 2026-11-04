@@ -4,7 +4,7 @@
  */
 import { getMeeting } from "@/lib/circleback/source";
 import { store } from "@/lib/store";
-import { OWNER_TEXT, TASK_TEXT } from "@/lib/types";
+import { CHECK_TEXT, OWNER_TEXT, TASK_TEXT } from "@/lib/types";
 import { verifyMeeting } from "@/lib/verify";
 
 const t = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
@@ -29,9 +29,10 @@ async function main() {
     console.log(`  ${v.rationale}`);
     for (const e of v.evidence) console.log(`  ${t(e.start)} ${e.speaker}: "${e.quote}"${e.fuzzy ? " (paraphrased)" : ""}`);
     if (v.suggestion) {
-      const who = v.suggestion.owners.map((o) => `${o.name}${o.confirmed ? "" : " (didn't confirm)"}`).join(" + ");
+      const who = v.suggestion.owners.map((o) => `${o.name}${o.attendee?.email ? ` <${o.attendee.email}>` : ""}${o.confirmed ? "" : " (didn't confirm)"}`).join(" + ");
       console.log(`  >> ${v.suggestion.action === "reassign" ? "Reassign to" : "Also assign"}: ${who}`);
     }
+    for (const c of v.checks ?? []) console.log(`  !! ${CHECK_TEXT[c.kind]}: ${c.detail} (${t(c.evidence[0].start)} "${c.evidence[0].quote}")`);
     for (const n of v.notes) console.log(`  [referee] ${n}`);
   }
   if (r.missed.length) {

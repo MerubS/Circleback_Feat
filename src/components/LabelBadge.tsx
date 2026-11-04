@@ -29,9 +29,9 @@ export function OwnerBadge({ owner }: { owner: OwnerStatus }) {
   return <span className={`${base} ${OWNER_STYLE[owner]}`}>{OWNER_TEXT[owner]}</span>;
 }
 
-/** Fine as-is: real task and the owner took it on (or nobody was named). */
-export function isClean(task: TaskStatus, owner: OwnerStatus, hasSuggestion = false) {
-  return task === "SUPPORTED" && (owner === "CONFIRMED" || owner === "NO_OWNER") && !hasSuggestion;
+/** Fine as-is: real task, the owner took it on (or nobody was named), and nothing flagged (owner fix, due date, ...). */
+export function isClean(task: TaskStatus, owner: OwnerStatus, flagged = false) {
+  return task === "SUPPORTED" && (owner === "CONFIRMED" || owner === "NO_OWNER") && !flagged;
 }
 
 export function fmtTime(sec: number) {
