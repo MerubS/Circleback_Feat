@@ -9,8 +9,8 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
-    "eval": "tsx scripts/eval.ts",
-    "verify": "tsx scripts/verify.ts",
+    "eval": "tsx --env-file-if-exists=.env scripts/eval.ts",
+    "verify": "tsx --env-file-if-exists=.env scripts/verify.ts",
     "db:push": "prisma db push",
     "db:setup": "prisma generate && prisma db push"
   },

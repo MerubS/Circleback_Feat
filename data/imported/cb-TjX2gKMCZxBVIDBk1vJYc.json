@@ -1,0 +1,591 @@
+{
+  "id": "cb-TjX2gKMCZxBVIDBk1vJYc",
+  "name": "ES2013a.Mix-Headset",
+  "createdAt": "2026-11-03T00:41:42.075Z",
+  "durationSeconds": 822,
+  "url": "https://circleback.ai/meetings/TjX2gKMCZxBVIDBk1vJYc",
+  "attendees": [
+    {
+      "name": "Participant 1"
+    },
+    {
+      "name": "Participant 2"
+    },
+    {
+      "name": "Participant 3"
+    },
+    {
+      "name": "Participant 4"
+    }
+  ],
+  "transcript": [
+    {
+      "id": "1",
+      "speaker": "Participant 1",
+      "start": 20.56,
+      "end": 25.28,
+      "text": "Are they out there? Is this okay? Yeah, that's okay. Great."
+    },
+    {
+      "id": "2",
+      "speaker": "Participant 2",
+      "start": 25.92,
+      "end": 119.92,
+      "text": "Do you want me to plug you in? Uh yeah. Oh, it's not liking us. It went that way. Computer adjusting. Oh. Ah. Takes it off your screen because it doesn't fair. Okay. Anyway, so Right. All right. Everything's good. So uh let me take it away. You ready back there? Okay. Welcome everyone. Um, this is the kickoff meeting for the day. Um we're the new group uh to create a new remote control for real reaction."
+    },
+    {
+      "id": "2-2",
+      "speaker": "Participant 2",
+      "start": 120.88,
+      "end": 163.56,
+      "text": "As you can see, our agenda is to open up the meeting, uh become acquainted with each other, um, have a little training on tools. tools, create a plan, discuss things, and we only have 20 minutes, 25 minutes total. Okay. The new remote control is to be original, trendy, and user-friendly. That Steph is your part is the user-friendliness. The originality is going to take all of us. The trendiness, we'll probably get looked at for some marketing research information from you, Sarah. And we'll get on with it."
+    },
+    {
+      "id": "2-3",
+      "speaker": "Participant 2",
+      "start": 163.72,
+      "end": 199.6,
+      "text": "Okay, so we'll have a functional design, individual work, both meeting, and then conceptual design, and then detailed design. Okay. Right. Everybody's supposed to try out the whiteboard. Kate, why don't you try it first? If you can either bring your things with you, I guess. And while you're doing that, we'll try and figure out how to hook these things on as well. Because we're all gonna have to be able to walk around."
+    },
+    {
+      "id": "3",
+      "speaker": "Participant 1",
+      "start": 208.96,
+      "end": 217.88,
+      "text": "Right, so you want an animal and the characteristics of that animal. Do you have to be able to recognize? what animal it is?"
+    },
+    {
+      "id": "4",
+      "speaker": "Participant 2",
+      "start": 218.04,
+      "end": 221.96,
+      "text": "Uh I don't think so. I think it's just to try out the whiteboard."
+    },
+    {
+      "id": "5",
+      "speaker": "Participant 1",
+      "start": 222.44,
+      "end": 222.76,
+      "text": "Um"
+    },
+    {
+      "id": "6",
+      "speaker": "Participant 3",
+      "start": 231.32,
+      "end": 232.44,
+      "text": "we all gonna draw a cat?"
+    },
+    {
+      "id": "7",
+      "speaker": "Participant 2",
+      "start": 232.84,
+      "end": 233.24,
+      "text": "I know."
+    },
+    {
+      "id": "8",
+      "speaker": "Participant 1",
+      "start": 233.72,
+      "end": 235.64,
+      "text": "Only animal I could think I could draw."
+    },
+    {
+      "id": "9",
+      "speaker": "Participant 2",
+      "start": 237.4,
+      "end": 238.28,
+      "text": "Aww."
+    },
+    {
+      "id": "10",
+      "speaker": "Participant 1",
+      "start": 242.04,
+      "end": 251.16,
+      "text": "It's a sort of bunny rabbit cat. You can tell it's not a bunny rabbit by the ears. Uh-huh. Um I suppose it should have a mouth as well."
+    },
+    {
+      "id": "11",
+      "speaker": "Participant 2",
+      "start": 252.2,
+      "end": 252.52,
+      "text": "Okay."
+    },
+    {
+      "id": "12",
+      "speaker": "Participant 1",
+      "start": 253,
+      "end": 254.12,
+      "text": "Right. Yeah."
+    },
+    {
+      "id": "13",
+      "speaker": "Participant 2",
+      "start": 254.6,
+      "end": 256.04,
+      "text": "Great. And the characteristics"
+    },
+    {
+      "id": "14",
+      "speaker": "Participant 1",
+      "start": 256.6,
+      "end": 269.6,
+      "text": "favourite characteristics of the cat um are the whiskers, I think. I think because they're the easiest to draw. Ah. In fact, I'll give it some more. Oh, and the tail."
+    },
+    {
+      "id": "15",
+      "speaker": "Participant 2",
+      "start": 272.64,
+      "end": 287.6,
+      "text": "Fantastic. Since you're handy as well, when you do yours next, Steph. I think it's to get us used to using the pen."
+    },
+    {
+      "id": "16",
+      "speaker": "Participant 1",
+      "start": 287.92,
+      "end": 291.92,
+      "text": "Yes. Sure it's not to test our artistic."
+    },
+    {
+      "id": "17",
+      "speaker": "Participant 2",
+      "start": 292.8,
+      "end": 293.68,
+      "text": "Ah no."
+    },
+    {
+      "id": "18",
+      "speaker": "Participant 1",
+      "start": 298.96,
+      "end": 300,
+      "text": "It's a mouse. A"
+    },
+    {
+      "id": "19",
+      "speaker": "Participant 2",
+      "start": 300,
+      "end": 300.56,
+      "text": "mousey."
+    },
+    {
+      "id": "20",
+      "speaker": "Participant 3",
+      "start": 300.88,
+      "end": 302.08,
+      "text": "It's not a micey, no?"
+    },
+    {
+      "id": "21",
+      "speaker": "Participant 1",
+      "start": 302.4,
+      "end": 308.12,
+      "text": "Not a mouse. mouse. It's a wombat."
+    },
+    {
+      "id": "22",
+      "speaker": "Participant 3",
+      "start": 315.32,
+      "end": 316.44,
+      "text": "It's a Atty."
+    },
+    {
+      "id": "23",
+      "speaker": "Participant 1",
+      "start": 317.16,
+      "end": 318.36,
+      "text": "Ah. A what? A"
+    },
+    {
+      "id": "24",
+      "speaker": "Participant 3",
+      "start": 318.44,
+      "end": 319.4,
+      "text": "raty."
+    },
+    {
+      "id": "25",
+      "speaker": "Participant 2",
+      "start": 319.96,
+      "end": 321,
+      "text": "Not a mouse, a rat."
+    },
+    {
+      "id": "26",
+      "speaker": "Participant 1",
+      "start": 321.88,
+      "end": 322.36,
+      "text": "Whipped."
+    },
+    {
+      "id": "27",
+      "speaker": "Participant 3",
+      "start": 322.6,
+      "end": 324.44,
+      "text": "It's not claws."
+    },
+    {
+      "id": "28",
+      "speaker": "Participant 1",
+      "start": 325.88,
+      "end": 326.04,
+      "text": "It's"
+    },
+    {
+      "id": "29",
+      "speaker": "Participant 3",
+      "start": 326.2,
+      "end": 328.84,
+      "text": "a with a with a very long tail."
+    },
+    {
+      "id": "30",
+      "speaker": "Participant 2",
+      "start": 330.76,
+      "end": 333.8,
+      "text": "And your favorite characteristics of that animal?"
+    },
+    {
+      "id": "31",
+      "speaker": "Participant 3",
+      "start": 334.28,
+      "end": 342.84,
+      "text": "Uh dead intelligent and a cheeky and uh fantastic pets. Very friendly."
+    },
+    {
+      "id": "32",
+      "speaker": "Participant 2",
+      "start": 343,
+      "end": 344.2,
+      "text": "Okay. And"
+    },
+    {
+      "id": "33",
+      "speaker": "Participant 3",
+      "start": 344.36,
+      "end": 353.84,
+      "text": "they sit on your shoulder and frisk. the answers to your homework in your ear when you're doing your homework. Thanks."
+    },
+    {
+      "id": "34",
+      "speaker": "Participant 1",
+      "start": 382.32,
+      "end": 385.36,
+      "text": "Gosh, why didn't I think of fish that's even easier to draw than cat"
+    },
+    {
+      "id": "35",
+      "speaker": "Participant 4",
+      "start": 389.08,
+      "end": 390.68,
+      "text": "very representational fish. Oh"
+    },
+    {
+      "id": "36",
+      "speaker": "Participant 2",
+      "start": 390.76,
+      "end": 391.48,
+      "text": "okay. Fine."
+    },
+    {
+      "id": "37",
+      "speaker": "Participant 4",
+      "start": 391.88,
+      "end": 403.48,
+      "text": "Um I like them because they're sleek and they have a lot of freedom, but they also do uh swimming groups. So you have"
+    },
+    {
+      "id": "38",
+      "speaker": "Participant 2",
+      "start": 404.44,
+      "end": 474.64,
+      "text": "team elements. I'm afraid I'm with Steph. I don't think your pen's running out of whatever. But I'm afraid I take the coward's way out and the cat's looking the other way. He's hiding. Um cats are sometimes very independent. My parents had cats. Uh and they can decide for themselves what is best. Okay. Now um we're have to get down to the nitty-gritty of how to make this and this remote control has to be sold. Um we're to sell it for twenty-five Euros with a profit aim ultimately of fifty million euros."
+    },
+    {
+      "id": "38-2",
+      "speaker": "Participant 2",
+      "start": 475.48,
+      "end": 514.44,
+      "text": "That tells you something about how many we have to sell on an international scale would be an awful lot of these. Would be like what a hundred million of them to make 25 euros on each one and to make a total profit of 50 million. The production is to only cost 12 and a half euros per item. Now if the cost 12 and a half you're selling it for 25, you're making 12 and a half euros each. And we're to make a profit of 50 million."
+    },
+    {
+      "id": "38-3",
+      "speaker": "Participant 2",
+      "start": 514.68,
+      "end": 518.96,
+      "text": "That's just can you do the math and how many are we selling?"
+    },
+    {
+      "id": "39",
+      "speaker": "Participant 4",
+      "start": 519.44,
+      "end": 526.96,
+      "text": "Uh yeah. I was just wondering if that's the um if fifty percent is normal."
+    },
+    {
+      "id": "40",
+      "speaker": "Participant 2",
+      "start": 527.68,
+      "end": 528.24,
+      "text": "Markup?"
+    },
+    {
+      "id": "41",
+      "speaker": "Participant 4",
+      "start": 528.56,
+      "end": 541.04,
+      "text": "Yeah. I I would think it would be more like sixty percent. But um I have two thoughts going on. Fifty percent. And and your question is how many do we have to sell?"
+    },
+    {
+      "id": "42",
+      "speaker": "Participant 2",
+      "start": 541.28,
+      "end": 556.08,
+      "text": "Yes, because our market um is international and your problem is has to do with marketing of you know, you gotta know how many we're going to be selling to know how big a market you have to target and who is that."
+    },
+    {
+      "id": "43",
+      "speaker": "Participant 4",
+      "start": 556.72,
+      "end": 558.4,
+      "text": "Yeah, that's um"
+    },
+    {
+      "id": "44",
+      "speaker": "Participant 2",
+      "start": 559.68,
+      "end": 562.04,
+      "text": "to give you a pretty good idea. idea of where you're looking. So"
+    },
+    {
+      "id": "45",
+      "speaker": "Participant 4",
+      "start": 562.2,
+      "end": 563.56,
+      "text": "that's four million of them?"
+    },
+    {
+      "id": "46",
+      "speaker": "Participant 2",
+      "start": 563.8,
+      "end": 567.16,
+      "text": "Something like that. Okay."
+    },
+    {
+      "id": "47",
+      "speaker": "Participant 4",
+      "start": 567.8,
+      "end": 568.44,
+      "text": "Yeah."
+    },
+    {
+      "id": "48",
+      "speaker": "Participant 2",
+      "start": 569.56,
+      "end": 583.32,
+      "text": "That's fifty million euros. Or to make fifty million euros and you're only getting twelve and a half each. That's a lot of selling."
+    },
+    {
+      "id": "49",
+      "speaker": "Participant 4",
+      "start": 583.96,
+      "end": 584.28,
+      "text": "Yeah."
+    },
+    {
+      "id": "50",
+      "speaker": "Participant 2",
+      "start": 584.52,
+      "end": 585.64,
+      "text": "Two four"
+    },
+    {
+      "id": "51",
+      "speaker": "Participant 4",
+      "start": 586.6,
+      "end": 587.08,
+      "text": "four million."
+    },
+    {
+      "id": "52",
+      "speaker": "Participant 2",
+      "start": 587.56,
+      "end": 610.08,
+      "text": "To be fifty be four million. You'd have to sell four million. Okay. Right. Experience. with a remote control. Any of you use a remote control for a television or DVD or something?"
+    },
+    {
+      "id": "53",
+      "speaker": "Participant 1",
+      "start": 613.04,
+      "end": 616.48,
+      "text": "One that will work for in a home environment for a TV."
+    },
+    {
+      "id": "54",
+      "speaker": "Participant 2",
+      "start": 618.24,
+      "end": 631.76,
+      "text": "I've seen some remote controls that are for more than one device at a time, but I also have heard about them not working well or not well coordinated and you wind up working with this one for this this three and then this one over here"
+    },
+    {
+      "id": "55",
+      "speaker": "Participant 3",
+      "start": 631.84,
+      "end": 641.92,
+      "text": "for another. So one for the DVD and one for the video and one for uh cable and one for"
+    },
+    {
+      "id": "56",
+      "speaker": "Participant 2",
+      "start": 643.36,
+      "end": 643.68,
+      "text": "they don't"
+    },
+    {
+      "id": "57",
+      "speaker": "Participant 3",
+      "start": 643.68,
+      "end": 644.48,
+      "text": "always talk to each"
+    },
+    {
+      "id": "58",
+      "speaker": "Participant 2",
+      "start": 644.48,
+      "end": 644.56,
+      "text": "other."
+    },
+    {
+      "id": "59",
+      "speaker": "Participant 3",
+      "start": 645.04,
+      "end": 647.32,
+      "text": "I presume this is just for television. television."
+    },
+    {
+      "id": "60",
+      "speaker": "Participant 2",
+      "start": 647.8,
+      "end": 662.36,
+      "text": "Don't know. Uh okay. Are there any um ideas for the remote? What would it be for and what group would we be for? We have to think about that one."
+    },
+    {
+      "id": "61",
+      "speaker": "Participant 4",
+      "start": 663.08,
+      "end": 667,
+      "text": "We could make a Hello Kitty themed remote."
+    },
+    {
+      "id": "62",
+      "speaker": "Participant 3",
+      "start": 668.36,
+      "end": 670.68,
+      "text": "I think one of great colours would be good."
+    },
+    {
+      "id": "63",
+      "speaker": "Participant 4",
+      "start": 671,
+      "end": 685.48,
+      "text": "Yeah. We could totally go for the Japan animation. Well, I mean there's also the cachet that um uh the Japanese make great products. Electrical their industrial design is very good."
+    },
+    {
+      "id": "64",
+      "speaker": "Participant 3",
+      "start": 685.72,
+      "end": 698.24,
+      "text": "I think one that doesn't have lots of superfluous functions. Like I've got one at home that has well apart from the obvious channels, channel up, channel down, volume."
+    },
+    {
+      "id": "65",
+      "speaker": "Participant 4",
+      "start": 700.16,
+      "end": 700.4,
+      "text": "Yeah."
+    },
+    {
+      "id": "66",
+      "speaker": "Participant 3",
+      "start": 700.88,
+      "end": 706.32,
+      "text": "You know, subtitles mute. There's a lot of buttons that I've got no idea what they do."
+    },
+    {
+      "id": "67",
+      "speaker": "Participant 4",
+      "start": 707.6,
+      "end": 728.96,
+      "text": "That's a really good point because I think one of the things that being somewhat computer literate, we tend to um go to menus and then make choices, you know, so if it's like a a volume button, you know, you can go in and say mute or or volume. We don't need to have like the the numbers. We also have uh channel up, channel down."
+    },
+    {
+      "id": "68",
+      "speaker": "Participant 2",
+      "start": 729.44,
+      "end": 731.6,
+      "text": "Hmm. Okay."
+    },
+    {
+      "id": "69",
+      "speaker": "Participant 4",
+      "start": 731.92,
+      "end": 735.72,
+      "text": "We can make it smart like an iPod. You know, make everything menus."
+    },
+    {
+      "id": "70",
+      "speaker": "Participant 3",
+      "start": 743.24,
+      "end": 745.16,
+      "text": "Ooh, closing the rethink."
+    },
+    {
+      "id": "71",
+      "speaker": "Participant 2",
+      "start": 745.8,
+      "end": 777.68,
+      "text": "Yeah. Um I know this sounds like it was very quick, but the I think that's the industrial design is the first one that's Kate for the working design and user that's you, Steph, for the technical functions design and for marketing the user requirements specification. I think there's going to be a lot of we have to help each other in work. work through this as a group."
+    },
+    {
+      "id": "71-2",
+      "speaker": "Participant 2",
+      "start": 778.32,
+      "end": 803.68,
+      "text": "And I think we all, you know, we like our kitty cat and our rat and our fish, but I think we all have to like each other um to get this done. Uh as it says we're gonna get individual instructions, but uh I don't think they've allowed a lot of extra time, so I think a little bit of less at this and more at due will set us in good stead. Do you all agree?"
+    },
+    {
+      "id": "72",
+      "speaker": "Participant 4",
+      "start": 804,
+      "end": 804.24,
+      "text": "Mm-hmm."
+    },
+    {
+      "id": "73",
+      "speaker": "Participant 1",
+      "start": 804.32,
+      "end": 804.72,
+      "text": "Mm-hmm."
+    },
+    {
+      "id": "74",
+      "speaker": "Participant 2",
+      "start": 805.44,
+      "end": 818.88,
+      "text": "All right. Um then I don't see any reason to prolong it and f we should finish this meeting at night right now and go into other things. All right. So this is the end of the first meeting."
+    },
+    {
+      "id": "75",
+      "speaker": "Participant 4",
+      "start": 819.24,
+      "end": 819.56,
+      "text": "Okay."
+    },
+    {
+      "id": "76",
+      "speaker": "Participant 2",
+      "start": 821,
+      "end": 822.04,
+      "text": "Thank you all."
+    }
+  ],
+  "actionItems": []
+}

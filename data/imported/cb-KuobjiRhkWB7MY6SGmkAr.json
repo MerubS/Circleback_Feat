@@ -1,0 +1,2260 @@
+{
+  "id": "cb-KuobjiRhkWB7MY6SGmkAr",
+  "name": "ES2010c.Mix-Headset",
+  "createdAt": "2026-11-03T22:56:47.652Z",
+  "durationSeconds": 1832,
+  "url": "https://circleback.ai/meetings/KuobjiRhkWB7MY6SGmkAr",
+  "attendees": [
+    {
+      "name": "Participant 1"
+    },
+    {
+      "name": "Participant 2"
+    },
+    {
+      "name": "Participant 3"
+    },
+    {
+      "name": "Participant 4"
+    }
+  ],
+  "transcript": [
+    {
+      "id": "1",
+      "speaker": "Participant 1",
+      "start": 6.84,
+      "end": 61.76,
+      "text": "Both mine are on. Both mine are on. Mine too. They're on. Okay. Hi, team. Hope you had a good lunch. Okay. We're back for the conceptual design meeting. Um, let's get started. Okay, here's the agenda for today's meeting. Um, we're gonna open it, and I'm gonna keep the minutes as project manager. We're gonna have three presentations, one from each of you again. And then we are going to come to decision on the remote control concepts, and then we're gonna close it up, and we have 40 minutes again. Okay."
+    },
+    {
+      "id": "1-2",
+      "speaker": "Participant 1",
+      "start": 62.1,
+      "end": 76.56,
+      "text": "And just to reiterate, um, after this meeting, the team will reach a decision on the concepts of the remote control. Okay. Let's go ahead and start off with your presentations. Who would like to go first?"
+    },
+    {
+      "id": "2",
+      "speaker": "Participant 2",
+      "start": 79.48,
+      "end": 80.5,
+      "text": "Just trying to move mine right now."
+    },
+    {
+      "id": "3",
+      "speaker": "Participant 1",
+      "start": 80.94,
+      "end": 83.86,
+      "text": "Okay. Um, Courtney, would you mind starting us off? Yeah. Okay."
+    },
+    {
+      "id": "4",
+      "speaker": "Participant 3",
+      "start": 83.9,
+      "end": 89.18,
+      "text": "Go ahead."
+    },
+    {
+      "id": "5",
+      "speaker": "Participant 1",
+      "start": 89.2,
+      "end": 89.72,
+      "text": "Trend watching?"
+    },
+    {
+      "id": "6",
+      "speaker": "Participant 3",
+      "start": 90.34,
+      "end": 136.46,
+      "text": "Yeah. Okay. Okay, so trend watching. Uh, since we do put the fashion in electronics, it is kind of important how our product looks, so I guess we can go ahead and go to the next. So what they want right now, customers want fancy versus functional. Um, basically about 58% of what they... Like, of the product that they want, describing like the... In order of how much they want, 58% of the decision of what it should look like, fancy versus functional. And then it has to also be technologically innovative and yet easy to use."
+    },
+    {
+      "id": "6-2",
+      "speaker": "Participant 3",
+      "start": 136.68,
+      "end": 141.8,
+      "text": "So the customer basically is confused. They don't know exactly what they want. They want us to tell them."
+    },
+    {
+      "id": "7",
+      "speaker": "Participant 2",
+      "start": 142.14,
+      "end": 144.04,
+      "text": "They want everything but simply. Yes."
+    },
+    {
+      "id": "8",
+      "speaker": "Participant 3",
+      "start": 144.56,
+      "end": 178.58,
+      "text": "Okay. Exactly. So we can go next. Okay. So in Milan and Paris recently, the trends have been showing that clothing, shoes, and furniture are basically just covered with fruits and vegetable patterns. So I don't know if we want to go with that. Um, and also the spongy feel is in, in contrast to last year. I don't know really. I mean, I guess the spongy could relate to the buttons- Mm.... if we want to, rather than like a hard clicky button that you find on like some mobiles and stuff. You'd want like a softer touch."
+    },
+    {
+      "id": "8-2",
+      "speaker": "Participant 3",
+      "start": 178.64,
+      "end": 179.62,
+      "text": "I mean, do you guys know what I mean?"
+    },
+    {
+      "id": "9",
+      "speaker": "Participant 1",
+      "start": 179.72,
+      "end": 179.88,
+      "text": "Right."
+    },
+    {
+      "id": "10",
+      "speaker": "Participant 2",
+      "start": 180.1,
+      "end": 180.36,
+      "text": "Yeah. Yeah."
+    },
+    {
+      "id": "11",
+      "speaker": "Participant 3",
+      "start": 181.02,
+      "end": 192.08,
+      "text": "Um, but as for the fruits and vegetable patterns, I don't know if we really want to go with that because it is just a trend. Right. And our product we want to stay around for much longer than just a few months because- Right,"
+    },
+    {
+      "id": "12",
+      "speaker": "Participant 1",
+      "start": 192.24,
+      "end": 192.64,
+      "text": "people don't"
+    },
+    {
+      "id": "13",
+      "speaker": "Participant 2",
+      "start": 192.66,
+      "end": 192.8,
+      "text": "buy"
+    },
+    {
+      "id": "14",
+      "speaker": "Participant 1",
+      "start": 192.86,
+      "end": 193.32,
+      "text": "a new remote"
+    },
+    {
+      "id": "15",
+      "speaker": "Participant 3",
+      "start": 193.5,
+      "end": 196.14,
+      "text": "every- Yeah... so often. I mean, that could just be a spring thing right now."
+    },
+    {
+      "id": "16",
+      "speaker": "Participant 2",
+      "start": 196.5,
+      "end": 200.36,
+      "text": "I can address some of that issue, I think, with, uh, my presentation."
+    },
+    {
+      "id": "17",
+      "speaker": "Participant 3",
+      "start": 201.04,
+      "end": 235.68,
+      "text": "Okay. Awesome. Okay. Um, so design preferences, um, we need easy-to-read, like, large buttons, clearly labeled so... I mean, 'cause we talked about that being a problem. Um, and then also buttons illuminating upon touch. You said that in your design with the bulb. Um, and that could also tie in with the color scheme. Uh, we need the real reaction logo and color scheme, obviously. That's one of our key goals. We wanna promote our product. And I was thinking about different types of designs, and I came up with something actually right here."
+    },
+    {
+      "id": "17-2",
+      "speaker": "Participant 3",
+      "start": 236.5,
+      "end": 258.5,
+      "text": "So what we could do is something like an old-fashioned telephone like this, where we put the buttons around. Like, we put a big on/off button or something else in the middle. I mean, it could be the arrows or whatever for channel up and down and then put the numbers around in like an old-fashioned dial shape 'cause then it'll appeal to older generation. And like you said, retro is cool, so it's classically retro. Mm."
+    },
+    {
+      "id": "17-3",
+      "speaker": "Participant 3",
+      "start": 259.24,
+      "end": 261.1,
+      "text": "So I mean, that's just an idea if you guys"
+    },
+    {
+      "id": "18",
+      "speaker": "Participant 1",
+      "start": 261.2,
+      "end": 262.94,
+      "text": "like. Very good. I like it. Okay."
+    },
+    {
+      "id": "19",
+      "speaker": "Participant 3",
+      "start": 263,
+      "end": 263.1,
+      "text": "And-"
+    },
+    {
+      "id": "20",
+      "speaker": "Participant 1",
+      "start": 263.18,
+      "end": 263.94,
+      "text": "Ready for the next slide?"
+    },
+    {
+      "id": "21",
+      "speaker": "Participant 3",
+      "start": 264,
+      "end": 265.38,
+      "text": "Yep. And that's it."
+    },
+    {
+      "id": "22",
+      "speaker": "Participant 1",
+      "start": 266.58,
+      "end": 266.84,
+      "text": "Okay."
+    },
+    {
+      "id": "23",
+      "speaker": "Participant 3",
+      "start": 267.42,
+      "end": 267.84,
+      "text": "Okay."
+    },
+    {
+      "id": "24",
+      "speaker": "Participant 1",
+      "start": 267.88,
+      "end": 272.18,
+      "text": "Great. Great presentation. Ready?"
+    },
+    {
+      "id": "25",
+      "speaker": "Participant 4",
+      "start": 274.04,
+      "end": 274.54,
+      "text": "Okay, hang on."
+    },
+    {
+      "id": "26",
+      "speaker": "Participant 1",
+      "start": 274.94,
+      "end": 275.08,
+      "text": "Okay."
+    },
+    {
+      "id": "27",
+      "speaker": "Participant 4",
+      "start": 276.64,
+      "end": 277.24,
+      "text": "See if it's there."
+    },
+    {
+      "id": "28",
+      "speaker": "Participant 1",
+      "start": 289.66,
+      "end": 290.2,
+      "text": "Which one is it?"
+    },
+    {
+      "id": "29",
+      "speaker": "Participant 4",
+      "start": 292.04,
+      "end": 294.9,
+      "text": "I don't know. Hang on. Interface concept? No."
+    },
+    {
+      "id": "30",
+      "speaker": "Participant 1",
+      "start": 296.26,
+      "end": 298.24,
+      "text": "Interface concepts. No."
+    },
+    {
+      "id": "31",
+      "speaker": "Participant 4",
+      "start": 298.4,
+      "end": 302.64,
+      "text": "Either refresh it or it's... Oh, wait. Maybe I didn't put it in there. Hang on."
+    },
+    {
+      "id": "32",
+      "speaker": "Participant 1",
+      "start": 303,
+      "end": 303.1,
+      "text": "Okay."
+    },
+    {
+      "id": "33",
+      "speaker": "Participant 2",
+      "start": 303.24,
+      "end": 304.92,
+      "text": "Mine will always read copy of something or other."
+    },
+    {
+      "id": "34",
+      "speaker": "Participant 1",
+      "start": 305.56,
+      "end": 305.8,
+      "text": "Sorry?"
+    },
+    {
+      "id": "35",
+      "speaker": "Participant 2",
+      "start": 306.5,
+      "end": 308.76,
+      "text": "I, I copied mine before I sent it over."
+    },
+    {
+      "id": "36",
+      "speaker": "Participant 1",
+      "start": 309.08,
+      "end": 309.5,
+      "text": "Oh, okay."
+    },
+    {
+      "id": "37",
+      "speaker": "Participant 4",
+      "start": 310.14,
+      "end": 313.96,
+      "text": "Sorry. Hang on. Don't know what I'm doing."
+    },
+    {
+      "id": "38",
+      "speaker": "Participant 1",
+      "start": 328.64,
+      "end": 329.14,
+      "text": "Oh, there we go."
+    },
+    {
+      "id": "39",
+      "speaker": "Participant 4",
+      "start": 329.64,
+      "end": 366.82,
+      "text": "Okay. Okay. All right. Um, looking at the interface concept, it's gonna be mostly examples of possibilities of where we can go with this. Uh, if you wanna start the next slide. Sure. Um, can't really see it, but there's two possible ways. On the left, if you see on, on the sides of, of the remote, you have the sort of scroll down, so you have that option right there. And then also there's the idea of the base."
+    },
+    {
+      "id": "39-2",
+      "speaker": "Participant 4",
+      "start": 367.1,
+      "end": 391.948,
+      "text": "That's sort of like an idea there And then on the right, you have what's really big trend right now is the iPods becoming a really fast thing. And so you have this sort of very, very simplistic menu section, uh, with the round buttons, and it's sort of like you have the both the, the kind of trendy and hip, but also very sleek and, um, and very simple, but technologically advanced."
+    },
+    {
+      "id": "39-3",
+      "speaker": "Participant 4",
+      "start": 392.008,
+      "end": 422.848,
+      "text": "So if you wanted to do that, if we could find a way of sort of like using that idea in a remote control and sort of look into it, but maybe next. Um, there's the idea of like being able to do it by feel as well as by, um, by sight. You, you know, you're in the dark, you don't wanna be looking at your remote control. And the picture particularly is pointing out, if you look at the top volume button, it's a V, and so you- you're kinda feeling a V, like volume up."
+    },
+    {
+      "id": "39-4",
+      "speaker": "Participant 4",
+      "start": 424.108,
+      "end": 442.168,
+      "text": "What it really is, is a V, and what it, you think it is, is down because it's the down arrow. Mm. And so it's like sort of conversely, you'd probably turn that the other way up. Um, but then you have... You could either do it by raised type, which could be, you know, iffy, um, sort of old-fashioned in a way."
+    },
+    {
+      "id": "40",
+      "speaker": "Participant 1",
+      "start": 442.408,
+      "end": 442.548,
+      "text": "Mm."
+    },
+    {
+      "id": "41",
+      "speaker": "Participant 4",
+      "start": 442.828,
+      "end": 456.648,
+      "text": "Either that or just have it by shape. For example, you have a specific triangular shape that you know you're looking at the up and down arrow, and then the round ones, you sort of feel by, you know, this is the second one down, that sort of thing. So it's sort of looking into how we wanted to do it by feel."
+    },
+    {
+      "id": "42",
+      "speaker": "Participant 1",
+      "start": 457.108,
+      "end": 457.408,
+      "text": "Okay."
+    },
+    {
+      "id": "43",
+      "speaker": "Participant 4",
+      "start": 458.248,
+      "end": 466.448,
+      "text": "Okay. Um, this is sort of an example of going for a certain demographic. Um, this is particularly the geared towards children. That's"
+    },
+    {
+      "id": "44",
+      "speaker": "Participant 3",
+      "start": 466.488,
+      "end": 466.828,
+      "text": "cute."
+    },
+    {
+      "id": "45",
+      "speaker": "Participant 4",
+      "start": 466.948,
+      "end": 467.088,
+      "text": "Um-"
+    },
+    {
+      "id": "46",
+      "speaker": "Participant 3",
+      "start": 467.268,
+      "end": 467.748,
+      "text": "WeMote."
+    },
+    {
+      "id": "47",
+      "speaker": "Participant 4",
+      "start": 467.968,
+      "end": 498.368,
+      "text": "It's very cute, and we could probably change it to yellow, bright yellow for like, um, the, for the company logo. Um, you have the shapes, and it's very simplistic and friendly looking. Um, and then the other thing that it would be able to do is just to pro- be able... You program certain channels that only these children would watch. So it's like they try... watch, you know, the CBeebies or something like that, uh, keep them away from other channels. So that's like another arrow. Um, the- these are three examples sort of looking at it."
+    },
+    {
+      "id": "47-2",
+      "speaker": "Participant 4",
+      "start": 498.628,
+      "end": 527.848,
+      "text": "You have the wider section for the main controls there. Uh, you can see how many buttons there are. And then on the left, you have an example of the round buttons and a simpler design. On the bottom, we probably wouldn't need that 'cause it's more for like a DVD function which we're not gonna be using. Um, so again, it's sort of like just giving you ideas. And then down at the bottom, you have the logos, and that's where you could put the RR, Real Reaction."
+    },
+    {
+      "id": "48",
+      "speaker": "Participant 1",
+      "start": 528.368,
+      "end": 528.588,
+      "text": "Okay."
+    },
+    {
+      "id": "49",
+      "speaker": "Participant 4",
+      "start": 531.008,
+      "end": 539.868,
+      "text": "And then finally, these are like the sort of same examples, but also some more just possibilities that we could go with. None of them I'm particularly keen on, by the way."
+    },
+    {
+      "id": "50",
+      "speaker": "Participant 3",
+      "start": 540.368,
+      "end": 540.548,
+      "text": "Yeah."
+    },
+    {
+      "id": "51",
+      "speaker": "Participant 4",
+      "start": 543.088,
+      "end": 552.608,
+      "text": "But it's sort of like just taking aspects out of that and saying, \"Well, out of this one, we like, you know, the round section,\" or, um, \"Or we like the-\" Mm. \"... the button size on this.\""
+    },
+    {
+      "id": "52",
+      "speaker": "Participant 1",
+      "start": 552.688,
+      "end": 556.088,
+      "text": "Or I like, you know, the black finish or the silver finish or whatever. Right."
+    },
+    {
+      "id": "53",
+      "speaker": "Participant 3",
+      "start": 556.648,
+      "end": 558.108,
+      "text": "I have four of those remotes."
+    },
+    {
+      "id": "54",
+      "speaker": "Participant 1",
+      "start": 559.068,
+      "end": 565.188,
+      "text": "Good Lord. Okay. Ready? That's it. Oh. Okay. Great job."
+    },
+    {
+      "id": "55",
+      "speaker": "Participant 2",
+      "start": 566.248,
+      "end": 569.608,
+      "text": "Okay, my turn. Okay. Woo."
+    },
+    {
+      "id": "56",
+      "speaker": "Participant 1",
+      "start": 569.928,
+      "end": 570.448,
+      "text": "What's the title?"
+    },
+    {
+      "id": "57",
+      "speaker": "Participant 2",
+      "start": 571.208,
+      "end": 574.048,
+      "text": "It'll be Copy of Component Design."
+    },
+    {
+      "id": "58",
+      "speaker": "Participant 1",
+      "start": 574.228,
+      "end": 574.548,
+      "text": "Got it."
+    },
+    {
+      "id": "59",
+      "speaker": "Participant 2",
+      "start": 579.428,
+      "end": 622.168,
+      "text": "Yeah, that looks like it. Okay. So basic remote operation runs as follows: press button makes connection with the power source and the rest of the circuit. Chip senses the connection. Chip produces a Morse code infrared signal specific to that button. So you press the button, it produces a, a signal that's encoded specifically for that button. Transistors amplify that signal, and it goes to the TV s- center, which interprets the signal and responds accordingly, changes channel, et cetera. So that being said, next slide please. Findings w- which were the required materials for the basic internal construction."
+    },
+    {
+      "id": "59-2",
+      "speaker": "Participant 2",
+      "start": 622.288,
+      "end": 660.188,
+      "text": "So all the really simplistic functions that we just discussed, we need rubber for buttons, aluminum for battery contacts, integrated circuit which consists of a diode transistor, resonator, resistors, and a capacitor, all those basic things that make a circuit function. Um, fiberglass and thin copper wire to create the actual circuit board itself. An LED, which is a light emitting diode. Um, contact discs for the buttons, plastic for the casing, and a power source, whatever power source we've actually determined we want. Next slide, please. Thank you. Um, personal preferences."
+    },
+    {
+      "id": "59-3",
+      "speaker": "Participant 2",
+      "start": 660.388,
+      "end": 697.028,
+      "text": "Uh, to save money for the components, the remote should be mass-produced, and basic materials should be bought en masse. Um, if we find another company who can produce the required chips, casing, LED, any additional materials we decide we require at a less expensive rate than we ourselves are producing, we should go for it. Next slide, please. Um, just talking to the, um, manufacturing division, they suggested power options, solar cells, hand dynamo, and kinetic power. So you shake it, and it increases the power. Um, I'm not sure how the hand dynamo works."
+    },
+    {
+      "id": "59-4",
+      "speaker": "Participant 2",
+      "start": 697.068,
+      "end": 700.748,
+      "text": "They have yet to get back to me on that. Mm. So next slide, please."
+    },
+    {
+      "id": "60",
+      "speaker": "Participant 1",
+      "start": 700.908,
+      "end": 701.508,
+      "text": "Interesting."
+    },
+    {
+      "id": "61",
+      "speaker": "Participant 2",
+      "start": 702.068,
+      "end": 717.548,
+      "text": "Suggested casing options. Okay. We can offer options for casing such as straight curve, double curved, you know, very specific to the customer. Options for materials, plastic, rubber, titanium, wood. Ooh. I don't think anyone's gonna go for a wood one because splinters."
+    },
+    {
+      "id": "62",
+      "speaker": "Participant 3",
+      "start": 717.548,
+      "end": 720.148,
+      "text": "That would be amazing though. Yeah. No, splinters would-"
+    },
+    {
+      "id": "63",
+      "speaker": "Participant 2",
+      "start": 720.868,
+      "end": 748.108,
+      "text": "Yeah. Um, certain restrictions do apply here, though. Uh, latex, you can't do solar power with a latex one. So if they want s- soft, squishy rubber, they can't have the solar powered option. Double curved, you can't do titanium. What is that? Um, that would be two curvatures. So it would actually... If you... The shape of your hand, you curve here, and you curve here. Mm. So you could have two curves that match the shape of your hand to make it more comfortable to hold. Mm-hmm. Now, if you wanted that, you can't do titanium."
+    },
+    {
+      "id": "63-2",
+      "speaker": "Participant 2",
+      "start": 749.184,
+      "end": 787.964,
+      "text": "And, uh, so g-suggested functions w for the buttons. Scrolling- Right... function could be very beneficial to us in-stead of actual buttons themselves. I think I have one more slide. No, I don't. No? Okay. Um, the manufacturing division also has said that, um, they have several types of chips, and they've just developed a sample sensor or sample speaker chip, which ch we could utilize. Um, push button requires a simple chip, and scroll requires more complicated chip, so depends on what we decide we wanna do."
+    },
+    {
+      "id": "63-3",
+      "speaker": "Participant 2",
+      "start": 788.824,
+      "end": 823.804,
+      "text": "In addition to that, if we're offering all those different options to the customer for producing their remote, we're going to have to have multiples of each type, like a double curved in rubber. Um, you know, each option should have a certain select number produced with all those options. So we'll have to mix it up, make sure we produce enough of every one. But that could also drive up the price of the actual remote itself if they know that we only produced 5,000, you know- Right... double curved wooden remotes."
+    },
+    {
+      "id": "64",
+      "speaker": "Participant 1",
+      "start": 826.084,
+      "end": 826.324,
+      "text": "Okay. Okay."
+    },
+    {
+      "id": "65",
+      "speaker": "Participant 2",
+      "start": 826.624,
+      "end": 827.264,
+      "text": "That's all I got."
+    },
+    {
+      "id": "66",
+      "speaker": "Participant 1",
+      "start": 827.524,
+      "end": 836.744,
+      "text": "All right. Well, thank you for those informative presentations. Let's go back to, um... Now we have to make some decisions. Or where were we?"
+    },
+    {
+      "id": "67",
+      "speaker": "Participant 4",
+      "start": 837.484,
+      "end": 846.444,
+      "text": "Let me just add one more thing that I couldn't say before. Sure. And that's just that this new technology that they've developed on the voice recognition. Um,"
+    },
+    {
+      "id": "68",
+      "speaker": "Participant 3",
+      "start": 846.724,
+      "end": 848.264,
+      "text": "oh, this, the thing we were talking about earlier?"
+    },
+    {
+      "id": "69",
+      "speaker": "Participant 4",
+      "start": 848.664,
+      "end": 880.384,
+      "text": "Right. Except it's sort of odd, and I'm not exactly sure why they're explaining it in the way they are. Um, there's a sample sensor, and there's a sample speaker unit for... So you would say, like, \"Good morning, coffee maker,\" and it would respond, \"Good morning, Joe.\" But I'm not sure exactly how it's gonna work, 'cause do you program, do we program the responses and the questions? Does that mean that the user then has to ask the specific question and can't change it- Hmm... in order for it to be recognized?"
+    },
+    {
+      "id": "69-2",
+      "speaker": "Participant 4",
+      "start": 880.424,
+      "end": 885.084,
+      "text": "Or can it be altered in a certain way? Or does the actual user program it- Right... say channel means this?"
+    },
+    {
+      "id": "70",
+      "speaker": "Participant 3",
+      "start": 885.184,
+      "end": 890.344,
+      "text": "Right. Yeah, like using the menu to be like enter your name into the screen, like on the menu option- Right... so that way the"
+    },
+    {
+      "id": "71",
+      "speaker": "Participant 4",
+      "start": 890.584,
+      "end": 897.704,
+      "text": "remote reads it. So it's got, like, a limited memory, and so you'd program it, so it's sort of iffy. Right. But that's kind of what you'd say."
+    },
+    {
+      "id": "72",
+      "speaker": "Participant 3",
+      "start": 898.404,
+      "end": 907.064,
+      "text": "I feel like voice recognition would be, I don't know. Hmm. It would be too hard to really- Program? I mean, we could do it, but"
+    },
+    {
+      "id": "73",
+      "speaker": "Participant 1",
+      "start": 908.024,
+      "end": 913.004,
+      "text": "if it's within our price to get that kind of chip that would- Technology... you know. Technology."
+    },
+    {
+      "id": "74",
+      "speaker": "Participant 2",
+      "start": 913.044,
+      "end": 914.384,
+      "text": "Well, we are making the chip."
+    },
+    {
+      "id": "75",
+      "speaker": "Participant 1",
+      "start": 915.004,
+      "end": 915.164,
+      "text": "Hmm."
+    },
+    {
+      "id": "76",
+      "speaker": "Participant 2",
+      "start": 915.724,
+      "end": 924.864,
+      "text": "So, I mean... But I guess we have to look at what our production cost is for the chip itself anyway. And"
+    },
+    {
+      "id": "77",
+      "speaker": "Participant 3",
+      "start": 924.904,
+      "end": 925.884,
+      "text": "it is a growing trend."
+    },
+    {
+      "id": "78",
+      "speaker": "Participant 2",
+      "start": 926.404,
+      "end": 926.444,
+      "text": "Yeah."
+    },
+    {
+      "id": "79",
+      "speaker": "Participant 3",
+      "start": 926.484,
+      "end": 932.204,
+      "text": "The higher technological, like, the... I mean, just, like, the more advanced it is-"
+    },
+    {
+      "id": "80",
+      "speaker": "Participant 2",
+      "start": 933.124,
+      "end": 933.244,
+      "text": "Yeah..."
+    },
+    {
+      "id": "81",
+      "speaker": "Participant 3",
+      "start": 933.424,
+      "end": 934.524,
+      "text": "the better it'll sell."
+    },
+    {
+      "id": "82",
+      "speaker": "Participant 2",
+      "start": 935.024,
+      "end": 947.244,
+      "text": "I thought y- offering some of those options for different materials that it could be made of, different, you know... I think we'd have to decide on the power options maybe- Yeah, 'cause we don't know how big it's gonna be-... so that we could reduce cost. Yeah."
+    },
+    {
+      "id": "83",
+      "speaker": "Participant 3",
+      "start": 947.324,
+      "end": 947.964,
+      "text": "And how heavy."
+    },
+    {
+      "id": "84",
+      "speaker": "Participant 1",
+      "start": 948.204,
+      "end": 966.024,
+      "text": "Okay, that kind of brings us to this. Let's, let's see- Okay... if we can decide what kind of energy source we want to have first and foremost. Um, do we wanna go for batteries or a stand like the one that we saw illustrated earlier?"
+    },
+    {
+      "id": "85",
+      "speaker": "Participant 3",
+      "start": 968.564,
+      "end": 969.364,
+      "text": "Oh, the base? Yeah."
+    },
+    {
+      "id": "86",
+      "speaker": "Participant 1",
+      "start": 969.404,
+      "end": 971.984,
+      "text": "The base. The charging base. I"
+    },
+    {
+      "id": "87",
+      "speaker": "Participant 4",
+      "start": 972.004,
+      "end": 972.564,
+      "text": "also feel like- With"
+    },
+    {
+      "id": "88",
+      "speaker": "Participant 1",
+      "start": 972.564,
+      "end": 972.724,
+      "text": "rechargeable batteries..."
+    },
+    {
+      "id": "89",
+      "speaker": "Participant 4",
+      "start": 972.744,
+      "end": 974.404,
+      "text": "first I wanna know what it looks like before."
+    },
+    {
+      "id": "90",
+      "speaker": "Participant 1",
+      "start": 974.904,
+      "end": 975.064,
+      "text": "Hmm. 'Cause"
+    },
+    {
+      "id": "91",
+      "speaker": "Participant 4",
+      "start": 975.104,
+      "end": 983.544,
+      "text": "if it's something really, really small, then it's sort of harder to imagine the base for it. That was p- quite a substantial size sort of standing up."
+    },
+    {
+      "id": "92",
+      "speaker": "Participant 1",
+      "start": 983.824,
+      "end": 990.524,
+      "text": "Yeah, and we don't have multiple things that it has to control. It just has to control the TV. It's not gonna be a huge universal remote."
+    },
+    {
+      "id": "93",
+      "speaker": "Participant 3",
+      "start": 991.064,
+      "end": 994.544,
+      "text": "Right. We need to decide, well, so we can figure out how big it's gonna be. Like, what size"
+    },
+    {
+      "id": "94",
+      "speaker": "Participant 1",
+      "start": 994.704,
+      "end": 994.984,
+      "text": "battery-"
+    },
+    {
+      "id": "95",
+      "speaker": "Participant 3",
+      "start": 994.984,
+      "end": 997.284,
+      "text": "Exactly what buttons we want and exactly-"
+    },
+    {
+      "id": "96",
+      "speaker": "Participant 4",
+      "start": 997.424,
+      "end": 1001.344,
+      "text": "Well, the other thing is, like, even if it's got a few buttons, do we want it to be bigger than this?"
+    },
+    {
+      "id": "97",
+      "speaker": "Participant 3",
+      "start": 1001.604,
+      "end": 1002.644,
+      "text": "If it'd be like this, yes. I... Well, uh-"
+    },
+    {
+      "id": "98",
+      "speaker": "Participant 4",
+      "start": 1002.644,
+      "end": 1008.024,
+      "text": "'Cause it still fits in your hand, so you still want it something that's comfortable and substantial but not necessarily full of buttons."
+    },
+    {
+      "id": "99",
+      "speaker": "Participant 3",
+      "start": 1008.144,
+      "end": 1011.684,
+      "text": "This one is really comfortable. Like, I like the sides or whatever because- You're"
+    },
+    {
+      "id": "100",
+      "speaker": "Participant 4",
+      "start": 1011.704,
+      "end": 1012.744,
+      "text": "gonna lose it easier."
+    },
+    {
+      "id": "101",
+      "speaker": "Participant 3",
+      "start": 1013.044,
+      "end": 1017.564,
+      "text": "But if we have the, um, the locator, then we don't have to worry about that."
+    },
+    {
+      "id": "102",
+      "speaker": "Participant 2",
+      "start": 1017.684,
+      "end": 1018.084,
+      "text": "That's true."
+    },
+    {
+      "id": "103",
+      "speaker": "Participant 3",
+      "start": 1018.804,
+      "end": 1021.264,
+      "text": "So we can make it small if we have, like, a locating device."
+    },
+    {
+      "id": "104",
+      "speaker": "Participant 2",
+      "start": 1021.584,
+      "end": 1028.384,
+      "text": "If we do a voice activated locator, though, we're gonna be looking at a more substantial chip. Hmm. So-"
+    },
+    {
+      "id": "105",
+      "speaker": "Participant 4",
+      "start": 1028.504,
+      "end": 1037.004,
+      "text": "So e- that's the other thing is, like, you know, would... Are we gonna have certain chips that are gonna require a bigger size, period?"
+    },
+    {
+      "id": "106",
+      "speaker": "Participant 3",
+      "start": 1037.304,
+      "end": 1040.204,
+      "text": "Two double As for this size."
+    },
+    {
+      "id": "107",
+      "speaker": "Participant 4",
+      "start": 1043.844,
+      "end": 1049.404,
+      "text": "But, like, you know, if we get more complicated, then it's gonna have- Right... to be bigger to just accommodate the chip size."
+    },
+    {
+      "id": "108",
+      "speaker": "Participant 2",
+      "start": 1049.944,
+      "end": 1056.624,
+      "text": "Honestly, I think the customer would be kind of irritated by the fact that it has a base if we did do a nice small, compact-"
+    },
+    {
+      "id": "109",
+      "speaker": "Participant 1",
+      "start": 1056.724,
+      "end": 1060.684,
+      "text": "Right. I agree. Yeah. It's either gonna be bigger with a base or smaller with a- Smaller with just-"
+    },
+    {
+      "id": "110",
+      "speaker": "Participant 3",
+      "start": 1061.524,
+      "end": 1061.664,
+      "text": "Yeah"
+    },
+    {
+      "id": "111",
+      "speaker": "Participant 1",
+      "start": 1061.904,
+      "end": 1067.464,
+      "text": "... a battery, like this guy. Yeah. All right. So what direction do you wanna go in? Do you wanna vote?"
+    },
+    {
+      "id": "112",
+      "speaker": "Participant 3",
+      "start": 1068.284,
+      "end": 1072.844,
+      "text": "I think if we had a, a locating device with the small one, I think that seems way more advanced."
+    },
+    {
+      "id": "113",
+      "speaker": "Participant 1",
+      "start": 1072.924,
+      "end": 1076.604,
+      "text": "I'm kind of- Yeah. I'm kind of leaning in the direction of this kind of- Away"
+    },
+    {
+      "id": "114",
+      "speaker": "Participant 4",
+      "start": 1076.624,
+      "end": 1076.904,
+      "text": "from the base"
+    },
+    {
+      "id": "115",
+      "speaker": "Participant 1",
+      "start": 1076.924,
+      "end": 1079.984,
+      "text": "... bigger and the base. Yeah. 'Cause that just seems clunky and-"
+    },
+    {
+      "id": "116",
+      "speaker": "Participant 3",
+      "start": 1080.144,
+      "end": 1084.924,
+      "text": "Yeah, because, I mean, if even looking at cell phones right now, those trends, the smaller the-"
+    },
+    {
+      "id": "117",
+      "speaker": "Participant 4",
+      "start": 1085.004,
+      "end": 1085.424,
+      "text": "Smaller and smaller. Yeah, yeah."
+    },
+    {
+      "id": "118",
+      "speaker": "Participant 3",
+      "start": 1085.464,
+      "end": 1086.304,
+      "text": "... hotter it is. Yeah."
+    },
+    {
+      "id": "119",
+      "speaker": "Participant 1",
+      "start": 1086.424,
+      "end": 1086.744,
+      "text": "Okay."
+    },
+    {
+      "id": "120",
+      "speaker": "Participant 2",
+      "start": 1086.944,
+      "end": 1090.044,
+      "text": "The only problem with that is you forget to take it out of your pocket, and it goes in the wash."
+    },
+    {
+      "id": "121",
+      "speaker": "Participant 3",
+      "start": 1090.344,
+      "end": 1090.584,
+      "text": "Oh."
+    },
+    {
+      "id": "122",
+      "speaker": "Participant 2",
+      "start": 1091.244,
+      "end": 1091.264,
+      "text": "You're"
+    },
+    {
+      "id": "123",
+      "speaker": "Participant 4",
+      "start": 1091.364,
+      "end": 1091.804,
+      "text": "kidding."
+    },
+    {
+      "id": "124",
+      "speaker": "Participant 2",
+      "start": 1092.604,
+      "end": 1096.084,
+      "text": "You know, it happens. Yeah. I've had three watches go that way, too."
+    },
+    {
+      "id": "125",
+      "speaker": "Participant 4",
+      "start": 1096.304,
+      "end": 1098.444,
+      "text": "Ouch. Oh, watches. I've, I've never washed a cell"
+    },
+    {
+      "id": "126",
+      "speaker": "Participant 3",
+      "start": 1098.484,
+      "end": 1102.324,
+      "text": "phone. A phone. Whoa, that would... Wow, that would hurt. Pieces everywhere. Okay. So what"
+    },
+    {
+      "id": "127",
+      "speaker": "Participant 1",
+      "start": 1102.384,
+      "end": 1104.704,
+      "text": "kind of material do we want it to be made out of?"
+    },
+    {
+      "id": "128",
+      "speaker": "Participant 2",
+      "start": 1105.584,
+      "end": 1108.424,
+      "text": "Well, we have lots of options. I don't think wood is a viable option."
+    },
+    {
+      "id": "129",
+      "speaker": "Participant 1",
+      "start": 1109.064,
+      "end": 1109.284,
+      "text": "Yeah, wood. No."
+    },
+    {
+      "id": "130",
+      "speaker": "Participant 4",
+      "start": 1109.644,
+      "end": 1110.364,
+      "text": "Well, titanium- Oh, what did you..."
+    },
+    {
+      "id": "131",
+      "speaker": "Participant 1",
+      "start": 1110.724,
+      "end": 1111.464,
+      "text": "Oh, sorry, go ahead."
+    },
+    {
+      "id": "132",
+      "speaker": "Participant 4",
+      "start": 1111.644,
+      "end": 1117.728,
+      "text": "I was just saying the titanium, if we're being restricted, then I would probably lean away from that."
+    },
+    {
+      "id": "133",
+      "speaker": "Participant 3",
+      "start": 1118.408,
+      "end": 1121.468,
+      "text": "Yeah, 'cause if it's gonna cost us more to produce a chip, titanium would be more expensive."
+    },
+    {
+      "id": "134",
+      "speaker": "Participant 1",
+      "start": 1121.668,
+      "end": 1121.828,
+      "text": "Right."
+    },
+    {
+      "id": "135",
+      "speaker": "Participant 2",
+      "start": 1122.388,
+      "end": 1122.888,
+      "text": "However-"
+    },
+    {
+      "id": "136",
+      "speaker": "Participant 1",
+      "start": 1123.128,
+      "end": 1123.908,
+      "text": "What would you recommend?"
+    },
+    {
+      "id": "137",
+      "speaker": "Participant 2",
+      "start": 1124.128,
+      "end": 1126.528,
+      "text": "Yeah. Well, we only wanna sell it for 25 euro, right?"
+    },
+    {
+      "id": "138",
+      "speaker": "Participant 4",
+      "start": 1127.068,
+      "end": 1127.248,
+      "text": "Yeah."
+    },
+    {
+      "id": "139",
+      "speaker": "Participant 2",
+      "start": 1127.248,
+      "end": 1131.408,
+      "text": "'Cause I was thinking if we wanted to get the high-end market- Yeah... then you could produce a few in titanium."
+    },
+    {
+      "id": "140",
+      "speaker": "Participant 1",
+      "start": 1131.688,
+      "end": 1131.828,
+      "text": "Mm."
+    },
+    {
+      "id": "141",
+      "speaker": "Participant 2",
+      "start": 1132.367,
+      "end": 1133.708,
+      "text": "Make them a rarity sort of thing."
+    },
+    {
+      "id": "142",
+      "speaker": "Participant 3",
+      "start": 1133.728,
+      "end": 1138.348,
+      "text": "Sell it. We could do that because all our research shows that people are definitely willing to spend more."
+    },
+    {
+      "id": "143",
+      "speaker": "Participant 4",
+      "start": 1139.068,
+      "end": 1140.548,
+      "text": "Are we- Yeah... restricted by this?"
+    },
+    {
+      "id": "144",
+      "speaker": "Participant 2",
+      "start": 1142.548,
+      "end": 1143.268,
+      "text": "Well, the original-"
+    },
+    {
+      "id": "145",
+      "speaker": "Participant 1",
+      "start": 1143.328,
+      "end": 1160.168,
+      "text": "I- 25 euro... I think we should just focus on one design and one concept right now. Okay. I'm not sure that we'll have the time and money to produce a whole array of remotes. If this was a successful remote, we might then produce a higher end version of it, I think."
+    },
+    {
+      "id": "146",
+      "speaker": "Participant 2",
+      "start": 1160.568,
+      "end": 1161.748,
+      "text": "Yeah. Good plan. Good plan."
+    },
+    {
+      "id": "147",
+      "speaker": "Participant 1",
+      "start": 1162.468,
+      "end": 1166.468,
+      "text": "Okay. So we wanna go for plastic, or what would you recommend for materials?"
+    },
+    {
+      "id": "148",
+      "speaker": "Participant 2",
+      "start": 1167.168,
+      "end": 1190.008,
+      "text": "Honestly, I'd recommend like, um, uh, since we're going with batteries instead of solar power, I'd recommend maybe a, uh, soft like latex because we could produce... You know how cell phones have those overlays that you can change the color? Oh. Oh. We could do one that fits in with the trends of the year. So because this year is all fruit, God only knows why. Yeah."
+    },
+    {
+      "id": "149",
+      "speaker": "Participant 3",
+      "start": 1190.028,
+      "end": 1190.448,
+      "text": "Who knows?"
+    },
+    {
+      "id": "150",
+      "speaker": "Participant 2",
+      "start": 1190.568,
+      "end": 1198.228,
+      "text": "Um, we could do f- a cherry cover for this year, and then if next year is stripes or solids, you know."
+    },
+    {
+      "id": "151",
+      "speaker": "Participant 1",
+      "start": 1198.848,
+      "end": 1198.988,
+      "text": "Okay."
+    },
+    {
+      "id": "152",
+      "speaker": "Participant 4",
+      "start": 1199.048,
+      "end": 1206.788,
+      "text": "So you're talking about like when it leaves our sales room, then it's all gonna be cherry colored, or is it gonna be the kind of thing where people come back and swap it out? Or we could like"
+    },
+    {
+      "id": "153",
+      "speaker": "Participant 1",
+      "start": 1206.848,
+      "end": 1209.008,
+      "text": "take it off- They could come back... buy cases maybe."
+    },
+    {
+      "id": "154",
+      "speaker": "Participant 2",
+      "start": 1209.048,
+      "end": 1210.288,
+      "text": "And buy the extra case."
+    },
+    {
+      "id": "155",
+      "speaker": "Participant 1",
+      "start": 1210.468,
+      "end": 1214.308,
+      "text": "Okay. If they wanted. I think it's good to sell basic thing and then sell options."
+    },
+    {
+      "id": "156",
+      "speaker": "Participant 2",
+      "start": 1214.348,
+      "end": 1221.748,
+      "text": "So we could do like a, a hard base plastic- Yeah... and then we could give the two latex covers- The top base. Yeah."
+    },
+    {
+      "id": "157",
+      "speaker": "Participant 1",
+      "start": 1222.068,
+      "end": 1222.308,
+      "text": "Right. Okay..."
+    },
+    {
+      "id": "158",
+      "speaker": "Participant 2",
+      "start": 1222.568,
+      "end": 1223.068,
+      "text": "to start."
+    },
+    {
+      "id": "159",
+      "speaker": "Participant 1",
+      "start": 1223.288,
+      "end": 1223.508,
+      "text": "Okay."
+    },
+    {
+      "id": "160",
+      "speaker": "Participant 3",
+      "start": 1225.708,
+      "end": 1230.368,
+      "text": "Yeah, because the soft latex definitely is squishy. That's in... Well, I mean, squishier than like-"
+    },
+    {
+      "id": "161",
+      "speaker": "Participant 1",
+      "start": 1231.048,
+      "end": 1231.248,
+      "text": "Right."
+    },
+    {
+      "id": "162",
+      "speaker": "Participant 3",
+      "start": 1231.588,
+      "end": 1231.748,
+      "text": "Yeah."
+    },
+    {
+      "id": "163",
+      "speaker": "Participant 1",
+      "start": 1231.888,
+      "end": 1232.008,
+      "text": "Right."
+    },
+    {
+      "id": "164",
+      "speaker": "Participant 3",
+      "start": 1232.088,
+      "end": 1233.048,
+      "text": "Just a hard plastic."
+    },
+    {
+      "id": "165",
+      "speaker": "Participant 1",
+      "start": 1233.368,
+      "end": 1236.068,
+      "text": "Okay, and what kind of chip would we need for this guy?"
+    },
+    {
+      "id": "166",
+      "speaker": "Participant 2",
+      "start": 1237.348,
+      "end": 1239.668,
+      "text": "How complicated... Are we gonna go with the voice activated?"
+    },
+    {
+      "id": "167",
+      "speaker": "Participant 1",
+      "start": 1239.888,
+      "end": 1248.148,
+      "text": "I don't think we should do voice. I think we should just do, um, the recognition for when it's lost, you know? But could we- Tracker, yeah."
+    },
+    {
+      "id": "168",
+      "speaker": "Participant 3",
+      "start": 1248.488,
+      "end": 1253.948,
+      "text": "Yeah, 'cause I don't... What type of... Yeah, for voice activation, would it be like a certain term? What would we say? Like-"
+    },
+    {
+      "id": "169",
+      "speaker": "Participant 1",
+      "start": 1254.308,
+      "end": 1254.488,
+      "text": "Hmm..."
+    },
+    {
+      "id": "170",
+      "speaker": "Participant 3",
+      "start": 1255.048,
+      "end": 1258.168,
+      "text": "because people could just be talking, and we don't want it going off all the time."
+    },
+    {
+      "id": "171",
+      "speaker": "Participant 1",
+      "start": 1260.548,
+      "end": 1260.728,
+      "text": "Right."
+    },
+    {
+      "id": "172",
+      "speaker": "Participant 3",
+      "start": 1261.088,
+      "end": 1261.308,
+      "text": "So-"
+    },
+    {
+      "id": "173",
+      "speaker": "Participant 2",
+      "start": 1261.448,
+      "end": 1264.528,
+      "text": "Well, we could give it a specific code, you know, remote missing."
+    },
+    {
+      "id": "174",
+      "speaker": "Participant 3",
+      "start": 1266.688,
+      "end": 1276.188,
+      "text": "Ooh. Uh, see, I'm, I'm strangely attracted to it because I know that's... it's definitely gonna be big because it's... I don't know, it's just so high tech."
+    },
+    {
+      "id": "175",
+      "speaker": "Participant 4",
+      "start": 1276.248,
+      "end": 1284.868,
+      "text": "Well, my little sister got, for Christmas, she got one of those key finders that's like a key ring, and you have to whistle in a certain frequency for it to work."
+    },
+    {
+      "id": "176",
+      "speaker": "Participant 2",
+      "start": 1285.048,
+      "end": 1285.568,
+      "text": "Yeah, see, that would"
+    },
+    {
+      "id": "177",
+      "speaker": "Participant 4",
+      "start": 1285.648,
+      "end": 1289.088,
+      "text": "just irritate me. And then she would laugh, and it would start going off in her purse, and you couldn't turn it off."
+    },
+    {
+      "id": "178",
+      "speaker": "Participant 3",
+      "start": 1289.208,
+      "end": 1290.008,
+      "text": "Oh, dear. Oh. So"
+    },
+    {
+      "id": "179",
+      "speaker": "Participant 4",
+      "start": 1290.048,
+      "end": 1291.388,
+      "text": "it became highly irritating."
+    },
+    {
+      "id": "180",
+      "speaker": "Participant 1",
+      "start": 1291.548,
+      "end": 1291.848,
+      "text": "Okay."
+    },
+    {
+      "id": "181",
+      "speaker": "Participant 3",
+      "start": 1292.008,
+      "end": 1292.428,
+      "text": "Maybe voice activation won't work."
+    },
+    {
+      "id": "182",
+      "speaker": "Participant 2",
+      "start": 1292.448,
+      "end": 1294.548,
+      "text": "So I think having a key phrase is much better."
+    },
+    {
+      "id": "183",
+      "speaker": "Participant 1",
+      "start": 1294.888,
+      "end": 1300.408,
+      "text": "Okay. All right. But it's not gonna be voice activated in the fact that you would say channel up, and it would work, right?"
+    },
+    {
+      "id": "184",
+      "speaker": "Participant 3",
+      "start": 1300.488,
+      "end": 1301.208,
+      "text": "Yeah. No, no, no. We don't have"
+    },
+    {
+      "id": "185",
+      "speaker": "Participant 2",
+      "start": 1301.208,
+      "end": 1301.448,
+      "text": "the tech. No. It's"
+    },
+    {
+      "id": "186",
+      "speaker": "Participant 3",
+      "start": 1301.468,
+      "end": 1301.948,
+      "text": "just gonna be a finder."
+    },
+    {
+      "id": "187",
+      "speaker": "Participant 1",
+      "start": 1301.988,
+      "end": 1302.688,
+      "text": "Okay. All right."
+    },
+    {
+      "id": "188",
+      "speaker": "Participant 3",
+      "start": 1304.188,
+      "end": 1306.468,
+      "text": "But do you... Can your... Can the department make-"
+    },
+    {
+      "id": "189",
+      "speaker": "Participant 2",
+      "start": 1306.948,
+      "end": 1322.488,
+      "text": "That would be like a mid-class, um- Oh- Yeah... brilliant then. So we don't actually have to go for... Well, if they've just developed a sample sensor, sample speaker, it's a brand-new chip, why not introduce it in this way?"
+    },
+    {
+      "id": "190",
+      "speaker": "Participant 3",
+      "start": 1323.228,
+      "end": 1323.348,
+      "text": "Yeah."
+    },
+    {
+      "id": "191",
+      "speaker": "Participant 1",
+      "start": 1323.428,
+      "end": 1323.708,
+      "text": "Okay. Good"
+    },
+    {
+      "id": "192",
+      "speaker": "Participant 3",
+      "start": 1323.768,
+      "end": 1324.028,
+      "text": "point."
+    },
+    {
+      "id": "193",
+      "speaker": "Participant 1",
+      "start": 1325.208,
+      "end": 1329.088,
+      "text": "Uh, and what size batteries? Double A? Triple A?"
+    },
+    {
+      "id": "194",
+      "speaker": "Participant 3",
+      "start": 1329.628,
+      "end": 1331.188,
+      "text": "I think triple A. It'll be lighter."
+    },
+    {
+      "id": "195",
+      "speaker": "Participant 1",
+      "start": 1331.528,
+      "end": 1331.728,
+      "text": "Two?"
+    },
+    {
+      "id": "196",
+      "speaker": "Participant 3",
+      "start": 1332.968,
+      "end": 1334.888,
+      "text": "Could it run off of two- I mean, more, more common package"
+    },
+    {
+      "id": "197",
+      "speaker": "Participant 4",
+      "start": 1334.888,
+      "end": 1335.808,
+      "text": "... depends on what energy is needed."
+    },
+    {
+      "id": "198",
+      "speaker": "Participant 2",
+      "start": 1336.608,
+      "end": 1354.108,
+      "text": "I think, well, we could d- do two, or we could do one small lithium 'cause, you know, the lithium batteries are doing quite well in most other electronic products, right? So they're more widely available now. And they also have a longer battery life than most batteries."
+    },
+    {
+      "id": "199",
+      "speaker": "Participant 1",
+      "start": 1354.528,
+      "end": 1355.708,
+      "text": "They're more expensive though, too."
+    },
+    {
+      "id": "200",
+      "speaker": "Participant 2",
+      "start": 1356.388,
+      "end": 1358.308,
+      "text": "But if you only have to replace it every five years."
+    },
+    {
+      "id": "201",
+      "speaker": "Participant 1",
+      "start": 1358.468,
+      "end": 1362.268,
+      "text": "Hmm. That's a good point. That's, I think- As"
+    },
+    {
+      "id": "202",
+      "speaker": "Participant 4",
+      "start": 1362.288,
+      "end": 1363.268,
+      "text": "long as we sell it with it."
+    },
+    {
+      "id": "203",
+      "speaker": "Participant 2",
+      "start": 1364.488,
+      "end": 1371.208,
+      "text": "Well, how about a, an initial you get one battery when you buy it? Right. 'Cause I'm pretty sure we can get them pretty cheap in bulk. That's what I meant. We could think about it and come back"
+    },
+    {
+      "id": "204",
+      "speaker": "Participant 3",
+      "start": 1371.248,
+      "end": 1371.308,
+      "text": "to"
+    },
+    {
+      "id": "205",
+      "speaker": "Participant 1",
+      "start": 1371.328,
+      "end": 1371.628,
+      "text": "it next"
+    },
+    {
+      "id": "206",
+      "speaker": "Participant 2",
+      "start": 1371.648,
+      "end": 1372.188,
+      "text": "meeting. Okay. Yeah. Just"
+    },
+    {
+      "id": "207",
+      "speaker": "Participant 4",
+      "start": 1372.327,
+      "end": 1372.767,
+      "text": "one more meeting."
+    },
+    {
+      "id": "208",
+      "speaker": "Participant 1",
+      "start": 1372.808,
+      "end": 1388.568,
+      "text": "All right. Okay. So we've covered that first category. User interface concept, meaning design."
+    },
+    {
+      "id": "209",
+      "speaker": "Participant 4",
+      "start": 1388.888,
+      "end": 1389.868,
+      "text": "Yeah, what's it gonna look like?"
+    },
+    {
+      "id": "210",
+      "speaker": "Participant 1",
+      "start": 1390.148,
+      "end": 1404.548,
+      "text": "Okay. Um- I ki- I kind of like your idea about the retro phone dial, and that the central button could have maybe our logo on it. It might be the four-way scroll, too. I mean-"
+    },
+    {
+      "id": "211",
+      "speaker": "Participant 3",
+      "start": 1404.568,
+      "end": 1412.668,
+      "text": "Yeah, it could be whatever. Yeah. As long as there's something big in the middle because like the old phones- Yeah... there's like that just like piece of metal or like a picture or something in the middle. Well,"
+    },
+    {
+      "id": "212",
+      "speaker": "Participant 4",
+      "start": 1412.668,
+      "end": 1425.328,
+      "text": "my issue with that is if it got too big, though. 'Cause if you have the circle and the button in the middle, then is it gonna get wider than your- Oh, that's true... your hands are? Because w- and then would the buttons be too small if it was enough to fit on it?"
+    },
+    {
+      "id": "213",
+      "speaker": "Participant 3",
+      "start": 1425.628,
+      "end": 1426.128,
+      "text": "Good point."
+    },
+    {
+      "id": "214",
+      "speaker": "Participant 2",
+      "start": 1426.648,
+      "end": 1431.188,
+      "text": "In the sample ones that you showed us, there was one that had the scroll buttons on the side."
+    },
+    {
+      "id": "215",
+      "speaker": "Participant 1",
+      "start": 1431.388,
+      "end": 1431.528,
+      "text": "Yeah."
+    },
+    {
+      "id": "216",
+      "speaker": "Participant 4",
+      "start": 1431.628,
+      "end": 1431.748,
+      "text": "Yeah."
+    },
+    {
+      "id": "217",
+      "speaker": "Participant 2",
+      "start": 1431.848,
+      "end": 1438.888,
+      "text": "Which I think if we make it curved like a ha- uh, like a hand shape, like if we put the, the scroll button on the side-"
+    },
+    {
+      "id": "218",
+      "speaker": "Participant 1",
+      "start": 1439.128,
+      "end": 1439.528,
+      "text": "Oh, I see what"
+    },
+    {
+      "id": "219",
+      "speaker": "Participant 2",
+      "start": 1439.548,
+      "end": 1441.028,
+      "text": "you mean... that could be particularly useful."
+    },
+    {
+      "id": "220",
+      "speaker": "Participant 1",
+      "start": 1441.448,
+      "end": 1441.868,
+      "text": "I think so."
+    },
+    {
+      "id": "221",
+      "speaker": "Participant 3",
+      "start": 1442.368,
+      "end": 1444.608,
+      "text": "So scroll buttons on the side- Yeah, I like that... and the buttons on the top."
+    },
+    {
+      "id": "222",
+      "speaker": "Participant 1",
+      "start": 1444.828,
+      "end": 1444.968,
+      "text": "Okay."
+    },
+    {
+      "id": "223",
+      "speaker": "Participant 3",
+      "start": 1456.648,
+      "end": 1464.088,
+      "text": "But we definitely, if we have scroll things on the side, we definitely have to have them labeled. Mm. Yeah. Like on the side of it. Well, if it's just up and"
+    },
+    {
+      "id": "224",
+      "speaker": "Participant 2",
+      "start": 1464.128,
+      "end": 1464.468,
+      "text": "down."
+    },
+    {
+      "id": "225",
+      "speaker": "Participant 3",
+      "start": 1465.208,
+      "end": 1465.988,
+      "text": "Oh, if it's just up and down?"
+    },
+    {
+      "id": "226",
+      "speaker": "Participant 4",
+      "start": 1466.048,
+      "end": 1467.308,
+      "text": "But is that for-"
+    },
+    {
+      "id": "227",
+      "speaker": "Participant 2",
+      "start": 1467.908,
+      "end": 1468.708,
+      "text": "Volume or channel?"
+    },
+    {
+      "id": "228",
+      "speaker": "Participant 4",
+      "start": 1469.488,
+      "end": 1469.828,
+      "text": "Which?"
+    },
+    {
+      "id": "229",
+      "speaker": "Participant 2",
+      "start": 1470.208,
+      "end": 1470.548,
+      "text": "I don't know."
+    },
+    {
+      "id": "230",
+      "speaker": "Participant 3",
+      "start": 1470.628,
+      "end": 1471.128,
+      "text": "Well, you could do"
+    },
+    {
+      "id": "231",
+      "speaker": "Participant 4",
+      "start": 1471.368,
+      "end": 1472.308,
+      "text": "some on both sides. Do we have both sides?"
+    },
+    {
+      "id": "232",
+      "speaker": "Participant 1",
+      "start": 1473.368,
+      "end": 1473.648,
+      "text": "Can we?"
+    },
+    {
+      "id": "233",
+      "speaker": "Participant 2",
+      "start": 1474.088,
+      "end": 1478.108,
+      "text": "Yeah. We should probably make it that you have to depress it to activate it then."
+    },
+    {
+      "id": "234",
+      "speaker": "Participant 3",
+      "start": 1478.896,
+      "end": 1479.056,
+      "text": "Yeah."
+    },
+    {
+      "id": "235",
+      "speaker": "Participant 1",
+      "start": 1479.276,
+      "end": 1479.496,
+      "text": "So that you"
+    },
+    {
+      "id": "236",
+      "speaker": "Participant 2",
+      "start": 1479.516,
+      "end": 1482.756,
+      "text": "can hold it- 'Cause oth- otherwise you're not just holding it and going like this, you know? Well,"
+    },
+    {
+      "id": "237",
+      "speaker": "Participant 4",
+      "start": 1482.776,
+      "end": 1487.216,
+      "text": "the other option is instead of a scroll, you just have the- You have buttons... buttons up on the side- Mm... which are on the side."
+    },
+    {
+      "id": "238",
+      "speaker": "Participant 2",
+      "start": 1487.776,
+      "end": 1487.896,
+      "text": "Okay."
+    },
+    {
+      "id": "239",
+      "speaker": "Participant 3",
+      "start": 1487.996,
+      "end": 1489.256,
+      "text": "Yeah. You did that."
+    },
+    {
+      "id": "240",
+      "speaker": "Participant 1",
+      "start": 1490.376,
+      "end": 1501.496,
+      "text": "Hmm. 'Kay, any other ideas?"
+    },
+    {
+      "id": "241",
+      "speaker": "Participant 4",
+      "start": 1503.396,
+      "end": 1504.956,
+      "text": "Um, what color?"
+    },
+    {
+      "id": "242",
+      "speaker": "Participant 1",
+      "start": 1506.536,
+      "end": 1508.916,
+      "text": "Oh, yeah. Latex covers."
+    },
+    {
+      "id": "243",
+      "speaker": "Participant 2",
+      "start": 1509.676,
+      "end": 1518.956,
+      "text": "We have to make sure that the logo always sticks out when we put the latex covers on, so we'll have to like have a little square or something so that the- Well, it's sort of like-... our logo's"
+    },
+    {
+      "id": "244",
+      "speaker": "Participant 4",
+      "start": 1519.016,
+      "end": 1524.596,
+      "text": "available... having the, a yellow strip at the bottom with the RR like that."
+    },
+    {
+      "id": "245",
+      "speaker": "Participant 3",
+      "start": 1525.776,
+      "end": 1525.876,
+      "text": "Yeah."
+    },
+    {
+      "id": "246",
+      "speaker": "Participant 4",
+      "start": 1525.936,
+      "end": 1526.936,
+      "text": "And that's at the bottom of it."
+    },
+    {
+      "id": "247",
+      "speaker": "Participant 1",
+      "start": 1527.236,
+      "end": 1545.676,
+      "text": "I think maybe we should do it on a button itself, though, because if people are able to- Which button?... change the covers. I don't know, maybe the on/off button, something. Some... The menu button? I don't know. But, you know, if we're gonna put our company logo on there and somebody could just get another one, are they all gonna have our company logo on them, every cover?"
+    },
+    {
+      "id": "248",
+      "speaker": "Participant 2",
+      "start": 1546.176,
+      "end": 1552.396,
+      "text": "Yeah, I don't think we should do that because that would just be i- icky. Yeah. So I think maybe putting it on a button is probably a good idea."
+    },
+    {
+      "id": "249",
+      "speaker": "Participant 1",
+      "start": 1553.136,
+      "end": 1563.296,
+      "text": "If we want it to be visible and... Um, are all those, those ones that you showed where they were, um, s- met- silver metallic looking?"
+    },
+    {
+      "id": "250",
+      "speaker": "Participant 4",
+      "start": 1563.916,
+      "end": 1564.036,
+      "text": "Yeah."
+    },
+    {
+      "id": "251",
+      "speaker": "Participant 1",
+      "start": 1564.316,
+      "end": 1569.976,
+      "text": "But those are plastic, right? Yeah. They're not titanium. I kind of like that look. But or if it was really- For our"
+    },
+    {
+      "id": "252",
+      "speaker": "Participant 3",
+      "start": 1570.056,
+      "end": 1570.336,
+      "text": "base"
+    },
+    {
+      "id": "253",
+      "speaker": "Participant 1",
+      "start": 1570.356,
+      "end": 1577.336,
+      "text": "one? Yeah, for the base. Or if we're going for the retro look, I think like a really shiny black would be cool."
+    },
+    {
+      "id": "254",
+      "speaker": "Participant 3",
+      "start": 1577.916,
+      "end": 1582.236,
+      "text": "Yeah. What are your thoughts? Or like a gunmetal gray- Gunmetal gray... 'cause then it combines the silver and the black."
+    },
+    {
+      "id": "255",
+      "speaker": "Participant 1",
+      "start": 1582.276,
+      "end": 1583.776,
+      "text": "There you go, gunmetal gray."
+    },
+    {
+      "id": "256",
+      "speaker": "Participant 4",
+      "start": 1594.876,
+      "end": 1597.256,
+      "text": "I'm just really wary of the putting anything on a button."
+    },
+    {
+      "id": "257",
+      "speaker": "Participant 1",
+      "start": 1597.976,
+      "end": 1598.176,
+      "text": "Why?"
+    },
+    {
+      "id": "258",
+      "speaker": "Participant 2",
+      "start": 1598.716,
+      "end": 1599.296,
+      "text": "It'll wear off."
+    },
+    {
+      "id": "259",
+      "speaker": "Participant 4",
+      "start": 1599.316,
+      "end": 1599.596,
+      "text": "What's the..."
+    },
+    {
+      "id": "260",
+      "speaker": "Participant 3",
+      "start": 1599.636,
+      "end": 1600.156,
+      "text": "Yeah, buttons wear off."
+    },
+    {
+      "id": "261",
+      "speaker": "Participant 4",
+      "start": 1600.256,
+      "end": 1613.136,
+      "text": "Well, well then what's the button do and how do you know that that is what the button does, I guess? Just looking at examples, you just don't ever see the logo on a button. It's always on the actual casing."
+    },
+    {
+      "id": "262",
+      "speaker": "Participant 1",
+      "start": 1613.476,
+      "end": 1613.716,
+      "text": "Right."
+    },
+    {
+      "id": "263",
+      "speaker": "Participant 3",
+      "start": 1615.856,
+      "end": 1616.196,
+      "text": "Hmm."
+    },
+    {
+      "id": "264",
+      "speaker": "Participant 2",
+      "start": 1618.136,
+      "end": 1620.436,
+      "text": "There's nothing saying that we have to put the logo on the front."
+    },
+    {
+      "id": "265",
+      "speaker": "Participant 1",
+      "start": 1621.556,
+      "end": 1621.616,
+      "text": "Well,"
+    },
+    {
+      "id": "266",
+      "speaker": "Participant 2",
+      "start": 1621.656,
+      "end": 1621.856,
+      "text": "we want"
+    },
+    {
+      "id": "267",
+      "speaker": "Participant 1",
+      "start": 1621.876,
+      "end": 1621.996,
+      "text": "it to"
+    },
+    {
+      "id": "268",
+      "speaker": "Participant 2",
+      "start": 1622.016,
+      "end": 1622.116,
+      "text": "be"
+    },
+    {
+      "id": "269",
+      "speaker": "Participant 1",
+      "start": 1622.236,
+      "end": 1629.536,
+      "text": "seen. On the actual- Visible. But I mean, it's not easy. Visibility, though. 'Cause if it was only on the back, really the only time you're gonna see it is- Well-... when you drop it or when- Yeah... you're changing the battery."
+    },
+    {
+      "id": "270",
+      "speaker": "Participant 4",
+      "start": 1630.596,
+      "end": 1634.036,
+      "text": "The other option is... I don't know if you can see it, but it's like if-"
+    },
+    {
+      "id": "271",
+      "speaker": "Participant 1",
+      "start": 1635.416,
+      "end": 1636.216,
+      "text": "I can find it again."
+    },
+    {
+      "id": "272",
+      "speaker": "Participant 4",
+      "start": 1636.796,
+      "end": 1639.036,
+      "text": "Yeah. It's like the second to last slide."
+    },
+    {
+      "id": "273",
+      "speaker": "Participant 1",
+      "start": 1639.396,
+      "end": 1644.996,
+      "text": "Okay. And yours was called Interface Concept? Interface, yeah. This one?"
+    },
+    {
+      "id": "274",
+      "speaker": "Participant 4",
+      "start": 1645.236,
+      "end": 1646.836,
+      "text": "Yeah. Um- Well-"
+    },
+    {
+      "id": "275",
+      "speaker": "Participant 1",
+      "start": 1646.936,
+      "end": 1649.636,
+      "text": "For some reason I can't get it to just go to that slide directly."
+    },
+    {
+      "id": "276",
+      "speaker": "Participant 4",
+      "start": 1651.256,
+      "end": 1665.456,
+      "text": "Okay, it's the very right one. You see at the bottom, it's kind of difficult to see, but you have like a sort of division between the bottom, like where the logo is. And if we have the replaceable section, it's like the top. It doesn't necessarily replace the entire top."
+    },
+    {
+      "id": "277",
+      "speaker": "Participant 1",
+      "start": 1666.036,
+      "end": 1666.256,
+      "text": "Mm."
+    },
+    {
+      "id": "278",
+      "speaker": "Participant 4",
+      "start": 1666.436,
+      "end": 1669.476,
+      "text": "And so you have that one piece that stays, and the rest just sort of clips in."
+    },
+    {
+      "id": "279",
+      "speaker": "Participant 1",
+      "start": 1669.976,
+      "end": 1670.956,
+      "text": "Okay. Yes."
+    },
+    {
+      "id": "280",
+      "speaker": "Participant 4",
+      "start": 1670.996,
+      "end": 1678.076,
+      "text": "Are you envisioning it? Yes. And so that stays the same when you have the logo. And then you have this s- slip that kind of clips in, and that's the bit that changes."
+    },
+    {
+      "id": "281",
+      "speaker": "Participant 1",
+      "start": 1678.696,
+      "end": 1678.936,
+      "text": "Okay."
+    },
+    {
+      "id": "282",
+      "speaker": "Participant 2",
+      "start": 1679.616,
+      "end": 1692.196,
+      "text": "The only problem is we're using a latex overlay, so by... It actually would go over top of everything and have holes for the buttons. So I was thinking maybe instead of doing that, what we could do is leave a space for where- Yeah... the logo should be."
+    },
+    {
+      "id": "283",
+      "speaker": "Participant 1",
+      "start": 1692.336,
+      "end": 1693.736,
+      "text": "Yeah, yeah. Like a little cut out kind of."
+    },
+    {
+      "id": "284",
+      "speaker": "Participant 2",
+      "start": 1693.776,
+      "end": 1693.956,
+      "text": "Yeah."
+    },
+    {
+      "id": "285",
+      "speaker": "Participant 4",
+      "start": 1694.016,
+      "end": 1704.256,
+      "text": "Right. Okay. Just like, you know, where like a, a cellphone, it's like the, the screen- Right... is always just left open. And so what, are we gonna do it like bright yellow with the RR?"
+    },
+    {
+      "id": "286",
+      "speaker": "Participant 3",
+      "start": 1705.776,
+      "end": 1705.936,
+      "text": "Yeah."
+    },
+    {
+      "id": "287",
+      "speaker": "Participant 1",
+      "start": 1713.756,
+      "end": 1715.716,
+      "text": "Anybody see anything that they liked in these"
+    },
+    {
+      "id": "288",
+      "speaker": "Participant 3",
+      "start": 1715.716,
+      "end": 1726.976,
+      "text": "ones? Well, some of those buttons though are blue based. Um, well, a lot of those buttons are blue based. Well, kind of. Um, and then if w- we do have them illuminate upon contact- Yeah... they could illuminate yellow."
+    },
+    {
+      "id": "289",
+      "speaker": "Participant 1",
+      "start": 1727.136,
+      "end": 1728.096,
+      "text": "Yellow. Yeah. I like that idea."
+    },
+    {
+      "id": "290",
+      "speaker": "Participant 3",
+      "start": 1728.136,
+      "end": 1743.856,
+      "text": "Like, if we... Like the one all the way on the left, you can, you can see it on your computer better. Mm. Um, where the button is actually blue, but the number itself is clear or white or whatever, so if you pressed it, it would illuminate yellow. Mm. So we'd have blue and yellow for the touch"
+    },
+    {
+      "id": "291",
+      "speaker": "Participant 4",
+      "start": 1744.016,
+      "end": 1744.816,
+      "text": "buttons. Oh, it's that one."
+    },
+    {
+      "id": "292",
+      "speaker": "Participant 1",
+      "start": 1745.336,
+      "end": 1766.536,
+      "text": "I like- Yeah... the yellow illumination idea. Very good. Okay. Any other ideas or thoughts? We all seem to be fairly in agreement about what we wanna- Hang,"
+    },
+    {
+      "id": "293",
+      "speaker": "Participant 4",
+      "start": 1766.556,
+      "end": 1766.676,
+      "text": "hang"
+    },
+    {
+      "id": "294",
+      "speaker": "Participant 1",
+      "start": 1766.696,
+      "end": 1767.856,
+      "text": "on... do with this project, so. Yeah."
+    },
+    {
+      "id": "295",
+      "speaker": "Participant 4",
+      "start": 1767.876,
+      "end": 1768.276,
+      "text": "Let me catch"
+    },
+    {
+      "id": "296",
+      "speaker": "Participant 1",
+      "start": 1768.356,
+      "end": 1768.896,
+      "text": "up. Okay."
+    },
+    {
+      "id": "297",
+      "speaker": "Participant 4",
+      "start": 1776.416,
+      "end": 1779.756,
+      "text": "Did we finalize what buttons we're including, or did it, it's just everything that we said before?"
+    },
+    {
+      "id": "298",
+      "speaker": "Participant 1",
+      "start": 1781.936,
+      "end": 1809.876,
+      "text": "I think there will be time for that later, I'm guessing. Okay. Well, we're gonna wrap this up. Um, next meeting is gonna start in 30 minutes, and here's what we're, each of us, going to do. The ID is going to do the look and feel design, the UID, the user interface design. I think you're going to get a lot of, I mean, the final say on what buttons get put. We'll all talk about it, but I think that's pretty much what you're gonna do, right?"
+    },
+    {
+      "id": "299",
+      "speaker": "Participant 4",
+      "start": 1810.776,
+      "end": 1811.036,
+      "text": "Yeah."
+    },
+    {
+      "id": "300",
+      "speaker": "Participant 1",
+      "start": 1812.336,
+      "end": 1821.716,
+      "text": "Okay. And you're gonna do some product evaluation. Okay? And right now, the ID and UID, you two are going to work together on a prototype using modeling clay."
+    },
+    {
+      "id": "301",
+      "speaker": "Participant 2",
+      "start": 1823.076,
+      "end": 1824.536,
+      "text": "Great. Play-Doh."
+    },
+    {
+      "id": "302",
+      "speaker": "Participant 1",
+      "start": 1825.016,
+      "end": 1832.356,
+      "text": "Yep. Okay. And you should all be getting an email pretty soon. All right. Wonderful. Well, thank you for a very productive meeting. Woo-hoo."
+    }
+  ],
+  "actionItems": [
+    {
+      "id": "31711515",
+      "title": "Build a modeling clay prototype of the remote with the industrial designer",
+      "description": "Joint task with the industrial designer, ahead of the next meeting.",
+      "assignee": {
+        "name": "Participant 4"
+      }
+    },
+    {
+      "id": "31711516",
+      "title": "Do the user interface design, including final button choices",
+      "description": "Gets the final say on which buttons go on the remote, after the team talks it over.",
+      "assignee": {
+        "name": "Participant 4"
+      }
+    }
+  ]
+}

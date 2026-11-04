@@ -47,8 +47,6 @@ export function MeetingView({
   }
 
   function jump(segmentId: string) {
-    const href = links[segmentId];
-    if (href && !href.startsWith("/")) return void window.open(href, "_blank");
     setActive(segmentId);
     const el = document.getElementById(segmentId);
     const list = el?.parentElement;
@@ -228,7 +226,13 @@ export function MeetingView({
                 }`}
               >
                 <div className="flex gap-2 text-xs text-zinc-500">
-                  <span className="font-mono">{fmtTime(s.start)}</span>
+                  {links[s.id] && !links[s.id].startsWith("/") ? (
+                    <a href={links[s.id]} target="_blank" rel="noreferrer" title="Open this moment in Circleback" className="font-mono text-blue-700 hover:underline dark:text-blue-400">
+                      {fmtTime(s.start)} ↗
+                    </a>
+                  ) : (
+                    <span className="font-mono">{fmtTime(s.start)}</span>
+                  )}
                   <span className="font-medium text-zinc-700 dark:text-zinc-300">{who(s.speaker)}</span>
                 </div>
                 <p className="mt-0.5">{s.text}</p>
